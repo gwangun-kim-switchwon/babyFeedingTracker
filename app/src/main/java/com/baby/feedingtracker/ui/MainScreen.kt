@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,9 +59,20 @@ import java.util.Locale
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val lastAddedRecord by viewModel.lastAddedRecord.collectAsStateWithLifecycle()
     val extendedColors = LocalExtendedColors.current
     var selectedRecord by remember { mutableStateOf<FeedingRecord?>(null) }
+    var isNewRecord by remember { mutableStateOf(false) }
     var recordToDelete by remember { mutableStateOf<FeedingRecord?>(null) }
+
+    // 새 기록 추가 시 바텀시트 자동 오픈
+    LaunchedEffect(lastAddedRecord) {
+        lastAddedRecord?.let { record ->
+            selectedRecord = record
+            isNewRecord = true
+            viewModel.clearLastAddedRecord()
+        }
+    }
 
     // 삭제 확인 다이얼로그
     recordToDelete?.let { record ->
@@ -79,13 +91,17 @@ fun MainScreen(viewModel: MainViewModel) {
     selectedRecord?.let { record ->
         RecordEditBottomSheet(
             record = record,
+            isNewRecord = isNewRecord,
             onUpdateType = { type, amountMl ->
                 viewModel.updateRecordType(record.id, type, amountMl)
             },
             onDelete = {
                 recordToDelete = record
             },
-            onDismiss = { selectedRecord = null }
+            onDismiss = {
+                selectedRecord = null
+                isNewRecord = false
+            }
         )
     }
 
@@ -166,13 +182,6 @@ private fun ElapsedTimeSection(
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        if (elapsedMinutes != null) {
-            Text(
-                text = "전",
-                style = MaterialTheme.typography.headlineSmall,
-                color = LocalExtendedColors.current.subtleText
-            )
-        }
     }
 }
 
@@ -390,6 +399,7 @@ private fun TimelineRecordRow(
 @Composable
 private fun RecordEditBottomSheet(
     record: FeedingRecord,
+    isNewRecord: Boolean,
     onUpdateType: (type: String?, amountMl: Int?) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit
@@ -435,6 +445,7 @@ private fun RecordEditBottomSheet(
                         selectedType = newType
                         selectedAmount = null
                         onUpdateType(newType, null)
+                        if (isNewRecord && newType == "breast") onDismiss()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -473,6 +484,7 @@ private fun RecordEditBottomSheet(
                                     val newAmount = if (selectedAmount == amount) null else amount
                                     selectedAmount = newAmount
                                     onUpdateType(selectedType, newAmount)
+                                    if (isNewRecord && newAmount != null) onDismiss()
                                 },
                                 modifier = Modifier.weight(1f)
                             )
@@ -677,9 +689,9 @@ private fun formatElapsedTimeDisplay(elapsedMinutes: Long?): String {
     val hours = elapsedMinutes / 60
     val minutes = elapsedMinutes % 60
     return when {
-        hours > 0 && minutes > 0 -> "${hours}시간 ${minutes}분"
-        hours > 0 -> "${hours}시간"
-        minutes > 0 -> "${minutes}분"
+        hours > 0 && minutes > 0 -> "${hours}시간 ${minutes}분 전"
+        hours > 0 -> "${hours}시간 전"
+        minutes > 0 -> "${minutes}분 전"
         else -> "방금"
     }
 }
