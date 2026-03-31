@@ -2,6 +2,9 @@ package com.baby.feedingtracker.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +52,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.baby.feedingtracker.data.FeedingRecord
+import com.baby.feedingtracker.data.GoogleAuthHelper
+import com.baby.feedingtracker.data.SharingState
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -57,13 +66,22 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(
+    viewModel: MainViewModel,
+    googleAuthHelper: GoogleAuthHelper,
+    googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lastAddedRecord by viewModel.lastAddedRecord.collectAsStateWithLifecycle()
+    val sharingState by viewModel.sharingState.collectAsStateWithLifecycle()
+    val isGoogleLoggedIn by viewModel.isGoogleLoggedIn.collectAsStateWithLifecycle()
+    val inviteCode by viewModel.inviteCode.collectAsStateWithLifecycle()
+    val sharingError by viewModel.sharingError.collectAsStateWithLifecycle()
     val extendedColors = LocalExtendedColors.current
     var selectedRecord by remember { mutableStateOf<FeedingRecord?>(null) }
     var isNewRecord by remember { mutableStateOf(false) }
     var recordToDelete by remember { mutableStateOf<FeedingRecord?>(null) }
+    var showShareSheet by remember { mutableStateOf(false) }
 
     // 새 기록 추가 시 바텀시트 자동 오픈
     LaunchedEffect(lastAddedRecord) {
@@ -105,6 +123,27 @@ fun MainScreen(viewModel: MainViewModel) {
         )
     }
 
+    // Share bottom sheet
+    if (showShareSheet) {
+        ShareBottomSheet(
+            sharingState = sharingState,
+            isGoogleLoggedIn = isGoogleLoggedIn,
+            inviteCode = inviteCode,
+            sharingError = sharingError,
+            googleAuthHelper = googleAuthHelper,
+            googleSignInLauncher = googleSignInLauncher,
+            onGenerateCode = { viewModel.generateInviteCode() },
+            onRedeemCode = { code ->
+                viewModel.redeemInviteCode(code) { /* onSuccess handled by reinit */ }
+            },
+            onClearError = { viewModel.clearSharingError() },
+            onDismiss = {
+                showShareSheet = false
+                viewModel.clearInviteCode()
+            }
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -121,14 +160,48 @@ fun MainScreen(viewModel: MainViewModel) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // -- 상단: 경과 시간 영역 --
-            ElapsedTimeSection(
-                elapsedMinutes = uiState.elapsedMinutes,
+            // -- 상단: 경과 시간 영역 + 공유 아이콘 --
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
                     .padding(top = 48.dp, bottom = 16.dp)
-            )
+            ) {
+                ElapsedTimeSection(
+                    elapsedMinutes = uiState.elapsedMinutes,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                // Share icon with status dot
+                Box(
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    IconButton(
+                        onClick = { showShareSheet = true }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Share,
+                            contentDescription = "공유",
+                            tint = LocalExtendedColors.current.subtleText
+                        )
+                    }
+                    // Status dot
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(top = 8.dp, end = 8.dp)
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (sharingState is SharingState.Connected) {
+                                    Color(0xFF4CAF50) // green
+                                } else {
+                                    Color(0xFFFF6B6B) // red
+                                }
+                            )
+                    )
+                }
+            }
 
             // -- 중단: 기록 목록 --
             FeedingRecordList(
