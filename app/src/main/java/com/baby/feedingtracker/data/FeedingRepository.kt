@@ -6,8 +6,11 @@ class FeedingRepository(private val dao: FeedingDao) {
     val allRecords: Flow<List<FeedingRecord>> = dao.getAll()
     val latestRecord: Flow<FeedingRecord?> = dao.getLatest()
 
-    suspend fun addRecord() {
-        dao.insert(FeedingRecord(timestamp = System.currentTimeMillis()))
+    suspend fun addRecord(): FeedingRecord {
+        val timestamp = System.currentTimeMillis()
+        val record = FeedingRecord(timestamp = timestamp)
+        val id = dao.insert(record)
+        return record.copy(id = id)
     }
 
     suspend fun deleteRecord(record: FeedingRecord) {

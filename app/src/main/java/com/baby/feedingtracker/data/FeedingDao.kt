@@ -15,7 +15,7 @@ interface FeedingDao {
     fun getLatest(): Flow<FeedingRecord?>
 
     @Insert
-    suspend fun insert(record: FeedingRecord)
+    suspend fun insert(record: FeedingRecord): Long
 
     @Delete
     suspend fun delete(record: FeedingRecord)
