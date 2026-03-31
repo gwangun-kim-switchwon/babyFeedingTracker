@@ -78,12 +78,18 @@ class UserRepository(
         val uid = auth.currentUser?.uid
             ?: throw IllegalStateException("User not authenticated")
 
-        val code = buildString {
-            val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            repeat(6) {
-                append(chars.random())
+        // 충돌 방지: 기존 코드가 없을 때까지 재생성 (최대 5회)
+        var code: String
+        var attempts = 0
+        do {
+            code = buildString {
+                val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                repeat(6) { append(chars.random()) }
             }
-        }
+            val existing = inviteCodeDocRef(code).get().await()
+            attempts++
+            if (attempts > 5) throw IllegalStateException("Failed to generate unique invite code")
+        } while (existing.exists())
 
         val now = Timestamp.now()
         val expiresAt = Timestamp(Date(now.toDate().time + 10 * 60 * 1000)) // +10 minutes
@@ -125,29 +131,22 @@ class UserRepository(
                 return Result.failure(Exception("Cannot use your own invite code"))
             }
 
-            // Read host profile to get host's email
-            val hostProfileSnapshot = profileDocRef(hostUid).get().await()
-            val hostEmail = hostProfileSnapshot.getString("email")
-
-            // Read guest (current user) profile to get guest's email
-            val guestProfileSnapshot = profileDocRef(currentUid).get().await()
-            val guestEmail = guestProfileSnapshot.getString("email")
+            // WriteBatch로 원자적 업데이트
+            val batch = firestore.batch()
 
             // Update host profile: linkedTo = guest uid
-            profileDocRef(hostUid).update(
-                mapOf("linkedTo" to currentUid)
-            ).await()
+            batch.update(profileDocRef(hostUid), mapOf("linkedTo" to currentUid))
 
             // Update guest profile: linkedTo = host uid, dataOwnerUid = host uid
-            profileDocRef(currentUid).update(
-                mapOf(
-                    "linkedTo" to hostUid,
-                    "dataOwnerUid" to hostUid
-                )
-            ).await()
+            batch.update(profileDocRef(currentUid), mapOf(
+                "linkedTo" to hostUid,
+                "dataOwnerUid" to hostUid
+            ))
 
             // Delete the used invite code
-            inviteCodeDocRef(code).delete().await()
+            batch.delete(inviteCodeDocRef(code))
+
+            batch.commit().await()
 
             Result.success(hostUid)
         } catch (e: Exception) {
@@ -162,11 +161,15 @@ class UserRepository(
             if (profile == null || profile.linkedTo == null) {
                 SharingState.NotConnected
             } else {
-                // Read partner's profile to get their email
-                val partnerUid = profile.linkedTo
-                val partnerSnapshot = profileDocRef(partnerUid).get().await()
-                val partnerEmail = partnerSnapshot.getString("email")
-                SharingState.Connected(partnerEmail = partnerEmail)
+                try {
+                    val partnerUid = profile.linkedTo
+                    val partnerSnapshot = profileDocRef(partnerUid).get().await()
+                    val partnerEmail = partnerSnapshot.getString("email")
+                    SharingState.Connected(partnerEmail = partnerEmail)
+                } catch (e: Exception) {
+                    // 파트너 프로필 조회 실패 시에도 연결 상태 유지
+                    SharingState.Connected(partnerEmail = null)
+                }
             }
         }
     }

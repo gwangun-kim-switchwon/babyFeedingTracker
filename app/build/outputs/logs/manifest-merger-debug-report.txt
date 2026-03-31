@@ -1,60 +1,83 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-25:12
-INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-25:12
-INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-25:12
-INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-25:12
-MERGED from [androidx.compose.material3:material3:1.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/746a57b2d2f2f8e26086c184d66ebedf/transformed/material3-1.1.2/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/33d77efa15d2e2613ac115a20b5c6307/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
-MERGED from [androidx.core:core-ktx:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/acdb17279b5f376ade4cda4554d3f1a6/transformed/core-ktx-1.12.0/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.activity:activity:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/e013323023ae21a52cd28e6dfc69827b/transformed/activity-1.8.2/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.compose.material:material-icons-core-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/8351a3577879ef1dac8d286dc40b99bd/transformed/material-icons-core-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.material:material-icons-extended-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/5be4f756fff42fa11d4ad0441b2c61c4/transformed/material-icons-extended-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.material:material-ripple-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/aba8130d342886a12da38c218a9a1bc5/transformed/material-ripple-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.animation:animation-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/53b34c799631eb4ccf42c4c061cc4753/transformed/animation-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.animation:animation-core-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/4aafaaf7e445a3a4daa2ab46097eeb72/transformed/animation-core-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/791dfd385c3e8ab4a7ed4d40dc2b5da3/transformed/ui-tooling-data-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-unit-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/47c536be0ef9c17d9e8ef0cfbf8adf69/transformed/ui-unit-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-geometry-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/63becb51714e4913e393eda25364fe0b/transformed/ui-geometry-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-util-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/45dc60615ebf5f714796876c45db5621/transformed/ui-util-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-text-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/cf412b97324461efa63ec29c6d35171f/transformed/ui-text-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/35898ec8bd6015ad07f94de97443682b/transformed/ui-tooling-preview-release/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.compose.ui:ui-graphics-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b24d00b487fbe1181064c0b977fc9a95/transformed/ui-graphics-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-test-manifest:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6a4a04dec6a2ade901d2bea50b91ff7/transformed/ui-test-manifest-1.6.0/AndroidManifest.xml:17:1-28:12
-MERGED from [androidx.compose.ui:ui-tooling-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/667d3c761dcaee98a2fe1fb7262750e7/transformed/ui-tooling-release/AndroidManifest.xml:17:1-28:12
-MERGED from [androidx.compose.material:material-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/4cd291e254794868c0ac727f37dad263/transformed/material-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/fabfd66ed7bbf6658b622dc58dbf1ac4/transformed/foundation-layout-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.foundation:foundation-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/45527518ef529b82a36306abeeead89d/transformed/foundation-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.autofill:autofill:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c7428f50008c2b3bd2fa9fd8b03084de/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:17:1-35:12
-MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:17:1-30:12
-MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:17:1-35:12
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/3dfeffd36e8b2cb5f39020000d0e42ba/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/e212d6daf7437ae4cee342febb5553a2/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/309c05ea582d94d01c6ee988cfa77b91/transformed/savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/56a17571f823274c2af15e7dde5c3b9a/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/5534b4ac55b208a1b05072588e5f5672/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/bb15a68eaa27a702c74c411b29cd3dab/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/27fffcffbc8070378c9ce31fe8f59dec/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/4aae9911e679b41eaa6b5a36e359b947/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/086599aa7b9d6f2f6fba17f89c309aae/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/469ffc9edc2bae9ad6983c255714c7d0/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.ui:ui-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffa26fe9a20d4dd4435ce0bb58eb54ac/transformed/ui-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.activity:activity-ktx:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/904b63528a5c0793d2b6fe10e89097a6/transformed/activity-ktx-1.8.2/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.activity:activity-compose:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/2c7616037ba1065851970ca14c541569/transformed/activity-compose-1.8.2/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:17:1-31:12
-MERGED from [androidx.room:room-ktx:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/6b881cca6159bc416e48bf3e46349dc1/transformed/room-ktx-2.6.1/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.sqlite:sqlite-framework:2.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/6295552184921b12935fe6393906872f/transformed/sqlite-framework-2.4.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.sqlite:sqlite:2.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/6728ff84a12097cb2075f97adb509f3b/transformed/sqlite-2.4.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/99ac954433603b7c53c9dd61e4d3acbf/transformed/runtime-saveable-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.runtime:runtime-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/80019fd6f9a32e94934d35fd6a227f50/transformed/runtime-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.annotation:annotation-experimental:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/4bb8ee7f70c022af2367fb6ac38ea29c/transformed/annotation-experimental-1.3.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/a0835ad7926116dcf20a15fc6788c535/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
-MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/252b688098bf2657d782684bf6b37c73/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:17:1-55:12
-MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/e8f2c38cd6e73cda19871c5f58318395/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/f8cb9787eceb83514347ac70f11d88ce/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
-MERGED from [androidx.tracing:tracing:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/d01841f3655e34b11de03983692c69d9/transformed/tracing-1.0.0/AndroidManifest.xml:17:1-24:12
+ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-27:12
+MERGED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:17:1-40:12
+MERGED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:2:1-17:12
+MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:17:1-75:12
+MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] /Users/seonhoappa/.gradle/caches/transforms-3/2a3bf912bb65a8a955eeb9161a158c6b/transformed/play-services-auth-api-phone-18.0.2/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-auth-base:18.0.10] /Users/seonhoappa/.gradle/caches/transforms-3/a6cb962f32412995a8fb2cc8d315b62b/transformed/play-services-auth-base-18.0.10/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/2b57f48edcfacfecb9e9e20cfddc4f4d/transformed/play-services-fido-20.0.1/AndroidManifest.xml:2:1-10:12
+MERGED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:2:1-26:12
+MERGED from [com.google.firebase:firebase-appcheck-interop:17.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/91537bf690c9d9dff73f21d1e2d91e10/transformed/firebase-appcheck-interop-17.0.0/AndroidManifest.xml:15:1-25:12
+MERGED from [com.google.firebase:firebase-database-collection:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/c201f543f2d391fa45897a9f7e22064a/transformed/firebase-database-collection-18.0.1/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-base:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/6ea2ee1c8a4528f2b1439b6ff9e8300b/transformed/play-services-base-18.0.1/AndroidManifest.xml:16:1-24:12
+MERGED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/69e3a5d42c94c13a48af6a656950bb5b/transformed/firebase-auth-interop-20.0.0/AndroidManifest.xml:2:1-10:12
+MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:15:1-41:12
+MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/417821ed66255882fc8e2bcd9072a209/transformed/recaptcha-18.1.2/AndroidManifest.xml:2:1-10:12
+MERGED from [com.google.android.play:integrity:1.1.0] /Users/seonhoappa/.gradle/caches/transforms-3/b7c64829978aef30cf3ba05e1c2eed7c/transformed/integrity-1.1.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/c52f854da729484d9e0f66ebe72517bc/transformed/material3-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.foundation:foundation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/ece37912e9ade20a4184b33246b55df2/transformed/foundation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/da1e7bddfd9cf21c16e5238f1006a823/transformed/animation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8f78f95ab8beed8aed39b292052ff60d/transformed/foundation-layout-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-core-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8c1151b86160edb518955728fbf4299c/transformed/animation-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/910b363c04390dd6c514716cbb6130fc/transformed/ui-tooling-data-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-unit-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/3a647528b71c0c2006d6ee1408372e49/transformed/ui-unit-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-geometry-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/0c748f79e451a776c24029238ab3947a/transformed/ui-geometry-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-util-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/50676c833852d330f23efc4f532e06ee/transformed/ui-util-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-text-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/45382c341d22acaf5baa9632a5b01171/transformed/ui-text-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/6a4c3ae07adb80560476b038631fa786/transformed/ui-tooling-preview-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.ui:ui-graphics-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/6ed0fa215b624c0b68f968b0a7f80de3/transformed/ui-graphics-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e53a09eeb9aa6f8fb1a058a5f49bce32/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/093a5f71cbdc40abfa005d611c677e6c/transformed/ui-tooling-release/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.compose.material:material-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/a10be30de1f10a0545a6342930c2f3f4/transformed/material-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-ripple-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/d31ba0d5d7b2c60ab7cd5b3faa53c99c/transformed/material-ripple-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-core-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/715f0a1a0ea2cc93a3b1c0ea538397a1/transformed/material-icons-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e15e20f7ce7e923eff8e8853b8625b26/transformed/material-icons-extended-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/7f7b6677c05a18a793be7dd6c6dd02af/transformed/runtime-saveable-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/9d161d4cdb50d7eb226ac088a6caa7c3/transformed/runtime-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.loader:loader:1.1.0] /Users/seonhoappa/.gradle/caches/transforms-3/e8202687cab2e4b7eee9fe16b8dba3ae/transformed/loader-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/9133601674503ae575f854d9bc68ff70/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/e27df723b4a6d3dda8106b893fe54ba6/transformed/activity-1.8.2/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/5a58e2b2d2ca47f08b2f302a208d82a0/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/b51a641e09847ed0c8b5b0b3c162d32d/transformed/savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/seonhoappa/.gradle/caches/transforms-3/bfd4b26f38d9b92884a7bb52e42107f8/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/22bcdafda1cf6b5dde90d64eb8438e9b/transformed/play-services-basement-18.2.0/AndroidManifest.xml:16:1-26:12
+MERGED from [androidx.fragment:fragment:1.5.7] /Users/seonhoappa/.gradle/caches/transforms-3/77eeed07533a4b2f4fcec4bf20ea0bda/transformed/fragment-1.5.7/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/13dad7ddfdc148be785f729e26c6dde0/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.core:core-ktx:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/1cb81807c09c751d4009b22c8244ed54/transformed/core-ktx-1.12.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/815a5446155620767118c1a09f5b9abb/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/09200b38d4dac3bb794ccd8c4d621dc9/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.browser:browser:1.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/df37ce665e2bce480c46e0de37ce5e2d/transformed/browser-1.4.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/e349ac572c881906934a20b36f366a2a/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/183041b48d7186572aa92b73187a289d/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/557a4214dd47f9bd05aa793d9e473055/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/c402b6001623ae339e7b95f8865ac335/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/958fc0e9a67287fb897f4c791524e4b9/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/cf6f917499e1a945348c4a4ea042ce38/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/45aa54d087baae8e7ab6e6ad10b8ecc1/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/f7dbcdfe343456d0b37fb484bda7370e/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/d5cb110bb2e51db97cf04d4d063f1e30/transformed/ui-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-ktx:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/84865a0a024ffcaeb644e1174854a6ca/transformed/activity-ktx-1.8.2/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-compose:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/d2f9b88fc6cbbaf3b7bf183d87f9db4b/transformed/activity-compose-1.8.2/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/03176f647db501359a0f389cad4b89e1/transformed/annotation-experimental-1.4.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/98bfa22d6b40066506d62f4ba5e4d09f/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [com.google.firebase:firebase-components:17.1.5] /Users/seonhoappa/.gradle/caches/transforms-3/fd5114febf2f8b7b136f6c97fb395e29/transformed/firebase-components-17.1.5/AndroidManifest.xml:15:1-20:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/dccc79cdd02c00dda7d93a1184284ae2/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c3c321de17f3afc63c7c93ff78a1405a/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/7756cdbad96dce4cb74ba2bd1268618c/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/33a603f8262b1352ad657af91cc0ac64/transformed/tracing-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/d6a6f4ce529f1eb4c7bef0f8dbbaabc8/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [io.grpc:grpc-android:1.52.1] /Users/seonhoappa/.gradle/caches/transforms-3/a008933d9b72f568cb09394495942e18/transformed/grpc-android-1.52.1/AndroidManifest.xml:2:1-11:12
+MERGED from [com.google.firebase:protolite-well-known-types:18.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/41111ad90a48105b73b9b43a9a96bed9/transformed/protolite-well-known-types-18.0.0/AndroidManifest.xml:2:1-11:12
 	package
 		INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml
 	android:versionName
@@ -63,282 +86,522 @@ MERGED from [androidx.tracing:tracing:1.0.0] /Users/seonhoappa/.gradle/caches/tr
 		INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:4:5-67
+MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:25:5-67
+MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:25:5-67
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:11:5-67
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:11:5-67
+MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/417821ed66255882fc8e2bcd9072a209/transformed/recaptcha-18.1.2/AndroidManifest.xml:7:5-67
+MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/417821ed66255882fc8e2bcd9072a209/transformed/recaptcha-18.1.2/AndroidManifest.xml:7:5-67
+	android:name
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:4:22-64
 application
-ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:4:5-23:19
-INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:4:5-23:19
-MERGED from [androidx.compose.ui:ui-test-manifest:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6a4a04dec6a2ade901d2bea50b91ff7/transformed/ui-test-manifest-1.6.0/AndroidManifest.xml:22:5-26:19
-MERGED from [androidx.compose.ui:ui-test-manifest:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6a4a04dec6a2ade901d2bea50b91ff7/transformed/ui-test-manifest-1.6.0/AndroidManifest.xml:22:5-26:19
-MERGED from [androidx.compose.ui:ui-tooling-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/667d3c761dcaee98a2fe1fb7262750e7/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
-MERGED from [androidx.compose.ui:ui-tooling-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/667d3c761dcaee98a2fe1fb7262750e7/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
-MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
-MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
-MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
-MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
-MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
-MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
-MERGED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:23:5-29:19
-MERGED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:23:5-29:19
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/a0835ad7926116dcf20a15fc6788c535/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/a0835ad7926116dcf20a15fc6788c535/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
-MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
-MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/f8cb9787eceb83514347ac70f11d88ce/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/f8cb9787eceb83514347ac70f11d88ce/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:6:5-25:19
+INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:6:5-25:19
+MERGED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:22:5-38:19
+MERGED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:22:5-38:19
+MERGED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:7:5-15:19
+MERGED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:7:5-15:19
+MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:28:5-73:19
+MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:28:5-73:19
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/2b57f48edcfacfecb9e9e20cfddc4f4d/transformed/play-services-fido-20.0.1/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/2b57f48edcfacfecb9e9e20cfddc4f4d/transformed/play-services-fido-20.0.1/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:13:5-24:19
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:13:5-24:19
+MERGED from [com.google.firebase:firebase-appcheck-interop:17.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/91537bf690c9d9dff73f21d1e2d91e10/transformed/firebase-appcheck-interop-17.0.0/AndroidManifest.xml:23:5-20
+MERGED from [com.google.firebase:firebase-appcheck-interop:17.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/91537bf690c9d9dff73f21d1e2d91e10/transformed/firebase-appcheck-interop-17.0.0/AndroidManifest.xml:23:5-20
+MERGED from [com.google.android.gms:play-services-base:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/6ea2ee1c8a4528f2b1439b6ff9e8300b/transformed/play-services-base-18.0.1/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-base:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/6ea2ee1c8a4528f2b1439b6ff9e8300b/transformed/play-services-base-18.0.1/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/69e3a5d42c94c13a48af6a656950bb5b/transformed/firebase-auth-interop-20.0.0/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/69e3a5d42c94c13a48af6a656950bb5b/transformed/firebase-auth-interop-20.0.0/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:22:5-39:19
+MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:22:5-39:19
+MERGED from [com.google.android.play:integrity:1.1.0] /Users/seonhoappa/.gradle/caches/transforms-3/b7c64829978aef30cf3ba05e1c2eed7c/transformed/integrity-1.1.0/AndroidManifest.xml:5:5-6:19
+MERGED from [com.google.android.play:integrity:1.1.0] /Users/seonhoappa/.gradle/caches/transforms-3/b7c64829978aef30cf3ba05e1c2eed7c/transformed/integrity-1.1.0/AndroidManifest.xml:5:5-6:19
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e53a09eeb9aa6f8fb1a058a5f49bce32/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e53a09eeb9aa6f8fb1a058a5f49bce32/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/093a5f71cbdc40abfa005d611c677e6c/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/093a5f71cbdc40abfa005d611c677e6c/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/seonhoappa/.gradle/caches/transforms-3/bfd4b26f38d9b92884a7bb52e42107f8/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/seonhoappa/.gradle/caches/transforms-3/bfd4b26f38d9b92884a7bb52e42107f8/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/22bcdafda1cf6b5dde90d64eb8438e9b/transformed/play-services-basement-18.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/22bcdafda1cf6b5dde90d64eb8438e9b/transformed/play-services-basement-18.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/98bfa22d6b40066506d62f4ba5e4d09f/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/98bfa22d6b40066506d62f4ba5e4d09f/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/7756cdbad96dce4cb74ba2bd1268618c/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/7756cdbad96dce4cb74ba2bd1268618c/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
 	android:extractNativeLibs
 		INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml
 	android:appComponentFactory
-		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
+		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:10:9-35
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:12:9-35
 	android:label
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:8:9-41
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:10:9-41
 	android:roundIcon
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:9:9-54
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:11:9-54
 	android:icon
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:7:9-43
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:9:9-43
 	android:allowBackup
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:6:9-35
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:8:9-35
 	android:theme
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:11:9-72
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:13:9-72
 	android:name
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:5:9-39
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:7:9-39
 activity#com.baby.feedingtracker.MainActivity
-ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:13:9-22:20
+ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:15:9-24:20
 	android:exported
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:15:13-36
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:17:13-36
 	android:theme
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:16:13-76
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:18:13-76
 	android:name
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:14:13-41
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:16:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:18:13-21:29
+ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:20:13-23:29
 action#android.intent.action.MAIN
-ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:19:17-69
+ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:21:17-69
 	android:name
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:19:25-66
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:21:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:20:17-77
+ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:22:17-77
 	android:name
-		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:20:27-74
+		ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:22:27-74
 uses-sdk
 INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml
 INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml
-MERGED from [androidx.compose.material3:material3:1.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/746a57b2d2f2f8e26086c184d66ebedf/transformed/material3-1.1.2/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material3:material3:1.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/746a57b2d2f2f8e26086c184d66ebedf/transformed/material3-1.1.2/AndroidManifest.xml:20:5-44
-MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/33d77efa15d2e2613ac115a20b5c6307/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
-MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/33d77efa15d2e2613ac115a20b5c6307/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
-MERGED from [androidx.core:core-ktx:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/acdb17279b5f376ade4cda4554d3f1a6/transformed/core-ktx-1.12.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.core:core-ktx:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/acdb17279b5f376ade4cda4554d3f1a6/transformed/core-ktx-1.12.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.activity:activity:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/e013323023ae21a52cd28e6dfc69827b/transformed/activity-1.8.2/AndroidManifest.xml:20:5-44
-MERGED from [androidx.activity:activity:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/e013323023ae21a52cd28e6dfc69827b/transformed/activity-1.8.2/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material:material-icons-core-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/8351a3577879ef1dac8d286dc40b99bd/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.material:material-icons-core-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/8351a3577879ef1dac8d286dc40b99bd/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.material:material-icons-extended-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/5be4f756fff42fa11d4ad0441b2c61c4/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.material:material-icons-extended-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/5be4f756fff42fa11d4ad0441b2c61c4/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.material:material-ripple-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/aba8130d342886a12da38c218a9a1bc5/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.material:material-ripple-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/aba8130d342886a12da38c218a9a1bc5/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/53b34c799631eb4ccf42c4c061cc4753/transformed/animation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/53b34c799631eb4ccf42c4c061cc4753/transformed/animation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-core-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/4aafaaf7e445a3a4daa2ab46097eeb72/transformed/animation-core-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-core-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/4aafaaf7e445a3a4daa2ab46097eeb72/transformed/animation-core-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/791dfd385c3e8ab4a7ed4d40dc2b5da3/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/791dfd385c3e8ab4a7ed4d40dc2b5da3/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-unit-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/47c536be0ef9c17d9e8ef0cfbf8adf69/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-unit-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/47c536be0ef9c17d9e8ef0cfbf8adf69/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-geometry-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/63becb51714e4913e393eda25364fe0b/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-geometry-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/63becb51714e4913e393eda25364fe0b/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-util-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/45dc60615ebf5f714796876c45db5621/transformed/ui-util-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-util-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/45dc60615ebf5f714796876c45db5621/transformed/ui-util-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-text-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/cf412b97324461efa63ec29c6d35171f/transformed/ui-text-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-text-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/cf412b97324461efa63ec29c6d35171f/transformed/ui-text-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/35898ec8bd6015ad07f94de97443682b/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/35898ec8bd6015ad07f94de97443682b/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-graphics-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b24d00b487fbe1181064c0b977fc9a95/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-graphics-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b24d00b487fbe1181064c0b977fc9a95/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-test-manifest:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6a4a04dec6a2ade901d2bea50b91ff7/transformed/ui-test-manifest-1.6.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-test-manifest:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6a4a04dec6a2ade901d2bea50b91ff7/transformed/ui-test-manifest-1.6.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-tooling-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/667d3c761dcaee98a2fe1fb7262750e7/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-tooling-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/667d3c761dcaee98a2fe1fb7262750e7/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.material:material-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/4cd291e254794868c0ac727f37dad263/transformed/material-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.material:material-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/4cd291e254794868c0ac727f37dad263/transformed/material-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/fabfd66ed7bbf6658b622dc58dbf1ac4/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/fabfd66ed7bbf6658b622dc58dbf1ac4/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.foundation:foundation-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/45527518ef529b82a36306abeeead89d/transformed/foundation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.foundation:foundation-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/45527518ef529b82a36306abeeead89d/transformed/foundation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.autofill:autofill:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c7428f50008c2b3bd2fa9fd8b03084de/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.autofill:autofill:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c7428f50008c2b3bd2fa9fd8b03084de/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
-MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
-MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
-MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/3dfeffd36e8b2cb5f39020000d0e42ba/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/3dfeffd36e8b2cb5f39020000d0e42ba/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/e212d6daf7437ae4cee342febb5553a2/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/e212d6daf7437ae4cee342febb5553a2/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/309c05ea582d94d01c6ee988cfa77b91/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/309c05ea582d94d01c6ee988cfa77b91/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/56a17571f823274c2af15e7dde5c3b9a/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/56a17571f823274c2af15e7dde5c3b9a/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/5534b4ac55b208a1b05072588e5f5672/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/5534b4ac55b208a1b05072588e5f5672/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/bb15a68eaa27a702c74c411b29cd3dab/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/bb15a68eaa27a702c74c411b29cd3dab/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/27fffcffbc8070378c9ce31fe8f59dec/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/27fffcffbc8070378c9ce31fe8f59dec/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/4aae9911e679b41eaa6b5a36e359b947/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/4aae9911e679b41eaa6b5a36e359b947/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/086599aa7b9d6f2f6fba17f89c309aae/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/086599aa7b9d6f2f6fba17f89c309aae/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/469ffc9edc2bae9ad6983c255714c7d0/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/469ffc9edc2bae9ad6983c255714c7d0/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffa26fe9a20d4dd4435ce0bb58eb54ac/transformed/ui-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.ui:ui-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffa26fe9a20d4dd4435ce0bb58eb54ac/transformed/ui-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.activity:activity-ktx:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/904b63528a5c0793d2b6fe10e89097a6/transformed/activity-ktx-1.8.2/AndroidManifest.xml:5:5-44
-MERGED from [androidx.activity:activity-ktx:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/904b63528a5c0793d2b6fe10e89097a6/transformed/activity-ktx-1.8.2/AndroidManifest.xml:5:5-44
-MERGED from [androidx.activity:activity-compose:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/2c7616037ba1065851970ca14c541569/transformed/activity-compose-1.8.2/AndroidManifest.xml:5:5-44
-MERGED from [androidx.activity:activity-compose:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/2c7616037ba1065851970ca14c541569/transformed/activity-compose-1.8.2/AndroidManifest.xml:5:5-44
-MERGED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:21:5-44
-MERGED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:21:5-44
-MERGED from [androidx.room:room-ktx:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/6b881cca6159bc416e48bf3e46349dc1/transformed/room-ktx-2.6.1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.room:room-ktx:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/6b881cca6159bc416e48bf3e46349dc1/transformed/room-ktx-2.6.1/AndroidManifest.xml:20:5-44
-MERGED from [androidx.sqlite:sqlite-framework:2.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/6295552184921b12935fe6393906872f/transformed/sqlite-framework-2.4.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.sqlite:sqlite-framework:2.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/6295552184921b12935fe6393906872f/transformed/sqlite-framework-2.4.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.sqlite:sqlite:2.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/6728ff84a12097cb2075f97adb509f3b/transformed/sqlite-2.4.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.sqlite:sqlite:2.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/6728ff84a12097cb2075f97adb509f3b/transformed/sqlite-2.4.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/99ac954433603b7c53c9dd61e4d3acbf/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/99ac954433603b7c53c9dd61e4d3acbf/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.runtime:runtime-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/80019fd6f9a32e94934d35fd6a227f50/transformed/runtime-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.runtime:runtime-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/80019fd6f9a32e94934d35fd6a227f50/transformed/runtime-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.annotation:annotation-experimental:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/4bb8ee7f70c022af2367fb6ac38ea29c/transformed/annotation-experimental-1.3.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.annotation:annotation-experimental:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/4bb8ee7f70c022af2367fb6ac38ea29c/transformed/annotation-experimental-1.3.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/a0835ad7926116dcf20a15fc6788c535/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/a0835ad7926116dcf20a15fc6788c535/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/252b688098bf2657d782684bf6b37c73/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/252b688098bf2657d782684bf6b37c73/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
-MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
-MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/e8f2c38cd6e73cda19871c5f58318395/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/e8f2c38cd6e73cda19871c5f58318395/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/f8cb9787eceb83514347ac70f11d88ce/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/f8cb9787eceb83514347ac70f11d88ce/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.tracing:tracing:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/d01841f3655e34b11de03983692c69d9/transformed/tracing-1.0.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.tracing:tracing:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/d01841f3655e34b11de03983692c69d9/transformed/tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:21:5-23:64
+MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:21:5-23:64
+MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] /Users/seonhoappa/.gradle/caches/transforms-3/2a3bf912bb65a8a955eeb9161a158c6b/transformed/play-services-auth-api-phone-18.0.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] /Users/seonhoappa/.gradle/caches/transforms-3/2a3bf912bb65a8a955eeb9161a158c6b/transformed/play-services-auth-api-phone-18.0.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-base:18.0.10] /Users/seonhoappa/.gradle/caches/transforms-3/a6cb962f32412995a8fb2cc8d315b62b/transformed/play-services-auth-base-18.0.10/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-base:18.0.10] /Users/seonhoappa/.gradle/caches/transforms-3/a6cb962f32412995a8fb2cc8d315b62b/transformed/play-services-auth-base-18.0.10/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/2b57f48edcfacfecb9e9e20cfddc4f4d/transformed/play-services-fido-20.0.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/2b57f48edcfacfecb9e9e20cfddc4f4d/transformed/play-services-fido-20.0.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.firebase:firebase-appcheck-interop:17.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/91537bf690c9d9dff73f21d1e2d91e10/transformed/firebase-appcheck-interop-17.0.0/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.firebase:firebase-appcheck-interop:17.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/91537bf690c9d9dff73f21d1e2d91e10/transformed/firebase-appcheck-interop-17.0.0/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.firebase:firebase-database-collection:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/c201f543f2d391fa45897a9f7e22064a/transformed/firebase-database-collection-18.0.1/AndroidManifest.xml:5:5-7:41
+MERGED from [com.google.firebase:firebase-database-collection:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/c201f543f2d391fa45897a9f7e22064a/transformed/firebase-database-collection-18.0.1/AndroidManifest.xml:5:5-7:41
+MERGED from [com.google.android.gms:play-services-base:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/6ea2ee1c8a4528f2b1439b6ff9e8300b/transformed/play-services-base-18.0.1/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-base:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/6ea2ee1c8a4528f2b1439b6ff9e8300b/transformed/play-services-base-18.0.1/AndroidManifest.xml:18:5-43
+MERGED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/69e3a5d42c94c13a48af6a656950bb5b/transformed/firebase-auth-interop-20.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-auth-interop:20.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/69e3a5d42c94c13a48af6a656950bb5b/transformed/firebase-auth-interop-20.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:19:5-44
+MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:19:5-44
+MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/417821ed66255882fc8e2bcd9072a209/transformed/recaptcha-18.1.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/417821ed66255882fc8e2bcd9072a209/transformed/recaptcha-18.1.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.play:integrity:1.1.0] /Users/seonhoappa/.gradle/caches/transforms-3/b7c64829978aef30cf3ba05e1c2eed7c/transformed/integrity-1.1.0/AndroidManifest.xml:4:5-44
+MERGED from [com.google.android.play:integrity:1.1.0] /Users/seonhoappa/.gradle/caches/transforms-3/b7c64829978aef30cf3ba05e1c2eed7c/transformed/integrity-1.1.0/AndroidManifest.xml:4:5-44
+MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/c52f854da729484d9e0f66ebe72517bc/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/c52f854da729484d9e0f66ebe72517bc/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/ece37912e9ade20a4184b33246b55df2/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/ece37912e9ade20a4184b33246b55df2/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/da1e7bddfd9cf21c16e5238f1006a823/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/da1e7bddfd9cf21c16e5238f1006a823/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8f78f95ab8beed8aed39b292052ff60d/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8f78f95ab8beed8aed39b292052ff60d/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8c1151b86160edb518955728fbf4299c/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8c1151b86160edb518955728fbf4299c/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/910b363c04390dd6c514716cbb6130fc/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/910b363c04390dd6c514716cbb6130fc/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/3a647528b71c0c2006d6ee1408372e49/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/3a647528b71c0c2006d6ee1408372e49/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/0c748f79e451a776c24029238ab3947a/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/0c748f79e451a776c24029238ab3947a/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/50676c833852d330f23efc4f532e06ee/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/50676c833852d330f23efc4f532e06ee/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/45382c341d22acaf5baa9632a5b01171/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/45382c341d22acaf5baa9632a5b01171/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/6a4c3ae07adb80560476b038631fa786/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/6a4c3ae07adb80560476b038631fa786/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/6ed0fa215b624c0b68f968b0a7f80de3/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/6ed0fa215b624c0b68f968b0a7f80de3/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e53a09eeb9aa6f8fb1a058a5f49bce32/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e53a09eeb9aa6f8fb1a058a5f49bce32/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/093a5f71cbdc40abfa005d611c677e6c/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/093a5f71cbdc40abfa005d611c677e6c/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material:material-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/a10be30de1f10a0545a6342930c2f3f4/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/a10be30de1f10a0545a6342930c2f3f4/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/d31ba0d5d7b2c60ab7cd5b3faa53c99c/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/d31ba0d5d7b2c60ab7cd5b3faa53c99c/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/715f0a1a0ea2cc93a3b1c0ea538397a1/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/715f0a1a0ea2cc93a3b1c0ea538397a1/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e15e20f7ce7e923eff8e8853b8625b26/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e15e20f7ce7e923eff8e8853b8625b26/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/7f7b6677c05a18a793be7dd6c6dd02af/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/7f7b6677c05a18a793be7dd6c6dd02af/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/9d161d4cdb50d7eb226ac088a6caa7c3/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/9d161d4cdb50d7eb226ac088a6caa7c3/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.loader:loader:1.1.0] /Users/seonhoappa/.gradle/caches/transforms-3/e8202687cab2e4b7eee9fe16b8dba3ae/transformed/loader-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.loader:loader:1.1.0] /Users/seonhoappa/.gradle/caches/transforms-3/e8202687cab2e4b7eee9fe16b8dba3ae/transformed/loader-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/9133601674503ae575f854d9bc68ff70/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/9133601674503ae575f854d9bc68ff70/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/e27df723b4a6d3dda8106b893fe54ba6/transformed/activity-1.8.2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/e27df723b4a6d3dda8106b893fe54ba6/transformed/activity-1.8.2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/5a58e2b2d2ca47f08b2f302a208d82a0/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/5a58e2b2d2ca47f08b2f302a208d82a0/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/b51a641e09847ed0c8b5b0b3c162d32d/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/b51a641e09847ed0c8b5b0b3c162d32d/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/seonhoappa/.gradle/caches/transforms-3/bfd4b26f38d9b92884a7bb52e42107f8/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/seonhoappa/.gradle/caches/transforms-3/bfd4b26f38d9b92884a7bb52e42107f8/transformed/play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/22bcdafda1cf6b5dde90d64eb8438e9b/transformed/play-services-basement-18.2.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/22bcdafda1cf6b5dde90d64eb8438e9b/transformed/play-services-basement-18.2.0/AndroidManifest.xml:18:5-43
+MERGED from [androidx.fragment:fragment:1.5.7] /Users/seonhoappa/.gradle/caches/transforms-3/77eeed07533a4b2f4fcec4bf20ea0bda/transformed/fragment-1.5.7/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.5.7] /Users/seonhoappa/.gradle/caches/transforms-3/77eeed07533a4b2f4fcec4bf20ea0bda/transformed/fragment-1.5.7/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/13dad7ddfdc148be785f729e26c6dde0/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/13dad7ddfdc148be785f729e26c6dde0/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.core:core-ktx:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/1cb81807c09c751d4009b22c8244ed54/transformed/core-ktx-1.12.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/1cb81807c09c751d4009b22c8244ed54/transformed/core-ktx-1.12.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/815a5446155620767118c1a09f5b9abb/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/815a5446155620767118c1a09f5b9abb/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/09200b38d4dac3bb794ccd8c4d621dc9/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/09200b38d4dac3bb794ccd8c4d621dc9/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.browser:browser:1.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/df37ce665e2bce480c46e0de37ce5e2d/transformed/browser-1.4.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.browser:browser:1.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/df37ce665e2bce480c46e0de37ce5e2d/transformed/browser-1.4.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/e349ac572c881906934a20b36f366a2a/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/e349ac572c881906934a20b36f366a2a/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/183041b48d7186572aa92b73187a289d/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/183041b48d7186572aa92b73187a289d/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/557a4214dd47f9bd05aa793d9e473055/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/557a4214dd47f9bd05aa793d9e473055/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/c402b6001623ae339e7b95f8865ac335/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/c402b6001623ae339e7b95f8865ac335/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/958fc0e9a67287fb897f4c791524e4b9/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/958fc0e9a67287fb897f4c791524e4b9/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/cf6f917499e1a945348c4a4ea042ce38/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/cf6f917499e1a945348c4a4ea042ce38/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/45aa54d087baae8e7ab6e6ad10b8ecc1/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/45aa54d087baae8e7ab6e6ad10b8ecc1/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/f7dbcdfe343456d0b37fb484bda7370e/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/f7dbcdfe343456d0b37fb484bda7370e/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/d5cb110bb2e51db97cf04d4d063f1e30/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/d5cb110bb2e51db97cf04d4d063f1e30/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/84865a0a024ffcaeb644e1174854a6ca/transformed/activity-ktx-1.8.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/84865a0a024ffcaeb644e1174854a6ca/transformed/activity-ktx-1.8.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-compose:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/d2f9b88fc6cbbaf3b7bf183d87f9db4b/transformed/activity-compose-1.8.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-compose:1.8.2] /Users/seonhoappa/.gradle/caches/transforms-3/d2f9b88fc6cbbaf3b7bf183d87f9db4b/transformed/activity-compose-1.8.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/03176f647db501359a0f389cad4b89e1/transformed/annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/seonhoappa/.gradle/caches/transforms-3/03176f647db501359a0f389cad4b89e1/transformed/annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/98bfa22d6b40066506d62f4ba5e4d09f/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/98bfa22d6b40066506d62f4ba5e4d09f/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.firebase:firebase-components:17.1.5] /Users/seonhoappa/.gradle/caches/transforms-3/fd5114febf2f8b7b136f6c97fb395e29/transformed/firebase-components-17.1.5/AndroidManifest.xml:18:5-44
+MERGED from [com.google.firebase:firebase-components:17.1.5] /Users/seonhoappa/.gradle/caches/transforms-3/fd5114febf2f8b7b136f6c97fb395e29/transformed/firebase-components-17.1.5/AndroidManifest.xml:18:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/dccc79cdd02c00dda7d93a1184284ae2/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/dccc79cdd02c00dda7d93a1184284ae2/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c3c321de17f3afc63c7c93ff78a1405a/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c3c321de17f3afc63c7c93ff78a1405a/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/7756cdbad96dce4cb74ba2bd1268618c/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/7756cdbad96dce4cb74ba2bd1268618c/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/33a603f8262b1352ad657af91cc0ac64/transformed/tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/33a603f8262b1352ad657af91cc0ac64/transformed/tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/d6a6f4ce529f1eb4c7bef0f8dbbaabc8/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/d6a6f4ce529f1eb4c7bef0f8dbbaabc8/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [io.grpc:grpc-android:1.52.1] /Users/seonhoappa/.gradle/caches/transforms-3/a008933d9b72f568cb09394495942e18/transformed/grpc-android-1.52.1/AndroidManifest.xml:5:5-7:41
+MERGED from [io.grpc:grpc-android:1.52.1] /Users/seonhoappa/.gradle/caches/transforms-3/a008933d9b72f568cb09394495942e18/transformed/grpc-android-1.52.1/AndroidManifest.xml:5:5-7:41
+MERGED from [com.google.firebase:protolite-well-known-types:18.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/41111ad90a48105b73b9b43a9a96bed9/transformed/protolite-well-known-types-18.0.0/AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.firebase:protolite-well-known-types:18.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/41111ad90a48105b73b9b43a9a96bed9/transformed/protolite-well-known-types-18.0.0/AndroidManifest.xml:7:5-9:41
+	tools:overrideLibrary
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:23:9-61
 	android:targetSdkVersion
 		INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml
 	android:minSdkVersion
 		INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml
-activity#androidx.activity.ComponentActivity
-ADDED from [androidx.compose.ui:ui-test-manifest:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6a4a04dec6a2ade901d2bea50b91ff7/transformed/ui-test-manifest-1.6.0/AndroidManifest.xml:23:9-25:39
+activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
+ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:23:9-27:75
+	android:excludeFromRecents
+		ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:25:13-46
 	android:exported
-		ADDED from [androidx.compose.ui:ui-test-manifest:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6a4a04dec6a2ade901d2bea50b91ff7/transformed/ui-test-manifest-1.6.0/AndroidManifest.xml:25:13-36
+		ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:26:13-37
+	android:theme
+		ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:27:13-72
 	android:name
-		ADDED from [androidx.compose.ui:ui-test-manifest:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6a4a04dec6a2ade901d2bea50b91ff7/transformed/ui-test-manifest-1.6.0/AndroidManifest.xml:24:13-63
-activity#androidx.compose.ui.tooling.PreviewActivity
-ADDED from [androidx.compose.ui:ui-tooling-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/667d3c761dcaee98a2fe1fb7262750e7/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+		ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:24:13-93
+service#com.google.android.gms.auth.api.signin.RevocationBoundService
+ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:33:9-37:51
 	android:exported
-		ADDED from [androidx.compose.ui:ui-tooling-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/667d3c761dcaee98a2fe1fb7262750e7/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
-	android:name
-		ADDED from [androidx.compose.ui:ui-tooling-android:1.6.0] /Users/seonhoappa/.gradle/caches/transforms-3/667d3c761dcaee98a2fe1fb7262750e7/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
-provider#androidx.startup.InitializationProvider
-ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
-MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
-MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
-MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
-MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/f8cb9787eceb83514347ac70f11d88ce/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/f8cb9787eceb83514347ac70f11d88ce/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
-	tools:node
-		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:28:13-31
-	android:authorities
-		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
-	android:exported
-		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
-	android:name
-		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
-meta-data#androidx.emoji2.text.EmojiCompatInitializer
-ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
-	android:value
-		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
-	android:name
-		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/b6f178862473c4a857126cf1f271810c/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
-ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
-	android:protectionLevel
-		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
-	android:name
-		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
-permission#com.baby.feedingtracker.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
-ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
-	android:protectionLevel
-		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
-	android:name
-		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
-uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
-ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
-	android:name
-		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
-uses-permission#com.baby.feedingtracker.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
-ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
-	android:name
-		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/05365192e8c93a127ae620124358980f/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
-meta-data#androidx.lifecycle.ProcessLifecycleInitializer
-ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
-	android:value
-		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
-	android:name
-		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/b5aa617bebe5bc4c2ae6066dd8ccfdbb/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
-service#androidx.room.MultiInstanceInvalidationService
-ADDED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:24:9-28:63
-	android:exported
-		ADDED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:27:13-37
-	tools:ignore
-		ADDED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:28:13-60
-	android:directBootAware
-		ADDED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:26:13-43
-	android:name
-		ADDED from [androidx.room:room-runtime:2.6.1] /Users/seonhoappa/.gradle/caches/transforms-3/c2cd43fde83dd9a1a88da93eb036147e/transformed/room-runtime-2.6.1/AndroidManifest.xml:25:13-74
-meta-data#androidx.profileinstaller.ProfileInstallerInitializer
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
-	android:value
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
-	android:name
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
-receiver#androidx.profileinstaller.ProfileInstallReceiver
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
-	android:enabled
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
-	android:exported
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+		ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:35:13-36
+	android:visibleToInstantApps
+		ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:37:13-48
 	android:permission
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+		ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:36:13-107
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:34:13-89
+service#com.google.firebase.components.ComponentDiscoveryService
+ADDED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:8:9-14:19
+MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:66:9-72:19
+MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:66:9-72:19
+MERGED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:14:9-23:19
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:14:9-23:19
+MERGED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:30:9-38:19
+MERGED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:30:9-38:19
+	android:exported
+		ADDED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:10:13-37
+	tools:targetApi
+		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:34:13-32
 	android:directBootAware
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:32:13-43
 	android:name
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+		ADDED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:9:13-84
+meta-data#com.google.firebase.components:com.google.firebase.auth.ktx.FirebaseAuthLegacyRegistrar
+ADDED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:11:13-13:85
+	android:value
+		ADDED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:13:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:12:17-119
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:26:5-79
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:10:5-79
+MERGED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:10:5-79
+MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/417821ed66255882fc8e2bcd9072a209/transformed/recaptcha-18.1.2/AndroidManifest.xml:8:5-79
+MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] /Users/seonhoappa/.gradle/caches/transforms-3/417821ed66255882fc8e2bcd9072a209/transformed/recaptcha-18.1.2/AndroidManifest.xml:8:5-79
+MERGED from [io.grpc:grpc-android:1.52.1] /Users/seonhoappa/.gradle/caches/transforms-3/a008933d9b72f568cb09394495942e18/transformed/grpc-android-1.52.1/AndroidManifest.xml:9:5-79
+MERGED from [io.grpc:grpc-android:1.52.1] /Users/seonhoappa/.gradle/caches/transforms-3/a008933d9b72f568cb09394495942e18/transformed/grpc-android-1.52.1/AndroidManifest.xml:9:5-79
+	android:name
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:26:22-76
+activity#com.google.firebase.auth.internal.GenericIdpActivity
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:29:9-46:20
+	android:excludeFromRecents
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:31:13-46
+	android:launchMode
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:33:13-44
+	android:exported
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:32:13-36
+	android:theme
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:34:13-72
+	android:name
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:30:13-80
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:firebase.auth+data:path:/+data:scheme:genericidp
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:35:13-45:29
+action#android.intent.action.VIEW
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:36:17-69
+	android:name
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:36:25-66
+category#android.intent.category.DEFAULT
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:38:17-76
+	android:name
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:38:27-73
+category#android.intent.category.BROWSABLE
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:39:17-78
+	android:name
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:39:27-75
+data
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:41:17-44:51
+	android:path
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:43:21-37
+	android:host
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:42:21-49
+	android:scheme
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:44:21-48
+activity#com.google.firebase.auth.internal.RecaptchaActivity
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:47:9-64:20
+	android:excludeFromRecents
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:49:13-46
+	android:launchMode
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:51:13-44
+	android:exported
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:50:13-36
+	android:theme
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:52:13-72
+	android:name
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:48:13-79
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:firebase.auth+data:path:/+data:scheme:recaptcha
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:53:13-63:29
+meta-data#com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar
+ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:69:13-71:85
+	android:value
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:71:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:70:17-109
+meta-data#com.google.firebase.components:com.google.firebase.firestore.ktx.FirebaseFirestoreLegacyRegistrar
+ADDED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-firestore-ktx:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/55254919f3b09fbc3e649d887426eca2/transformed/firebase-firestore-ktx-24.10.0/AndroidManifest.xml:13:17-129
+meta-data#com.google.firebase.components:com.google.firebase.firestore.FirebaseFirestoreKtxRegistrar
+ADDED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:17:13-19:85
+	android:value
+		ADDED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:19:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:18:17-122
+meta-data#com.google.firebase.components:com.google.firebase.firestore.FirestoreRegistrar
+ADDED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:20:13-22:85
+	android:value
+		ADDED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:22:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-firestore:24.10.0] /Users/seonhoappa/.gradle/caches/transforms-3/08963bd43400680ce3dedd02e53e495a/transformed/firebase-firestore-24.10.0/AndroidManifest.xml:21:17-111
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/6ea2ee1c8a4528f2b1439b6ff9e8300b/transformed/play-services-base-18.0.1/AndroidManifest.xml:20:9-22:45
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/6ea2ee1c8a4528f2b1439b6ff9e8300b/transformed/play-services-base-18.0.1/AndroidManifest.xml:22:19-43
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/6ea2ee1c8a4528f2b1439b6ff9e8300b/transformed/play-services-base-18.0.1/AndroidManifest.xml:21:19-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.0.1] /Users/seonhoappa/.gradle/caches/transforms-3/6ea2ee1c8a4528f2b1439b6ff9e8300b/transformed/play-services-base-18.0.1/AndroidManifest.xml:20:19-85
+meta-data#com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar
+ADDED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-common-ktx:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/6637eb4bf62ee29232a9e0d078090eb0/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:13:17-116
+provider#com.google.firebase.provider.FirebaseInitProvider
+ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:23:9-28:39
+	android:authorities
+		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:25:13-72
+	android:exported
+		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:27:13-37
+	android:directBootAware
+		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:26:13-43
+	android:initOrder
+		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:28:13-36
+	android:name
+		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:24:13-77
+meta-data#com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar
+ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:35:13-37:85
+	android:value
+		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:37:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-common:20.4.2] /Users/seonhoappa/.gradle/caches/transforms-3/208c8618ea40b1b98b8b139b9fd4f464/transformed/firebase-common-20.4.2/AndroidManifest.xml:36:17-109
+activity#androidx.activity.ComponentActivity
+ADDED from [androidx.compose.ui:ui-test-manifest:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e53a09eeb9aa6f8fb1a058a5f49bce32/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-test-manifest:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e53a09eeb9aa6f8fb1a058a5f49bce32/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-test-manifest:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/e53a09eeb9aa6f8fb1a058a5f49bce32/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:24:13-63
+activity#androidx.compose.ui.tooling.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/093a5f71cbdc40abfa005d611c677e6c/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/093a5f71cbdc40abfa005d611c677e6c/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/093a5f71cbdc40abfa005d611c677e6c/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/7756cdbad96dce4cb74ba2bd1268618c/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/seonhoappa/.gradle/caches/transforms-3/7756cdbad96dce4cb74ba2bd1268618c/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/5f653be8e99fae4847c667a6ced38086/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/seonhoappa/.gradle/caches/transforms-3/d5d853c2a0ed68117c7fbfdaa7138fca/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:18.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/22bcdafda1cf6b5dde90d64eb8438e9b/transformed/play-services-basement-18.2.0/AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:18.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/22bcdafda1cf6b5dde90d64eb8438e9b/transformed/play-services-basement-18.2.0/AndroidManifest.xml:23:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:18.2.0] /Users/seonhoappa/.gradle/caches/transforms-3/22bcdafda1cf6b5dde90d64eb8438e9b/transformed/play-services-basement-18.2.0/AndroidManifest.xml:22:13-58
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
+permission#com.baby.feedingtracker.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
+uses-permission#com.baby.feedingtracker.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.12.0] /Users/seonhoappa/.gradle/caches/transforms-3/ffe08f026196a50ab79b7c43cdca026d/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
 intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
 action#androidx.profileinstaller.action.INSTALL_PROFILE
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
 	android:name
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
 intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
 action#androidx.profileinstaller.action.SKIP_FILE
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
 	android:name
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
 intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
 action#androidx.profileinstaller.action.SAVE_PROFILE
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
 	android:name
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
 intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
 action#androidx.profileinstaller.action.BENCHMARK_OPERATION
-ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
 	android:name
-		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/711a527c07c5d7f146ab93115698532f/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/157e510605ff9ac999ad96ad7ff8dc45/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:25-92

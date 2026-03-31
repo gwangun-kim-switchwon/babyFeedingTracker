@@ -134,7 +134,7 @@ fun MainScreen(
             googleSignInLauncher = googleSignInLauncher,
             onGenerateCode = { viewModel.generateInviteCode() },
             onRedeemCode = { code ->
-                viewModel.redeemInviteCode(code) { /* onSuccess handled by reinit */ }
+                viewModel.redeemInviteCode(code)
             },
             onClearError = { viewModel.clearSharingError() },
             onDismiss = {

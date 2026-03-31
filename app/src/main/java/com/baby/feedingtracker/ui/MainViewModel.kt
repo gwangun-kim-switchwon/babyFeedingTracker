@@ -28,7 +28,8 @@ class MainViewModel(
     private val repository: FeedingRepository,
     private val userRepository: UserRepository,
     private val googleAuthHelper: GoogleAuthHelper,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val onDataOwnerChanged: (String) -> Unit = {}
 ) : ViewModel() {
 
     private val ticker = flow {
@@ -149,12 +150,13 @@ class MainViewModel(
         }
     }
 
-    fun redeemInviteCode(code: String, onSuccess: (String) -> Unit) {
+    fun redeemInviteCode(code: String) {
         viewModelScope.launch {
             val result = userRepository.redeemInviteCode(code.uppercase())
             result.onSuccess { hostUid ->
                 _sharingError.value = null
-                onSuccess(hostUid)
+                // 게스트의 데이터 경로를 호스트로 전환
+                onDataOwnerChanged(hostUid)
             }
             result.onFailure { e ->
                 _sharingError.value = e.message
@@ -175,12 +177,13 @@ class MainViewModel(
             repository: FeedingRepository,
             userRepository: UserRepository,
             googleAuthHelper: GoogleAuthHelper,
-            auth: FirebaseAuth
+            auth: FirebaseAuth,
+            onDataOwnerChanged: (String) -> Unit
         ): ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return MainViewModel(repository, userRepository, googleAuthHelper, auth) as T
+                    return MainViewModel(repository, userRepository, googleAuthHelper, auth, onDataOwnerChanged) as T
                 }
             }
         }
