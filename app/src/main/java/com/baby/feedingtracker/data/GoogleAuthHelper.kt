@@ -55,14 +55,19 @@ class GoogleAuthHelper(
             val currentUser = auth.currentUser
 
             if (currentUser != null && currentUser.isAnonymous) {
-                // Link anonymous account with Google credential (preserves uid)
-                val result = currentUser.linkWithCredential(credential).await()
-                Result.success(result.user!!.uid)
+                try {
+                    // 최초 Google 연결: 익명 uid 유지
+                    val result = currentUser.linkWithCredential(credential).await()
+                    Result.success(result.user!!.uid)
+                } catch (linkError: Exception) {
+                    // 앱 재설치 등으로 이미 다른 uid에 연결된 Google 계정인 경우
+                    // → 기존 Google 계정으로 직접 로그인 (원래 uid 복원)
+                    val result = auth.signInWithCredential(credential).await()
+                    Result.success(result.user!!.uid)
+                }
             } else if (currentUser != null) {
-                // Already signed in with some provider, just return uid
                 Result.success(currentUser.uid)
             } else {
-                // No current user, sign in directly
                 val result = auth.signInWithCredential(credential).await()
                 Result.success(result.user!!.uid)
             }

@@ -70,6 +70,10 @@ class MainActivity : ComponentActivity() {
                             signInResult.onSuccess { uid ->
                                 val email = app.container.googleAuthHelper.currentUserEmail()
                                 app.container.userRepository.createProfile(uid, email)
+                                // uid가 변경되었을 수 있으므로 (앱 재설치 후 Google 로그인)
+                                // dataOwnerUid를 다시 확인하고 Repository 재초기화
+                                val dataOwnerUid = app.container.userRepository.getDataOwnerUid(uid)
+                                app.container.reinitializeWithDataOwner(dataOwnerUid)
                                 viewModel.refreshLoginState()
                             }
                         }
