@@ -1,7 +1,8 @@
 package com.baby.feedingtracker.ui
 
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,23 +14,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +59,7 @@ import java.util.Locale
 fun MainScreen(viewModel: MainViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val extendedColors = LocalExtendedColors.current
+    var selectedRecord by remember { mutableStateOf<FeedingRecord?>(null) }
     var recordToDelete by remember { mutableStateOf<FeedingRecord?>(null) }
 
     // 삭제 확인 다이얼로그
@@ -66,8 +69,23 @@ fun MainScreen(viewModel: MainViewModel) {
             onConfirm = {
                 viewModel.deleteRecord(record)
                 recordToDelete = null
+                selectedRecord = null
             },
             onDismiss = { recordToDelete = null }
+        )
+    }
+
+    // 바텀시트
+    selectedRecord?.let { record ->
+        RecordEditBottomSheet(
+            record = record,
+            onUpdateType = { type, amountMl ->
+                viewModel.updateRecordType(record.id, type, amountMl)
+            },
+            onDelete = {
+                recordToDelete = record
+            },
+            onDismiss = { selectedRecord = null }
         )
     }
 
@@ -99,13 +117,13 @@ fun MainScreen(viewModel: MainViewModel) {
             // -- 중단: 기록 목록 --
             FeedingRecordList(
                 records = uiState.records,
-                onSwipeToDelete = { record -> recordToDelete = record },
+                onRecordClick = { record -> selectedRecord = record },
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
             )
 
-            // -- 하단: 수유 기록 버튼 (thumb zone) --
+            // -- 하단: 수유 기록 버튼 --
             BottomActionButton(
                 onClick = { viewModel.addRecord() },
                 modifier = Modifier
@@ -130,7 +148,6 @@ private fun ElapsedTimeSection(
         modifier = modifier,
         horizontalAlignment = Alignment.Start
     ) {
-        // 서브 라벨
         if (elapsedMinutes != null) {
             Text(
                 text = "마지막 수유",
@@ -140,7 +157,6 @@ private fun ElapsedTimeSection(
             Spacer(modifier = Modifier.height(4.dp))
         }
 
-        // 메인 경과 시간 (매우 크게)
         Text(
             text = formatElapsedTimeDisplay(elapsedMinutes),
             style = MaterialTheme.typography.displayLarge.copy(
@@ -150,7 +166,6 @@ private fun ElapsedTimeSection(
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        // 보조 텍스트
         if (elapsedMinutes != null) {
             Text(
                 text = "전",
@@ -162,14 +177,13 @@ private fun ElapsedTimeSection(
 }
 
 // ──────────────────────────────────────────────
-// 기록 목록
+// 기록 목록 (타임라인)
 // ──────────────────────────────────────────────
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FeedingRecordList(
     records: List<FeedingRecord>,
-    onSwipeToDelete: (FeedingRecord) -> Unit,
+    onRecordClick: (FeedingRecord) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (records.isEmpty()) {
@@ -191,13 +205,16 @@ private fun FeedingRecordList(
                     items = dayRecords,
                     key = { _, record -> record.id }
                 ) { index, record ->
+                    val isLast = index == dayRecords.lastIndex
                     val previousRecord = if (index + 1 < dayRecords.size) dayRecords[index + 1] else null
-                    SwipeableRecordRow(
+
+                    TimelineRecordRow(
                         record = record,
                         intervalMinutes = previousRecord?.let {
                             ((record.timestamp - it.timestamp) / 60_000L)
                         },
-                        onSwipeToDelete = { onSwipeToDelete(record) }
+                        showLine = !isLast,
+                        onClick = { onRecordClick(record) }
                     )
                 }
 
@@ -210,7 +227,7 @@ private fun FeedingRecordList(
 }
 
 // ──────────────────────────────────────────────
-// 빈 상태 (Empty State)
+// 빈 상태
 // ──────────────────────────────────────────────
 
 @Composable
@@ -276,65 +293,62 @@ private fun DateSectionHeader(label: String) {
 }
 
 // ──────────────────────────────────────────────
-// 스와이프 가능한 기록 행
+// 타임라인 기록 행
 // ──────────────────────────────────────────────
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SwipeableRecordRow(
+private fun TimelineRecordRow(
     record: FeedingRecord,
     intervalMinutes: Long?,
-    onSwipeToDelete: () -> Unit
+    showLine: Boolean,
+    onClick: () -> Unit
 ) {
-    val dismissState = rememberDismissState(
-        confirmValueChange = { dismissValue ->
-            if (dismissValue == DismissValue.DismissedToStart) {
-                onSwipeToDelete()
-            }
-            false // 항상 false를 반환하여 스와이프가 자동으로 원래 위치로 돌아가게 함
-        }
-    )
+    val dotSize = 10.dp
+    val lineWidth = 1.5.dp
+    val accentColor = MaterialTheme.colorScheme.primary
 
-    SwipeToDismiss(
-        state = dismissState,
-        directions = setOf(DismissDirection.EndToStart),
-        background = {
-            // 삭제 배경 (스와이프 시 노출)
-            val color by animateColorAsState(
-                targetValue = if (dismissState.targetValue == DismissValue.DismissedToStart) {
-                    LocalExtendedColors.current.deleteColor.copy(alpha = 0.15f)
-                } else {
-                    Color.Transparent
-                },
-                label = "swipeBg"
-            )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 2.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        // 타임라인 (동그라미 + 세로선)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.width(24.dp)
+        ) {
+            Spacer(modifier = Modifier.height(8.dp))
+            // 동그라미
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(color)
-                    .padding(end = 20.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Text(
-                    text = "삭제",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = LocalExtendedColors.current.deleteColor,
-                    fontWeight = FontWeight.SemiBold
+                    .size(dotSize)
+                    .clip(CircleShape)
+                    .background(accentColor)
+            )
+            // 세로선
+            if (showLine) {
+                Box(
+                    modifier = Modifier
+                        .width(lineWidth)
+                        .height(36.dp)
+                        .background(accentColor.copy(alpha = 0.3f))
                 )
             }
-        },
-        dismissContent = {
-            // 기록 행
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        // 컨텐츠
+        Column(
+            modifier = Modifier.padding(bottom = if (showLine) 0.dp else 4.dp)
+        ) {
+            val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
+
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Transparent)
-                    .padding(vertical = 14.dp, horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
-
                 // 시간
                 Text(
                     text = timeFormat.format(Date(record.timestamp)),
@@ -344,22 +358,238 @@ private fun SwipeableRecordRow(
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                // 간격 표시
-                if (intervalMinutes != null && intervalMinutes > 0) {
+                // 수유 종류 표시
+                val typeText = formatRecordType(record)
+                if (typeText != null) {
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        text = formatIntervalText(intervalMinutes),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = LocalExtendedColors.current.subtleText.copy(alpha = 0.7f)
+                        text = typeText,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = LocalExtendedColors.current.subtleText
                     )
                 }
             }
+
+            // 간격 표시
+            if (intervalMinutes != null && intervalMinutes > 0) {
+                Text(
+                    text = formatIntervalText(intervalMinutes),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = LocalExtendedColors.current.subtleText.copy(alpha = 0.7f)
+                )
+            }
         }
-    )
+    }
 }
 
 // ──────────────────────────────────────────────
-// 하단 액션 버튼 (pill shape, thumb zone)
+// 바텀시트: 수유 종류/용량 편집
+// ──────────────────────────────────────────────
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RecordEditBottomSheet(
+    record: FeedingRecord,
+    onUpdateType: (type: String?, amountMl: Int?) -> Unit,
+    onDelete: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+    var selectedType by remember { mutableStateOf(record.type) }
+    var selectedAmount by remember { mutableStateOf(record.amountMl) }
+    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
+    val amounts = listOf(60, 80, 100, 120, 140, 160)
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.background
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp)
+        ) {
+            // 시간 표시
+            Text(
+                text = "${timeFormat.format(Date(record.timestamp))} 수유 기록",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 모유 / 분유 토글
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                ToggleButton(
+                    text = "모유",
+                    selected = selectedType == "breast",
+                    onClick = {
+                        val newType = if (selectedType == "breast") null else "breast"
+                        selectedType = newType
+                        selectedAmount = null
+                        onUpdateType(newType, null)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+                ToggleButton(
+                    text = "분유",
+                    selected = selectedType == "formula",
+                    onClick = {
+                        val newType = if (selectedType == "formula") null else "formula"
+                        selectedType = newType
+                        if (newType != "formula") selectedAmount = null
+                        onUpdateType(newType, if (newType == "formula") selectedAmount else null)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            // 분유 용량 선택 (분유 선택 시만 표시)
+            AnimatedVisibility(visible = selectedType == "formula") {
+                Column {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = "용량",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = LocalExtendedColors.current.subtleText
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        amounts.forEach { amount ->
+                            AmountButton(
+                                amount = amount,
+                                selected = selectedAmount == amount,
+                                onClick = {
+                                    val newAmount = if (selectedAmount == amount) null else amount
+                                    selectedAmount = newAmount
+                                    onUpdateType(selectedType, newAmount)
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // 삭제 버튼
+            TextButton(
+                onClick = onDelete,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "삭제",
+                    color = LocalExtendedColors.current.deleteColor,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+    }
+}
+
+// ──────────────────────────────────────────────
+// 토글 버튼 (모유/분유)
+// ──────────────────────────────────────────────
+
+@Composable
+private fun ToggleButton(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (selected) {
+        Button(
+            onClick = onClick,
+            modifier = modifier.height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ),
+            elevation = ButtonDefaults.buttonElevation(0.dp)
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
+    } else {
+        OutlinedButton(
+            onClick = onClick,
+            modifier = modifier.height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = MaterialTheme.colorScheme.onBackground
+            )
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
+    }
+}
+
+// ──────────────────────────────────────────────
+// 용량 버튼
+// ──────────────────────────────────────────────
+
+@Composable
+private fun AmountButton(
+    amount: Int,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val paddingValues = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+
+    if (selected) {
+        Button(
+            onClick = onClick,
+            modifier = modifier.height(40.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ),
+            contentPadding = paddingValues,
+            elevation = ButtonDefaults.buttonElevation(0.dp)
+        ) {
+            Text(
+                text = "$amount",
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+    } else {
+        OutlinedButton(
+            onClick = onClick,
+            modifier = modifier.height(40.dp),
+            shape = RoundedCornerShape(8.dp),
+            contentPadding = paddingValues
+        ) {
+            Text(
+                text = "$amount",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+    }
+}
+
+// ──────────────────────────────────────────────
+// 하단 액션 버튼
 // ──────────────────────────────────────────────
 
 @Composable
@@ -461,6 +691,17 @@ private fun formatIntervalText(intervalMinutes: Long): String {
         hours > 0 && minutes > 0 -> "${hours}h ${minutes}m 간격"
         hours > 0 -> "${hours}h 간격"
         else -> "${minutes}m 간격"
+    }
+}
+
+private fun formatRecordType(record: FeedingRecord): String? {
+    return when (record.type) {
+        "breast" -> "모유"
+        "formula" -> {
+            if (record.amountMl != null) "분유 · ${record.amountMl}ml"
+            else "분유"
+        }
+        else -> null
     }
 }
 
