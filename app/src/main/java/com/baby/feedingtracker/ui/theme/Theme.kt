@@ -22,9 +22,9 @@ val WarmWhite = Color(0xFFFFFBF8)           // 카드/섹션 배경
 val SoftBeige = Color(0xFFFFF1EB)           // 미세한 구분 배경
 
 // Accent / Primary
-val SoftCoral = Color(0xFFFF8A76)           // 메인 액센트
-val SoftCoralLight = Color(0xFFFFB4A2)      // 연한 액센트
-val SoftCoralDark = Color(0xFFE8735F)       // 눌림 상태
+val MintGreen = Color(0xFF8CC9B0)           // 메인 액센트
+val MintGreenLight = Color(0xFFB5DFCC)      // 연한 액센트
+val MintGreenDark = Color(0xFF6BAF96)       // 눌림 상태
 
 // Text
 val DarkCharcoal = Color(0xFF2D2626)        // 주요 텍스트
@@ -64,11 +64,11 @@ val LocalExtendedColors = staticCompositionLocalOf { ExtendedColors() }
 // ──────────────────────────────────────────────
 
 private val LightColorScheme = lightColorScheme(
-    primary = SoftCoral,
+    primary = MintGreen,
     onPrimary = Color.White,
-    primaryContainer = SoftCoralLight,
+    primaryContainer = MintGreenLight,
     onPrimaryContainer = DarkCharcoal,
-    secondary = SoftCoralLight,
+    secondary = MintGreenLight,
     onSecondary = DarkCharcoal,
     secondaryContainer = SoftBeige,
     onSecondaryContainer = DarkCharcoal,
