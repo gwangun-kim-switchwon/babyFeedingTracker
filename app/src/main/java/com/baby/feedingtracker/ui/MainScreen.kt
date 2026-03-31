@@ -283,6 +283,9 @@ private fun FeedingRecordList(
                 item(key = "header_$dateLabel") {
                     DateSectionHeader(dateLabel)
                 }
+                item(key = "stats_$dateLabel") {
+                    DailyStats(dayRecords)
+                }
                 itemsIndexed(
                     items = dayRecords,
                     key = { _, record -> record.id }
@@ -370,6 +373,55 @@ private fun DateSectionHeader(label: String) {
                 .weight(1f)
                 .height(0.5.dp)
                 .background(LocalExtendedColors.current.divider)
+        )
+    }
+}
+
+// ──────────────────────────────────────────────
+// 일일 통계
+// ──────────────────────────────────────────────
+
+@Composable
+private fun DailyStats(records: List<FeedingRecord>) {
+    val breastCount = records.count { it.type == "breast" }
+    val formulaCount = records.count { it.type == "formula" }
+    val totalCount = records.size
+    val totalFormulaMl = records.filter { it.type == "formula" }.mapNotNull { it.amountMl }.sum()
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        StatChip(label = "총", value = "${totalCount}회")
+        if (breastCount > 0) {
+            StatChip(label = "모유", value = "${breastCount}회")
+        }
+        if (formulaCount > 0) {
+            val mlText = if (totalFormulaMl > 0) " · ${totalFormulaMl}ml" else ""
+            StatChip(label = "분유", value = "${formulaCount}회$mlText")
+        }
+    }
+}
+
+@Composable
+private fun StatChip(label: String, value: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = LocalExtendedColors.current.subtleText
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = value,
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.SemiBold
+            ),
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
@@ -481,7 +533,7 @@ private fun RecordEditBottomSheet(
     var selectedType by remember { mutableStateOf(record.type) }
     var selectedAmount by remember { mutableStateOf(record.amountMl) }
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
-    val amounts = listOf(60, 80, 100, 120, 140, 160)
+    val amounts = listOf(60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -545,11 +597,32 @@ private fun RecordEditBottomSheet(
                         color = LocalExtendedColors.current.subtleText
                     )
                     Spacer(modifier = Modifier.height(8.dp))
+                    // 첫 줄: 60~110
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        amounts.forEach { amount ->
+                        amounts.take(6).forEach { amount ->
+                            AmountButton(
+                                amount = amount,
+                                selected = selectedAmount == amount,
+                                onClick = {
+                                    val newAmount = if (selectedAmount == amount) null else amount
+                                    selectedAmount = newAmount
+                                    onUpdateType(selectedType, newAmount)
+                                    if (isNewRecord && newAmount != null) onDismiss()
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    // 둘째 줄: 120~160
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        amounts.drop(6).forEach { amount ->
                             AmountButton(
                                 amount = amount,
                                 selected = selectedAmount == amount,
