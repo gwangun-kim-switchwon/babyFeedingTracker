@@ -13,4 +13,8 @@ class FeedingRepository(private val dao: FeedingDao) {
     suspend fun deleteRecord(record: FeedingRecord) {
         dao.delete(record)
     }
+
+    suspend fun updateRecord(id: Long, type: String?, amountMl: Int?) {
+        dao.updateTypeAndAmount(id, type, amountMl)
+    }
 }

@@ -19,4 +19,7 @@ interface FeedingDao {
 
     @Delete
     suspend fun delete(record: FeedingRecord)
+
+    @Query("UPDATE feeding_records SET type = :type, amountMl = :amountMl WHERE id = :id")
+    suspend fun updateTypeAndAmount(id: Long, type: String?, amountMl: Int?)
 }

@@ -10,7 +10,7 @@ class AppContainer(context: Context) {
         context.applicationContext,
         AppDatabase::class.java,
         "feeding-db"
-    ).fallbackToDestructiveMigration()
+    ).addMigrations(AppDatabase.MIGRATION_1_2)
      .build()
 
     val repository = FeedingRepository(database.feedingDao())
