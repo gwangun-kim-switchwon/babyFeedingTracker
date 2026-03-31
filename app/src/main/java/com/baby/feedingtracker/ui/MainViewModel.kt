@@ -80,7 +80,7 @@ class MainViewModel(private val repository: FeedingRepository) : ViewModel() {
         }
     }
 
-    fun updateRecordType(recordId: Long, type: String?, amountMl: Int?) {
+    fun updateRecordType(recordId: String, type: String?, amountMl: Int?) {
         viewModelScope.launch {
             repository.updateRecord(recordId, type, amountMl)
         }
