@@ -9,6 +9,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -21,7 +22,6 @@ data class MainUiState(
 
 class MainViewModel(private val repository: FeedingRepository) : ViewModel() {
 
-    // 1분마다 tick을 발행하여 경과 시간 갱신을 트리거 (값 자체는 사용하지 않음)
     private val ticker = flow {
         while (true) {
             emit(Unit)
@@ -51,7 +51,15 @@ class MainViewModel(private val repository: FeedingRepository) : ViewModel() {
         initialValue = MainUiState()
     )
 
-    // 연타 방지: 마지막 기록 시각
+    // 새로 추가된 레코드 (바텀시트 자동 오픈용)
+    private val _lastAddedRecord = MutableStateFlow<FeedingRecord?>(null)
+    val lastAddedRecord: StateFlow<FeedingRecord?> = _lastAddedRecord.asStateFlow()
+
+    fun clearLastAddedRecord() {
+        _lastAddedRecord.value = null
+    }
+
+    // 연타 방지
     private var lastRecordTime = 0L
     private val debounceInterval = 2_000L
 
@@ -60,8 +68,9 @@ class MainViewModel(private val repository: FeedingRepository) : ViewModel() {
         if (now - lastRecordTime < debounceInterval) return
         lastRecordTime = now
         viewModelScope.launch {
-            repository.addRecord()
+            val record = repository.addRecord()
             _refreshTrigger.value = now
+            _lastAddedRecord.value = record
         }
     }
 
