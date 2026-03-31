@@ -80,6 +80,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
 
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+
     // Core
     implementation("androidx.core:core-ktx:1.12.0")
 
