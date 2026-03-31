@@ -71,6 +71,12 @@ class MainViewModel(private val repository: FeedingRepository) : ViewModel() {
         }
     }
 
+    fun updateRecordType(recordId: Long, type: String?, amountMl: Int?) {
+        viewModelScope.launch {
+            repository.updateRecord(recordId, type, amountMl)
+        }
+    }
+
     companion object {
         fun factory(repository: FeedingRepository): ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
