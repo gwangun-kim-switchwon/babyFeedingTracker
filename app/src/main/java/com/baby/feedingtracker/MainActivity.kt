@@ -48,7 +48,10 @@ class MainActivity : ComponentActivity() {
                 }
 
                 if (repository != null) {
+                    // repository 인스턴스가 바뀌면 (Google 로그인 후 uid 변경 등)
+                    // ViewModel을 새로 생성하여 새 데이터를 로드
                     val viewModel: MainViewModel = viewModel(
+                        key = "main_vm_${repository.hashCode()}",
                         factory = MainViewModel.factory(
                             repository!!,
                             app.container.userRepository,
