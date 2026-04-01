@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -87,7 +88,7 @@ private fun BottomNavBar(navController: NavHostController) {
                     selectedTextColor = MaterialTheme.colorScheme.primary,
                     unselectedIconColor = LocalExtendedColors.current.subtleText,
                     unselectedTextColor = LocalExtendedColors.current.subtleText,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                    indicatorColor = Color.Transparent
                 )
             )
         }
