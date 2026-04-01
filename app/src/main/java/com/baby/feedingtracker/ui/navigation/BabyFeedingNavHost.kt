@@ -21,6 +21,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.baby.feedingtracker.data.GoogleAuthHelper
 import com.baby.feedingtracker.ui.cleaning.CleaningScreen
+import com.baby.feedingtracker.ui.cleaning.CleaningViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingScreen
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
@@ -28,6 +29,7 @@ import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 @Composable
 fun BabyFeedingNavHost(
     feedingViewModel: FeedingViewModel,
+    cleaningViewModel: CleaningViewModel,
     googleAuthHelper: GoogleAuthHelper,
     googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
@@ -49,7 +51,7 @@ fun BabyFeedingNavHost(
                 )
             }
             composable(BottomNavItem.Cleaning.route) {
-                CleaningScreen()
+                CleaningScreen(viewModel = cleaningViewModel)
             }
         }
     }

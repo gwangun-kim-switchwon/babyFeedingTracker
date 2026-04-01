@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.baby.feedingtracker.ui.cleaning.CleaningViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
 import com.baby.feedingtracker.ui.navigation.BabyFeedingNavHost
 import com.baby.feedingtracker.ui.theme.BabyFeedingTrackerTheme
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BabyFeedingTrackerTheme {
                 val repository by app.container.repository.collectAsState()
+                val cleaningRepository by app.container.cleaningRepository.collectAsState()
                 val coroutineScope = rememberCoroutineScope()
 
                 val googleSignInLauncher = rememberLauncherForActivityResult(
@@ -47,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                if (repository != null) {
+                if (repository != null && cleaningRepository != null) {
                     // repository 인스턴스가 바뀌면 (Google 로그인 후 uid 변경 등)
                     // ViewModel을 새로 생성하여 새 데이터를 로드
                     val viewModel: FeedingViewModel = viewModel(
@@ -61,6 +63,11 @@ class MainActivity : ComponentActivity() {
                                 app.container.reinitializeWithDataOwner(hostUid)
                             }
                         )
+                    )
+
+                    val cleaningViewModel: CleaningViewModel = viewModel(
+                        key = "cleaning_vm_${cleaningRepository.hashCode()}",
+                        factory = CleaningViewModel.factory(cleaningRepository!!)
                     )
 
                     // Refresh login state after Google Sign-In callback
@@ -84,6 +91,7 @@ class MainActivity : ComponentActivity() {
 
                     BabyFeedingNavHost(
                         feedingViewModel = viewModel,
+                        cleaningViewModel = cleaningViewModel,
                         googleAuthHelper = app.container.googleAuthHelper,
                         googleSignInLauncher = googleSignInLauncherWithRefresh
                     )

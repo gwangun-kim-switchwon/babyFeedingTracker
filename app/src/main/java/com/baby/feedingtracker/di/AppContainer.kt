@@ -1,6 +1,8 @@
 package com.baby.feedingtracker.di
 
 import android.content.Context
+import com.baby.feedingtracker.data.CleaningDataSource
+import com.baby.feedingtracker.data.CleaningRepository
 import com.baby.feedingtracker.data.FeedingRepository
 import com.baby.feedingtracker.data.FirestoreDataSource
 import com.baby.feedingtracker.data.GoogleAuthHelper
@@ -27,6 +29,9 @@ class AppContainer(context: Context) {
     private val _repository = MutableStateFlow<FeedingRepository?>(null)
     val repository: StateFlow<FeedingRepository?> = _repository.asStateFlow()
 
+    private val _cleaningRepository = MutableStateFlow<CleaningRepository?>(null)
+    val cleaningRepository: StateFlow<CleaningRepository?> = _cleaningRepository.asStateFlow()
+
     private val scope = CoroutineScope(Dispatchers.Main)
 
     init {
@@ -50,6 +55,8 @@ class AppContainer(context: Context) {
     private fun initRepository(dataOwnerUid: String) {
         val dataSource = FirestoreDataSource(firestore, dataOwnerUid)
         _repository.value = FeedingRepository(dataSource)
+        val cleaningDataSource = CleaningDataSource(firestore, dataOwnerUid)
+        _cleaningRepository.value = CleaningRepository(cleaningDataSource)
     }
 
     /**
