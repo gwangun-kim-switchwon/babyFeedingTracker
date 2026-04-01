@@ -203,7 +203,7 @@ private fun CleaningElapsedTimeSection(
                     val label = itemTypeLabels[type] ?: type
                     Text(
                         text = "$label ${formatShortElapsed(minutes)}",
-                        style = MaterialTheme.typography.labelSmall,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = LocalExtendedColors.current.subtleText
                     )
                 }
