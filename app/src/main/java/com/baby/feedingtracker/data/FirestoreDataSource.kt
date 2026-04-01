@@ -41,8 +41,8 @@ class FirestoreDataSource(
             timestamp = getLong("timestamp") ?: 0L,
             type = getString("type"),
             amountMl = getLong("amountMl")?.toInt(),
-            side = getString("side"),
-            durationMin = getLong("durationMin")?.toInt()
+            leftMin = getLong("leftMin")?.toInt(),
+            rightMin = getLong("rightMin")?.toInt()
         )
     }
 
@@ -51,8 +51,8 @@ class FirestoreDataSource(
             "timestamp" to record.timestamp,
             "type" to record.type,
             "amountMl" to record.amountMl,
-            "side" to record.side,
-            "durationMin" to record.durationMin,
+            "leftMin" to record.leftMin,
+            "rightMin" to record.rightMin,
             "createdAt" to com.google.firebase.Timestamp.now()
         )
         val docRef = recordsCollection.add(data).await()
@@ -63,13 +63,13 @@ class FirestoreDataSource(
         recordsCollection.document(recordId).delete().await()
     }
 
-    suspend fun updateRecord(recordId: String, type: String?, amountMl: Int?, side: String?, durationMin: Int?) {
+    suspend fun updateRecord(recordId: String, type: String?, amountMl: Int?, leftMin: Int?, rightMin: Int?) {
         recordsCollection.document(recordId).update(
             mapOf(
                 "type" to type,
                 "amountMl" to amountMl,
-                "side" to side,
-                "durationMin" to durationMin
+                "leftMin" to leftMin,
+                "rightMin" to rightMin
             )
         ).await()
     }

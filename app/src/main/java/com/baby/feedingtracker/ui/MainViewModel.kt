@@ -92,9 +92,9 @@ class MainViewModel(
         }
     }
 
-    fun updateRecordType(recordId: String, type: String?, amountMl: Int?, side: String? = null, durationMin: Int? = null) {
+    fun updateRecordType(recordId: String, type: String?, amountMl: Int?, leftMin: Int? = null, rightMin: Int? = null) {
         viewModelScope.launch {
-            repository.updateRecord(recordId, type, amountMl, side, durationMin)
+            repository.updateRecord(recordId, type, amountMl, leftMin, rightMin)
         }
     }
 

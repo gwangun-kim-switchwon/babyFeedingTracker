@@ -110,8 +110,8 @@ fun MainScreen(
         RecordEditBottomSheet(
             record = record,
             isNewRecord = isNewRecord,
-            onUpdateType = { type, amountMl, side, durationMin ->
-                viewModel.updateRecordType(record.id, type, amountMl, side, durationMin)
+            onUpdateType = { type, amountMl, leftMin, rightMin ->
+                viewModel.updateRecordType(record.id, type, amountMl, leftMin, rightMin)
             },
             onDelete = {
                 recordToDelete = record
@@ -384,7 +384,7 @@ private fun DateSectionHeader(label: String) {
 @Composable
 private fun DailyStats(records: List<FeedingRecord>) {
     val breastCount = records.count { it.type == "breast" }
-    val totalBreastMin = records.filter { it.type == "breast" }.mapNotNull { it.durationMin }.sum()
+    val totalBreastMin = records.filter { it.type == "breast" }.sumOf { (it.leftMin ?: 0) + (it.rightMin ?: 0) }
     val formulaCount = records.count { it.type == "formula" }
     val totalCount = records.size
     val totalFormulaMl = records.filter { it.type == "formula" }.mapNotNull { it.amountMl }.sum()
@@ -527,15 +527,15 @@ private fun TimelineRecordRow(
 private fun RecordEditBottomSheet(
     record: FeedingRecord,
     isNewRecord: Boolean,
-    onUpdateType: (type: String?, amountMl: Int?, side: String?, durationMin: Int?) -> Unit,
+    onUpdateType: (type: String?, amountMl: Int?, leftMin: Int?, rightMin: Int?) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
     var selectedType by remember { mutableStateOf(record.type) }
     var selectedAmount by remember { mutableStateOf(record.amountMl) }
-    var selectedSide by remember { mutableStateOf(record.side) }
-    var selectedDuration by remember { mutableStateOf(record.durationMin) }
+    var selectedLeftMin by remember { mutableStateOf(record.leftMin) }
+    var selectedRightMin by remember { mutableStateOf(record.rightMin) }
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
     val amounts = listOf(30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160)
 
@@ -573,7 +573,7 @@ private fun RecordEditBottomSheet(
                         val newType = if (selectedType == "breast") null else "breast"
                         selectedType = newType
                         selectedAmount = null
-                        onUpdateType(newType, null, selectedSide, selectedDuration)
+                        onUpdateType(newType, null, selectedLeftMin, selectedRightMin)
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -646,41 +646,10 @@ private fun RecordEditBottomSheet(
             AnimatedVisibility(visible = selectedType == "breast") {
                 Column {
                     Spacer(modifier = Modifier.height(20.dp))
-                    // 왼쪽/오른쪽 선택
-                    Text(
-                        text = "방향",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = LocalExtendedColors.current.subtleText
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        ToggleButton(
-                            text = "왼쪽",
-                            selected = selectedSide == "left",
-                            onClick = {
-                                selectedSide = if (selectedSide == "left") null else "left"
-                                onUpdateType(selectedType, null, selectedSide, selectedDuration)
-                            },
-                            modifier = Modifier.weight(1f)
-                        )
-                        ToggleButton(
-                            text = "오른쪽",
-                            selected = selectedSide == "right",
-                            onClick = {
-                                selectedSide = if (selectedSide == "right") null else "right"
-                                onUpdateType(selectedType, null, selectedSide, selectedDuration)
-                            },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    // 수유 시간 선택
+                    // 왼쪽 수유
                     Text(
-                        text = "시간",
+                        text = "왼쪽",
                         style = MaterialTheme.typography.labelMedium,
                         color = LocalExtendedColors.current.subtleText
                     )
@@ -689,16 +658,41 @@ private fun RecordEditBottomSheet(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        val durations = (5..15).toList()
-                        durations.forEach { min ->
+                        (5..15).forEach { min ->
                             AmountButton(
                                 amount = min,
-                                selected = selectedDuration == min,
+                                selected = selectedLeftMin == min,
                                 onClick = {
-                                    val newDuration = if (selectedDuration == min) null else min
-                                    selectedDuration = newDuration
-                                    onUpdateType(selectedType, null, selectedSide, newDuration)
-                                    if (isNewRecord && newDuration != null) onDismiss()
+                                    selectedLeftMin = if (selectedLeftMin == min) null else min
+                                    onUpdateType(selectedType, null, selectedLeftMin, selectedRightMin)
+                                    if (isNewRecord && selectedLeftMin != null && selectedRightMin != null) onDismiss()
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // 오른쪽 수유
+                    Text(
+                        text = "오른쪽",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = LocalExtendedColors.current.subtleText
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        (5..15).forEach { min ->
+                            AmountButton(
+                                amount = min,
+                                selected = selectedRightMin == min,
+                                onClick = {
+                                    selectedRightMin = if (selectedRightMin == min) null else min
+                                    onUpdateType(selectedType, null, selectedLeftMin, selectedRightMin)
+                                    if (isNewRecord && selectedLeftMin != null && selectedRightMin != null) onDismiss()
                                 },
                                 modifier = Modifier.weight(1f)
                             )
@@ -924,12 +918,8 @@ private fun formatRecordType(record: FeedingRecord): String? {
     return when (record.type) {
         "breast" -> {
             val parts = mutableListOf("모유")
-            record.side?.let { side ->
-                parts.add(if (side == "left") "왼쪽" else "오른쪽")
-            }
-            record.durationMin?.let { min ->
-                parts.add("${min}분")
-            }
+            record.leftMin?.let { parts.add("왼 ${it}분") }
+            record.rightMin?.let { parts.add("오 ${it}분") }
             parts.joinToString(" · ")
         }
         "formula" -> {
