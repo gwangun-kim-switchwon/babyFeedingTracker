@@ -533,7 +533,7 @@ private fun RecordEditBottomSheet(
     var selectedType by remember { mutableStateOf(record.type) }
     var selectedAmount by remember { mutableStateOf(record.amountMl) }
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
-    val amounts = listOf(60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160)
+    val amounts = listOf(30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -597,12 +597,12 @@ private fun RecordEditBottomSheet(
                         color = LocalExtendedColors.current.subtleText
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    // 첫 줄: 60~110
+                    // 첫 줄: 30~90
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        amounts.take(6).forEach { amount ->
+                        amounts.take(7).forEach { amount ->
                             AmountButton(
                                 amount = amount,
                                 selected = selectedAmount == amount,
@@ -617,12 +617,12 @@ private fun RecordEditBottomSheet(
                         }
                     }
                     Spacer(modifier = Modifier.height(6.dp))
-                    // 둘째 줄: 120~160
+                    // 둘째 줄: 100~160
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        amounts.drop(6).forEach { amount ->
+                        amounts.drop(7).forEach { amount ->
                             AmountButton(
                                 amount = amount,
                                 selected = selectedAmount == amount,
