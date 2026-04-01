@@ -110,8 +110,8 @@ fun MainScreen(
         RecordEditBottomSheet(
             record = record,
             isNewRecord = isNewRecord,
-            onUpdateType = { type, amountMl ->
-                viewModel.updateRecordType(record.id, type, amountMl)
+            onUpdateType = { type, amountMl, side, durationMin ->
+                viewModel.updateRecordType(record.id, type, amountMl, side, durationMin)
             },
             onDelete = {
                 recordToDelete = record
@@ -384,6 +384,7 @@ private fun DateSectionHeader(label: String) {
 @Composable
 private fun DailyStats(records: List<FeedingRecord>) {
     val breastCount = records.count { it.type == "breast" }
+    val totalBreastMin = records.filter { it.type == "breast" }.mapNotNull { it.durationMin }.sum()
     val formulaCount = records.count { it.type == "formula" }
     val totalCount = records.size
     val totalFormulaMl = records.filter { it.type == "formula" }.mapNotNull { it.amountMl }.sum()
@@ -396,7 +397,8 @@ private fun DailyStats(records: List<FeedingRecord>) {
     ) {
         StatChip(label = "총", value = "${totalCount}회")
         if (breastCount > 0) {
-            StatChip(label = "모유", value = "${breastCount}회")
+            val minText = if (totalBreastMin > 0) " · ${totalBreastMin}분" else ""
+            StatChip(label = "모유", value = "${breastCount}회$minText")
         }
         if (formulaCount > 0) {
             val mlText = if (totalFormulaMl > 0) " · ${totalFormulaMl}ml" else ""
@@ -525,13 +527,15 @@ private fun TimelineRecordRow(
 private fun RecordEditBottomSheet(
     record: FeedingRecord,
     isNewRecord: Boolean,
-    onUpdateType: (type: String?, amountMl: Int?) -> Unit,
+    onUpdateType: (type: String?, amountMl: Int?, side: String?, durationMin: Int?) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
     var selectedType by remember { mutableStateOf(record.type) }
     var selectedAmount by remember { mutableStateOf(record.amountMl) }
+    var selectedSide by remember { mutableStateOf(record.side) }
+    var selectedDuration by remember { mutableStateOf(record.durationMin) }
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
     val amounts = listOf(30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160)
 
@@ -569,8 +573,7 @@ private fun RecordEditBottomSheet(
                         val newType = if (selectedType == "breast") null else "breast"
                         selectedType = newType
                         selectedAmount = null
-                        onUpdateType(newType, null)
-                        if (isNewRecord && newType == "breast") onDismiss()
+                        onUpdateType(newType, null, selectedSide, selectedDuration)
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -581,7 +584,7 @@ private fun RecordEditBottomSheet(
                         val newType = if (selectedType == "formula") null else "formula"
                         selectedType = newType
                         if (newType != "formula") selectedAmount = null
-                        onUpdateType(newType, if (newType == "formula") selectedAmount else null)
+                        onUpdateType(newType, if (newType == "formula") selectedAmount else null, null, null)
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -609,7 +612,7 @@ private fun RecordEditBottomSheet(
                                 onClick = {
                                     val newAmount = if (selectedAmount == amount) null else amount
                                     selectedAmount = newAmount
-                                    onUpdateType(selectedType, newAmount)
+                                    onUpdateType(selectedType, newAmount, null, null)
                                     if (isNewRecord && newAmount != null) onDismiss()
                                 },
                                 modifier = Modifier.weight(1f)
@@ -629,8 +632,73 @@ private fun RecordEditBottomSheet(
                                 onClick = {
                                     val newAmount = if (selectedAmount == amount) null else amount
                                     selectedAmount = newAmount
-                                    onUpdateType(selectedType, newAmount)
+                                    onUpdateType(selectedType, newAmount, null, null)
                                     if (isNewRecord && newAmount != null) onDismiss()
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+            }
+
+            // 모유 상세 선택 (모유 선택 시만 표시)
+            AnimatedVisibility(visible = selectedType == "breast") {
+                Column {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    // 왼쪽/오른쪽 선택
+                    Text(
+                        text = "방향",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = LocalExtendedColors.current.subtleText
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        ToggleButton(
+                            text = "왼쪽",
+                            selected = selectedSide == "left",
+                            onClick = {
+                                selectedSide = if (selectedSide == "left") null else "left"
+                                onUpdateType(selectedType, null, selectedSide, selectedDuration)
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                        ToggleButton(
+                            text = "오른쪽",
+                            selected = selectedSide == "right",
+                            onClick = {
+                                selectedSide = if (selectedSide == "right") null else "right"
+                                onUpdateType(selectedType, null, selectedSide, selectedDuration)
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    // 수유 시간 선택
+                    Text(
+                        text = "시간",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = LocalExtendedColors.current.subtleText
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        val durations = (5..15).toList()
+                        durations.forEach { min ->
+                            AmountButton(
+                                amount = min,
+                                selected = selectedDuration == min,
+                                onClick = {
+                                    val newDuration = if (selectedDuration == min) null else min
+                                    selectedDuration = newDuration
+                                    onUpdateType(selectedType, null, selectedSide, newDuration)
+                                    if (isNewRecord && newDuration != null) onDismiss()
                                 },
                                 modifier = Modifier.weight(1f)
                             )
@@ -854,7 +922,16 @@ private fun formatIntervalText(intervalMinutes: Long): String {
 
 private fun formatRecordType(record: FeedingRecord): String? {
     return when (record.type) {
-        "breast" -> "모유"
+        "breast" -> {
+            val parts = mutableListOf("모유")
+            record.side?.let { side ->
+                parts.add(if (side == "left") "왼쪽" else "오른쪽")
+            }
+            record.durationMin?.let { min ->
+                parts.add("${min}분")
+            }
+            parts.joinToString(" · ")
+        }
         "formula" -> {
             if (record.amountMl != null) "분유 · ${record.amountMl}ml"
             else "분유"
