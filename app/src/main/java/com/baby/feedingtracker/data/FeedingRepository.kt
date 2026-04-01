@@ -17,7 +17,7 @@ class FeedingRepository(private val dataSource: FirestoreDataSource) {
         dataSource.delete(record.id)
     }
 
-    suspend fun updateRecord(id: String, type: String?, amountMl: Int?) {
-        dataSource.updateTypeAndAmount(id, type, amountMl)
+    suspend fun updateRecord(id: String, type: String?, amountMl: Int?, side: String? = null, durationMin: Int? = null) {
+        dataSource.updateRecord(id, type, amountMl, side, durationMin)
     }
 }

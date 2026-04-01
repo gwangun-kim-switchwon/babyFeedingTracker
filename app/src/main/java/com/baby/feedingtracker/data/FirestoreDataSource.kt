@@ -20,12 +20,7 @@ class FirestoreDataSource(
             .snapshots()
             .map { snapshot ->
                 snapshot.documents.map { doc ->
-                    FeedingRecord(
-                        id = doc.id,
-                        timestamp = doc.getLong("timestamp") ?: 0L,
-                        type = doc.getString("type"),
-                        amountMl = doc.getLong("amountMl")?.toInt()
-                    )
+                    doc.toFeedingRecord()
                 }
             }
     }
@@ -36,15 +31,19 @@ class FirestoreDataSource(
             .limit(1)
             .snapshots()
             .map { snapshot ->
-                snapshot.documents.firstOrNull()?.let { doc ->
-                    FeedingRecord(
-                        id = doc.id,
-                        timestamp = doc.getLong("timestamp") ?: 0L,
-                        type = doc.getString("type"),
-                        amountMl = doc.getLong("amountMl")?.toInt()
-                    )
-                }
+                snapshot.documents.firstOrNull()?.toFeedingRecord()
             }
+    }
+
+    private fun com.google.firebase.firestore.DocumentSnapshot.toFeedingRecord(): FeedingRecord {
+        return FeedingRecord(
+            id = id,
+            timestamp = getLong("timestamp") ?: 0L,
+            type = getString("type"),
+            amountMl = getLong("amountMl")?.toInt(),
+            side = getString("side"),
+            durationMin = getLong("durationMin")?.toInt()
+        )
     }
 
     suspend fun insert(record: FeedingRecord): String {
@@ -52,6 +51,8 @@ class FirestoreDataSource(
             "timestamp" to record.timestamp,
             "type" to record.type,
             "amountMl" to record.amountMl,
+            "side" to record.side,
+            "durationMin" to record.durationMin,
             "createdAt" to com.google.firebase.Timestamp.now()
         )
         val docRef = recordsCollection.add(data).await()
@@ -62,11 +63,13 @@ class FirestoreDataSource(
         recordsCollection.document(recordId).delete().await()
     }
 
-    suspend fun updateTypeAndAmount(recordId: String, type: String?, amountMl: Int?) {
+    suspend fun updateRecord(recordId: String, type: String?, amountMl: Int?, side: String?, durationMin: Int?) {
         recordsCollection.document(recordId).update(
             mapOf(
                 "type" to type,
-                "amountMl" to amountMl
+                "amountMl" to amountMl,
+                "side" to side,
+                "durationMin" to durationMin
             )
         ).await()
     }
