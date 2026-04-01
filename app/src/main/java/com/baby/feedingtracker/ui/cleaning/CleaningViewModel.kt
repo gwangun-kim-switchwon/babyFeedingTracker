@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 
 data class CleaningUiState(
     val records: List<CleaningRecord> = emptyList(),
-    val elapsedMinutes: Long? = null
+    val elapsedMinutes: Long? = null,
+    val perTypeElapsed: Map<String, Long> = emptyMap()  // itemType → 경과 분
 )
 
 class CleaningViewModel(private val repository: CleaningRepository) : ViewModel() {
@@ -39,7 +40,15 @@ class CleaningViewModel(private val repository: CleaningRepository) : ViewModel(
     ) { records, latest, _, _ ->
         val now = System.currentTimeMillis()
         val elapsed = latest?.let { (now - it.timestamp) / 60_000L }
-        CleaningUiState(records = records, elapsedMinutes = elapsed)
+        // 종류별 마지막 세척 경과 시간 (itemType이 있는 기록만)
+        val perTypeElapsed = records
+            .filter { it.itemType != null }
+            .groupBy { it.itemType!! }
+            .mapValues { (_, typeRecords) ->
+                val latestOfType = typeRecords.maxByOrNull { it.timestamp }
+                latestOfType?.let { (now - it.timestamp) / 60_000L } ?: 0L
+            }
+        CleaningUiState(records = records, elapsedMinutes = elapsed, perTypeElapsed = perTypeElapsed)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),

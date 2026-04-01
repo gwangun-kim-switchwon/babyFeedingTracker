@@ -129,6 +129,7 @@ fun CleaningScreen(viewModel: CleaningViewModel) {
             ) {
                 CleaningElapsedTimeSection(
                     elapsedMinutes = uiState.elapsedMinutes,
+                    perTypeElapsed = uiState.perTypeElapsed,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -160,8 +161,16 @@ fun CleaningScreen(viewModel: CleaningViewModel) {
 @Composable
 private fun CleaningElapsedTimeSection(
     elapsedMinutes: Long?,
+    perTypeElapsed: Map<String, Long>,
     modifier: Modifier = Modifier
 ) {
+    val itemTypeLabels = mapOf(
+        "bottle" to "젖병",
+        "pot" to "분유포트",
+        "pump" to "유축기",
+        "other" to "기타"
+    )
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start
@@ -183,6 +192,23 @@ private fun CleaningElapsedTimeSection(
             ),
             color = MaterialTheme.colorScheme.onBackground
         )
+
+        // 종류별 마지막 세척 경과 시간
+        if (perTypeElapsed.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                perTypeElapsed.forEach { (type, minutes) ->
+                    val label = itemTypeLabels[type] ?: type
+                    Text(
+                        text = "$label ${formatShortElapsed(minutes)}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = LocalExtendedColors.current.subtleText
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -686,6 +712,17 @@ private fun formatCleaningElapsedTime(elapsedMinutes: Long?): String {
         hours > 0 && minutes > 0 -> "${hours}시간 ${minutes}분 전"
         hours > 0 -> "${hours}시간 전"
         minutes > 0 -> "${minutes}분 전"
+        else -> "방금"
+    }
+}
+
+private fun formatShortElapsed(minutes: Long): String {
+    val hours = minutes / 60
+    val mins = minutes % 60
+    return when {
+        hours > 0 && mins > 0 -> "${hours}h ${mins}m 전"
+        hours > 0 -> "${hours}h 전"
+        mins > 0 -> "${mins}m 전"
         else -> "방금"
     }
 }
