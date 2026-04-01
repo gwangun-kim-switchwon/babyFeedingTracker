@@ -1,4 +1,4 @@
-package com.baby.feedingtracker.ui
+package com.baby.feedingtracker.ui.feeding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -19,12 +19,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-data class MainUiState(
+data class FeedingUiState(
     val records: List<FeedingRecord> = emptyList(),
     val elapsedMinutes: Long? = null
 )
 
-class MainViewModel(
+class FeedingViewModel(
     private val repository: FeedingRepository,
     private val userRepository: UserRepository,
     private val googleAuthHelper: GoogleAuthHelper,
@@ -41,7 +41,7 @@ class MainViewModel(
 
     private val _refreshTrigger = MutableStateFlow(0L)
 
-    val uiState: StateFlow<MainUiState> = combine(
+    val uiState: StateFlow<FeedingUiState> = combine(
         repository.allRecords,
         repository.latestRecord,
         ticker,
@@ -51,14 +51,14 @@ class MainViewModel(
         val elapsed = latest?.let {
             (now - it.timestamp) / 60_000L
         }
-        MainUiState(
+        FeedingUiState(
             records = records,
             elapsedMinutes = elapsed
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = MainUiState()
+        initialValue = FeedingUiState()
     )
 
     // -- Last added record (for auto-opening bottom sheet) --
@@ -183,7 +183,7 @@ class MainViewModel(
             return object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return MainViewModel(repository, userRepository, googleAuthHelper, auth, onDataOwnerChanged) as T
+                    return FeedingViewModel(repository, userRepository, googleAuthHelper, auth, onDataOwnerChanged) as T
                 }
             }
         }

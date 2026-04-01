@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.baby.feedingtracker.app-mergeDebugResources-52:/values-az/values-az.xml",
+            "outputFile": "com.baby.feedingtracker.app-mergeDebugResources-57:/values-az/values-az.xml",
             "map": [
                 {
                     "source": "/Users/seonhoappa/.gradle/caches/transforms-3/d5cb110bb2e51db97cf04d4d063f1e30/transformed/ui-release/res/values-az/values-az.xml",

@@ -4,6 +4,11 @@ ADDED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidM
 INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-27:12
 INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-27:12
 INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml:2:1-27:12
+MERGED from [androidx.navigation:navigation-common:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/07179c95579a03b0f3527c6301424de5/transformed/navigation-common-2.7.6/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-runtime:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/5d751d2b8193b6b10d48f5ba887541b6/transformed/navigation-runtime-2.7.6/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-common-ktx:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/5ba31cd9691eb59b2c1b5a1b081563e0/transformed/navigation-common-ktx-2.7.6/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/7678f4927a32258438a4a1a8135c2c2c/transformed/navigation-runtime-ktx-2.7.6/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-compose:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/4e93926db405a732c025ee431a5228e1/transformed/navigation-compose-2.7.6/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:17:1-40:12
 MERGED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:2:1-17:12
 MERGED from [com.google.firebase:firebase-auth:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/8b3e5f201af27f958f7c69fe47964cbd/transformed/firebase-auth-22.3.0/AndroidManifest.xml:17:1-75:12
@@ -22,9 +27,9 @@ MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] /Users/seonhoappa/.g
 MERGED from [com.google.android.play:integrity:1.1.0] /Users/seonhoappa/.gradle/caches/transforms-3/b7c64829978aef30cf3ba05e1c2eed7c/transformed/integrity-1.1.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/c52f854da729484d9e0f66ebe72517bc/transformed/material3-release/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.compose.foundation:foundation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/ece37912e9ade20a4184b33246b55df2/transformed/foundation-release/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.compose.animation:animation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/da1e7bddfd9cf21c16e5238f1006a823/transformed/animation-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8f78f95ab8beed8aed39b292052ff60d/transformed/foundation-layout-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.animation:animation-core-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8c1151b86160edb518955728fbf4299c/transformed/animation-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/da1e7bddfd9cf21c16e5238f1006a823/transformed/animation-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/910b363c04390dd6c514716cbb6130fc/transformed/ui-tooling-data-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-unit-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/3a647528b71c0c2006d6ee1408372e49/transformed/ui-unit-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-geometry-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/0c748f79e451a776c24029238ab3947a/transformed/ui-geometry-release/AndroidManifest.xml:2:1-7:12
@@ -183,6 +188,16 @@ uses-sdk
 INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml
 INJECTED from /Users/seonhoappa/projects/baby-feeding-tracker/app/src/main/AndroidManifest.xml
+MERGED from [androidx.navigation:navigation-common:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/07179c95579a03b0f3527c6301424de5/transformed/navigation-common-2.7.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/07179c95579a03b0f3527c6301424de5/transformed/navigation-common-2.7.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/5d751d2b8193b6b10d48f5ba887541b6/transformed/navigation-runtime-2.7.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/5d751d2b8193b6b10d48f5ba887541b6/transformed/navigation-runtime-2.7.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/5ba31cd9691eb59b2c1b5a1b081563e0/transformed/navigation-common-ktx-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/5ba31cd9691eb59b2c1b5a1b081563e0/transformed/navigation-common-ktx-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/7678f4927a32258438a4a1a8135c2c2c/transformed/navigation-runtime-ktx-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/7678f4927a32258438a4a1a8135c2c2c/transformed/navigation-runtime-ktx-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/4e93926db405a732c025ee431a5228e1/transformed/navigation-compose-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.7.6] /Users/seonhoappa/.gradle/caches/transforms-3/4e93926db405a732c025ee431a5228e1/transformed/navigation-compose-2.7.6/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-auth:21.0.0] /Users/seonhoappa/.gradle/caches/transforms-3/c4878553355d4373757d2ead254bb401/transformed/play-services-auth-21.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-auth-ktx:22.3.0] /Users/seonhoappa/.gradle/caches/transforms-3/c1cfb2d2dbe34b2fac78c337c238ccd5/transformed/firebase-auth-ktx-22.3.0/AndroidManifest.xml:5:5-44
@@ -219,12 +234,12 @@ MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/seonhoap
 MERGED from [androidx.compose.material3:material3-android:1.2.1] /Users/seonhoappa/.gradle/caches/transforms-3/c52f854da729484d9e0f66ebe72517bc/transformed/material3-release/AndroidManifest.xml:20:5-44
 MERGED from [androidx.compose.foundation:foundation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/ece37912e9ade20a4184b33246b55df2/transformed/foundation-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.foundation:foundation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/ece37912e9ade20a4184b33246b55df2/transformed/foundation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/da1e7bddfd9cf21c16e5238f1006a823/transformed/animation-release/AndroidManifest.xml:5:5-44
-MERGED from [androidx.compose.animation:animation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/da1e7bddfd9cf21c16e5238f1006a823/transformed/animation-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8f78f95ab8beed8aed39b292052ff60d/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8f78f95ab8beed8aed39b292052ff60d/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.animation:animation-core-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8c1151b86160edb518955728fbf4299c/transformed/animation-core-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.animation:animation-core-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/8c1151b86160edb518955728fbf4299c/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/da1e7bddfd9cf21c16e5238f1006a823/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/da1e7bddfd9cf21c16e5238f1006a823/transformed/animation-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/910b363c04390dd6c514716cbb6130fc/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/910b363c04390dd6c514716cbb6130fc/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-unit-android:1.6.8] /Users/seonhoappa/.gradle/caches/transforms-3/3a647528b71c0c2006d6ee1408372e49/transformed/ui-unit-release/AndroidManifest.xml:5:5-44

@@ -16,8 +16,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.baby.feedingtracker.ui.MainScreen
-import com.baby.feedingtracker.ui.MainViewModel
+import com.baby.feedingtracker.ui.feeding.FeedingViewModel
+import com.baby.feedingtracker.ui.navigation.BabyFeedingNavHost
 import com.baby.feedingtracker.ui.theme.BabyFeedingTrackerTheme
 import kotlinx.coroutines.launch
 
@@ -50,9 +50,9 @@ class MainActivity : ComponentActivity() {
                 if (repository != null) {
                     // repository 인스턴스가 바뀌면 (Google 로그인 후 uid 변경 등)
                     // ViewModel을 새로 생성하여 새 데이터를 로드
-                    val viewModel: MainViewModel = viewModel(
+                    val viewModel: FeedingViewModel = viewModel(
                         key = "main_vm_${repository.hashCode()}",
-                        factory = MainViewModel.factory(
+                        factory = FeedingViewModel.factory(
                             repository!!,
                             app.container.userRepository,
                             app.container.googleAuthHelper,
@@ -82,8 +82,8 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    MainScreen(
-                        viewModel = viewModel,
+                    BabyFeedingNavHost(
+                        feedingViewModel = viewModel,
                         googleAuthHelper = app.container.googleAuthHelper,
                         googleSignInLauncher = googleSignInLauncherWithRefresh
                     )

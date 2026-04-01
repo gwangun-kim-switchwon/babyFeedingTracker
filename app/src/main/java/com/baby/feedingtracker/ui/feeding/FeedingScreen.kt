@@ -1,4 +1,4 @@
-package com.baby.feedingtracker.ui
+package com.baby.feedingtracker.ui.feeding
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -54,6 +53,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.baby.feedingtracker.data.FeedingRecord
 import com.baby.feedingtracker.data.GoogleAuthHelper
 import com.baby.feedingtracker.data.SharingState
+import com.baby.feedingtracker.ui.ShareBottomSheet
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Share
@@ -66,8 +66,8 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
-    viewModel: MainViewModel,
+fun FeedingScreen(
+    viewModel: FeedingViewModel,
     googleAuthHelper: GoogleAuthHelper,
     googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
@@ -217,7 +217,6 @@ fun MainScreen(
                 onClick = { viewModel.addRecord() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(horizontal = 24.dp, vertical = 16.dp)
             )
         }
