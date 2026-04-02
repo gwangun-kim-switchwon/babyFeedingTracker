@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Baby bottle icon - centered in adaptive icon safe zone (24dp inset each side) -->
+
+    <!-- Bottle body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M46,38 L62,38 C63.1,38 64,38.9 64,40 L64,72 C64,75.3 61.3,78 58,78 L50,78 C46.7,78 44,75.3 44,72 L44,40 C44,38.9 44.9,38 46,38 Z" />
+
+    <!-- Bottle neck -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M49,30 L59,30 C59.6,30 60,30.4 60,31 L60,38 L48,38 L48,31 C48,30.4 48.4,30 49,30 Z" />
+
+    <!-- Bottle cap -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:alpha="0.9"
+        android:pathData="M50,26 L58,26 C58.6,26 59,26.4 59,27 L59,30 L49,30 L49,27 C49,26.4 49.4,26 50,26 Z" />
+
+    <!-- Nipple -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52,22 C52,22 51,23 51,24.5 C51,25.5 51.5,26 52,26 L56,26 C56.5,26 57,25.5 57,24.5 C57,23 56,22 56,22 C55,20.5 53,20.5 52,22 Z" />
+
+    <!-- Measurement lines -->
+    <path
+        android:strokeColor="#8CC9B0"
+        android:strokeWidth="1.2"
+        android:pathData="M46,45 L52,45" />
+    <path
+        android:strokeColor="#8CC9B0"
+        android:strokeWidth="1.2"
+        android:pathData="M46,52 L54,52" />
+    <path
+        android:strokeColor="#8CC9B0"
+        android:strokeWidth="1.2"
+        android:pathData="M46,59 L52,59" />
+    <path
+        android:strokeColor="#8CC9B0"
+        android:strokeWidth="1.2"
+        android:pathData="M46,66 L54,66" />
+
+    <!-- Milk level (filled portion) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:alpha="0.3"
+        android:pathData="M44,58 L64,58 L64,72 C64,75.3 61.3,78 58,78 L50,78 C46.7,78 44,75.3 44,72 Z" />
+
+</vector>
