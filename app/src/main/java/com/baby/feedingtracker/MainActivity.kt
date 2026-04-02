@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.baby.feedingtracker.ui.cleaning.CleaningViewModel
+import com.baby.feedingtracker.ui.diaper.DiaperViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
 import com.baby.feedingtracker.ui.navigation.BabyFeedingNavHost
 import com.baby.feedingtracker.ui.theme.BabyFeedingTrackerTheme
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
             BabyFeedingTrackerTheme {
                 val repository by app.container.repository.collectAsState()
                 val cleaningRepository by app.container.cleaningRepository.collectAsState()
+                val diaperRepository by app.container.diaperRepository.collectAsState()
                 val coroutineScope = rememberCoroutineScope()
 
                 val googleSignInLauncher = rememberLauncherForActivityResult(
@@ -49,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                if (repository != null && cleaningRepository != null) {
+                if (repository != null && cleaningRepository != null && diaperRepository != null) {
                     // repository 인스턴스가 바뀌면 (Google 로그인 후 uid 변경 등)
                     // ViewModel을 새로 생성하여 새 데이터를 로드
                     val viewModel: FeedingViewModel = viewModel(
@@ -68,6 +70,11 @@ class MainActivity : ComponentActivity() {
                     val cleaningViewModel: CleaningViewModel = viewModel(
                         key = "cleaning_vm_${cleaningRepository.hashCode()}",
                         factory = CleaningViewModel.factory(cleaningRepository!!)
+                    )
+
+                    val diaperViewModel: DiaperViewModel = viewModel(
+                        key = "diaper_vm_${diaperRepository.hashCode()}",
+                        factory = DiaperViewModel.factory(diaperRepository!!)
                     )
 
                     // Refresh login state after Google Sign-In callback
@@ -92,6 +99,7 @@ class MainActivity : ComponentActivity() {
                     BabyFeedingNavHost(
                         feedingViewModel = viewModel,
                         cleaningViewModel = cleaningViewModel,
+                        diaperViewModel = diaperViewModel,
                         googleAuthHelper = app.container.googleAuthHelper,
                         googleSignInLauncher = googleSignInLauncherWithRefresh
                     )
