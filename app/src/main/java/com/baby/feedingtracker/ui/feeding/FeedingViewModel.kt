@@ -98,6 +98,12 @@ class FeedingViewModel(
         }
     }
 
+    fun updateRecordTimestamp(recordId: String, timestamp: Long) {
+        viewModelScope.launch {
+            repository.updateTimestamp(recordId, timestamp)
+        }
+    }
+
     // ══════════════════════════════════════════════
     // Sharing Feature
     // ══════════════════════════════════════════════

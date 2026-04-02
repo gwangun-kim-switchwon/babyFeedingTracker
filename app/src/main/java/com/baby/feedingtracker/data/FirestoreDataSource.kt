@@ -63,6 +63,10 @@ class FirestoreDataSource(
         recordsCollection.document(recordId).delete().await()
     }
 
+    suspend fun updateTimestamp(recordId: String, timestamp: Long) {
+        recordsCollection.document(recordId).update("timestamp", timestamp).await()
+    }
+
     suspend fun updateRecord(recordId: String, type: String?, amountMl: Int?, leftMin: Int?, rightMin: Int?) {
         recordsCollection.document(recordId).update(
             mapOf(

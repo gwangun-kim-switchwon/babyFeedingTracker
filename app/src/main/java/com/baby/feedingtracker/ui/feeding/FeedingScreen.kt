@@ -59,6 +59,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
+import androidx.compose.ui.text.style.TextDecoration
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -112,6 +115,9 @@ fun FeedingScreen(
             isNewRecord = isNewRecord,
             onUpdateType = { type, amountMl, leftMin, rightMin ->
                 viewModel.updateRecordType(record.id, type, amountMl, leftMin, rightMin)
+            },
+            onUpdateTimestamp = { newTimestamp ->
+                viewModel.updateRecordTimestamp(record.id, newTimestamp)
             },
             onDelete = {
                 recordToDelete = record
@@ -527,6 +533,7 @@ private fun RecordEditBottomSheet(
     record: FeedingRecord,
     isNewRecord: Boolean,
     onUpdateType: (type: String?, amountMl: Int?, leftMin: Int?, rightMin: Int?) -> Unit,
+    onUpdateTimestamp: (Long) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -537,6 +544,8 @@ private fun RecordEditBottomSheet(
     var selectedRightMin by remember { mutableStateOf(record.rightMin) }
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
     val amounts = listOf(30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160)
+    var showTimePicker by remember { mutableStateOf(false) }
+    var currentTimestamp by remember { mutableStateOf(record.timestamp) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -550,13 +559,64 @@ private fun RecordEditBottomSheet(
                 .padding(bottom = 32.dp)
         ) {
             // 시간 표시
-            Text(
-                text = "${timeFormat.format(Date(record.timestamp))} 수유 기록",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.SemiBold
-                ),
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable { showTimePicker = true }
+            ) {
+                Text(
+                    text = timeFormat.format(Date(currentTimestamp)),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "수유 기록",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+
+            if (showTimePicker) {
+                val calendar = remember {
+                    Calendar.getInstance().apply { timeInMillis = currentTimestamp }
+                }
+                val timePickerState = rememberTimePickerState(
+                    initialHour = calendar.get(Calendar.HOUR_OF_DAY),
+                    initialMinute = calendar.get(Calendar.MINUTE),
+                    is24Hour = true
+                )
+
+                AlertDialog(
+                    onDismissRequest = { showTimePicker = false },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            val newCal = Calendar.getInstance().apply {
+                                timeInMillis = currentTimestamp
+                                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                                set(Calendar.MINUTE, timePickerState.minute)
+                            }
+                            currentTimestamp = newCal.timeInMillis
+                            onUpdateTimestamp(currentTimestamp)
+                            showTimePicker = false
+                        }) {
+                            Text("확인")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showTimePicker = false }) {
+                            Text("취소", color = LocalExtendedColors.current.subtleText)
+                        }
+                    },
+                    text = {
+                        TimePicker(state = timePickerState)
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
