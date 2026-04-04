@@ -393,6 +393,8 @@ private fun DailyStats(records: List<FeedingRecord>) {
     val formulaCount = records.count { it.type == "formula" }
     val totalCount = records.size
     val totalFormulaMl = records.filter { it.type == "formula" }.mapNotNull { it.amountMl }.sum()
+    val pumpedCount = records.count { it.type == "pumped" }
+    val totalPumpedMl = records.filter { it.type == "pumped" }.mapNotNull { it.amountMl }.sum()
 
     Row(
         modifier = Modifier
@@ -408,6 +410,10 @@ private fun DailyStats(records: List<FeedingRecord>) {
         if (formulaCount > 0) {
             val mlText = if (totalFormulaMl > 0) " · ${totalFormulaMl}ml" else ""
             StatChip(label = "분유", value = "${formulaCount}회$mlText")
+        }
+        if (pumpedCount > 0) {
+            val mlText = if (totalPumpedMl > 0) " · ${totalPumpedMl}ml" else ""
+            StatChip(label = "유축", value = "${pumpedCount}회$mlText")
         }
     }
 }
@@ -620,10 +626,10 @@ private fun RecordEditBottomSheet(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 모유 / 분유 토글
+            // 모유 / 분유 / 유축 토글
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 ToggleButton(
                     text = "모유",
@@ -647,10 +653,21 @@ private fun RecordEditBottomSheet(
                     },
                     modifier = Modifier.weight(1f)
                 )
+                ToggleButton(
+                    text = "유축",
+                    selected = selectedType == "pumped",
+                    onClick = {
+                        val newType = if (selectedType == "pumped") null else "pumped"
+                        selectedType = newType
+                        if (newType != "pumped") selectedAmount = null
+                        onUpdateType(newType, if (newType == "pumped") selectedAmount else null, null, null)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
             }
 
-            // 분유 용량 선택 (분유 선택 시만 표시)
-            AnimatedVisibility(visible = selectedType == "formula") {
+            // 분유/유축 용량 선택 (분유 또는 유축 선택 시 표시)
+            AnimatedVisibility(visible = selectedType == "formula" || selectedType == "pumped") {
                 Column {
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
@@ -984,6 +1001,10 @@ private fun formatRecordType(record: FeedingRecord): String? {
         "formula" -> {
             if (record.amountMl != null) "분유 · ${record.amountMl}ml"
             else "분유"
+        }
+        "pumped" -> {
+            if (record.amountMl != null) "유축 · ${record.amountMl}ml"
+            else "유축"
         }
         else -> null
     }
