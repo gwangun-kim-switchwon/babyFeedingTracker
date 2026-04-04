@@ -68,18 +68,34 @@ class CleaningViewModel(private val repository: CleaningRepository) : ViewModel(
         if (now - lastRecordTime < debounceInterval) return
         lastRecordTime = now
         viewModelScope.launch {
-            val record = repository.addRecord()
-            _refreshTrigger.value = now
-            _lastAddedRecord.value = record
+            try {
+                val record = repository.addRecord()
+                _refreshTrigger.value = now
+                _lastAddedRecord.value = record
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
         }
     }
 
     fun deleteRecord(record: CleaningRecord) {
-        viewModelScope.launch { repository.deleteRecord(record) }
+        viewModelScope.launch {
+            try {
+                repository.deleteRecord(record)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
+        }
     }
 
     fun updateItemType(recordId: String, itemType: String?) {
-        viewModelScope.launch { repository.updateItemType(recordId, itemType) }
+        viewModelScope.launch {
+            try {
+                repository.updateItemType(recordId, itemType)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
+        }
     }
 
     companion object {

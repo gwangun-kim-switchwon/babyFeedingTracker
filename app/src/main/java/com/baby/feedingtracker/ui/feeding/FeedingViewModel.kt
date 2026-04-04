@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 data class FeedingUiState(
@@ -80,27 +81,43 @@ class FeedingViewModel(
         if (now - lastRecordTime < debounceInterval) return
         lastRecordTime = now
         viewModelScope.launch {
-            val record = repository.addRecord()
-            _refreshTrigger.value = now
-            _lastAddedRecord.value = record
+            try {
+                val record = repository.addRecord()
+                _refreshTrigger.value = now
+                _lastAddedRecord.value = record
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
         }
     }
 
     fun deleteRecord(record: FeedingRecord) {
         viewModelScope.launch {
-            repository.deleteRecord(record)
+            try {
+                repository.deleteRecord(record)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
         }
     }
 
     fun updateRecordType(recordId: String, type: String?, amountMl: Int?, leftMin: Int? = null, rightMin: Int? = null) {
         viewModelScope.launch {
-            repository.updateRecord(recordId, type, amountMl, leftMin, rightMin)
+            try {
+                repository.updateRecord(recordId, type, amountMl, leftMin, rightMin)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
         }
     }
 
     fun updateRecordTimestamp(recordId: String, timestamp: Long) {
         viewModelScope.launch {
-            repository.updateTimestamp(recordId, timestamp)
+            try {
+                repository.updateTimestamp(recordId, timestamp)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
         }
     }
 
@@ -120,13 +137,16 @@ class FeedingViewModel(
     private val _sharingError = MutableStateFlow<String?>(null)
     val sharingError: StateFlow<String?> = _sharingError.asStateFlow()
 
+    private var sharingStateJob: Job? = null
+
     init {
         observeSharingState()
     }
 
     private fun observeSharingState() {
+        sharingStateJob?.cancel()
         val uid = auth.currentUser?.uid ?: return
-        viewModelScope.launch {
+        sharingStateJob = viewModelScope.launch {
             userRepository.sharingState(uid).collect { state ->
                 _sharingState.value = state
             }

@@ -11,6 +11,7 @@ import com.baby.feedingtracker.data.GoogleAuthHelper
 import com.baby.feedingtracker.data.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +29,9 @@ class AppContainer(context: Context) {
     val userRepository = UserRepository(firestore, auth)
     val googleAuthHelper = GoogleAuthHelper(auth, context)
 
+    private val _initError = MutableStateFlow<String?>(null)
+    val initError: StateFlow<String?> = _initError.asStateFlow()
+
     private val _repository = MutableStateFlow<FeedingRepository?>(null)
     val repository: StateFlow<FeedingRepository?> = _repository.asStateFlow()
 
@@ -40,13 +44,21 @@ class AppContainer(context: Context) {
     private val scope = CoroutineScope(Dispatchers.Main)
 
     init {
+        firestore.firestoreSettings = firestoreSettings {
+            isPersistenceEnabled = true
+        }
         val currentUser = auth.currentUser
         if (currentUser != null) {
             resolveAndInitRepository(currentUser.uid)
         } else {
-            auth.signInAnonymously().addOnSuccessListener { result ->
-                resolveAndInitRepository(result.user!!.uid)
-            }
+            auth.signInAnonymously()
+                .addOnSuccessListener { result ->
+                    val uid = result.user?.uid ?: return@addOnSuccessListener
+                    resolveAndInitRepository(uid)
+                }
+                .addOnFailureListener { e ->
+                    _initError.value = e.message ?: "인증에 실패했습니다"
+                }
         }
     }
 

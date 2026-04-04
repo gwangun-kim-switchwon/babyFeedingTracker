@@ -58,18 +58,21 @@ class GoogleAuthHelper(
                 try {
                     // 최초 Google 연결: 익명 uid 유지
                     val result = currentUser.linkWithCredential(credential).await()
-                    Result.success(result.user!!.uid)
+                    val uid = result.user?.uid ?: return Result.failure(Exception("User is null"))
+                    Result.success(uid)
                 } catch (linkError: Exception) {
                     // 앱 재설치 등으로 이미 다른 uid에 연결된 Google 계정인 경우
                     // → 기존 Google 계정으로 직접 로그인 (원래 uid 복원)
                     val result = auth.signInWithCredential(credential).await()
-                    Result.success(result.user!!.uid)
+                    val uid = result.user?.uid ?: return Result.failure(Exception("User is null"))
+                    Result.success(uid)
                 }
             } else if (currentUser != null) {
                 Result.success(currentUser.uid)
             } else {
                 val result = auth.signInWithCredential(credential).await()
-                Result.success(result.user!!.uid)
+                val uid = result.user?.uid ?: return Result.failure(Exception("User is null"))
+                Result.success(uid)
             }
         } catch (e: Exception) {
             Result.failure(e)

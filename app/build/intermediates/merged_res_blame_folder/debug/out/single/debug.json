@@ -4,10 +4,6 @@
         "source": "/Users/seonhoappa/.gradle/daemon/8.5/com.baby.feedingtracker.app-main-61:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "com.baby.feedingtracker.app-merged_res-59:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.baby.feedingtracker.app-main-61:/mipmap-anydpi-v26/ic_launcher_round.xml"
-    },
-    {
         "merged": "/Users/seonhoappa/.gradle/daemon/8.5/com.baby.feedingtracker.app-merged_res-59:/mipmap-anydpi-v26_ic_launcher.xml.flat",
         "source": "/Users/seonhoappa/.gradle/daemon/8.5/com.baby.feedingtracker.app-main-61:/mipmap-anydpi-v26/ic_launcher.xml"
     },
@@ -16,7 +12,7 @@
         "source": "com.baby.feedingtracker.app-main-61:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.baby.feedingtracker.app-merged_res-59:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.baby.feedingtracker.app-main-61:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "/Users/seonhoappa/.gradle/daemon/8.5/com.baby.feedingtracker.app-merged_res-59:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/Users/seonhoappa/.gradle/daemon/8.5/com.baby.feedingtracker.app-main-61:/drawable/ic_launcher_foreground.xml"
     }
 ]

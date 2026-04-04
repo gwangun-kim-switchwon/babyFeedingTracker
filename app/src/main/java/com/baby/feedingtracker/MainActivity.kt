@@ -7,15 +7,24 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.baby.feedingtracker.di.AppContainer
 import com.baby.feedingtracker.ui.cleaning.CleaningViewModel
 import com.baby.feedingtracker.ui.diaper.DiaperViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
@@ -35,21 +44,8 @@ class MainActivity : ComponentActivity() {
                 val repository by app.container.repository.collectAsState()
                 val cleaningRepository by app.container.cleaningRepository.collectAsState()
                 val diaperRepository by app.container.diaperRepository.collectAsState()
+                val initError by app.container.initError.collectAsState()
                 val coroutineScope = rememberCoroutineScope()
-
-                val googleSignInLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.StartActivityForResult()
-                ) { result ->
-                    coroutineScope.launch {
-                        val signInResult = app.container.googleAuthHelper
-                            .handleSignInResult(result.data)
-                        signInResult.onSuccess { uid ->
-                            // Create profile after successful login
-                            val email = app.container.googleAuthHelper.currentUserEmail()
-                            app.container.userRepository.createProfile(uid, email)
-                        }
-                    }
-                }
 
                 if (repository != null && cleaningRepository != null && diaperRepository != null) {
                     // repository 인스턴스가 바뀌면 (Google 로그인 후 uid 변경 등)
@@ -108,9 +104,28 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        if (initError != null) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = initError ?: "",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.error,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(horizontal = 32.dp)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Button(onClick = {
+                                    // Retry by recreating container
+                                    app.container = AppContainer(app)
+                                }) {
+                                    Text("다시 시도")
+                                }
+                            }
+                        } else {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }

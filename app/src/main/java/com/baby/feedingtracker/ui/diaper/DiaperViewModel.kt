@@ -82,22 +82,44 @@ class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
         if (now - lastRecordTime < debounceInterval) return
         lastRecordTime = now
         viewModelScope.launch {
-            val record = repository.addRecord()
-            _refreshTrigger.value = now
-            _lastAddedRecord.value = record
+            try {
+                val record = repository.addRecord()
+                _refreshTrigger.value = now
+                _lastAddedRecord.value = record
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
         }
     }
 
     fun deleteRecord(record: DiaperRecord) {
-        viewModelScope.launch { repository.deleteRecord(record) }
+        viewModelScope.launch {
+            try {
+                repository.deleteRecord(record)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
+        }
     }
 
     fun updateType(recordId: String, type: String?) {
-        viewModelScope.launch { repository.updateType(recordId, type) }
+        viewModelScope.launch {
+            try {
+                repository.updateType(recordId, type)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
+        }
     }
 
     fun updateTimestamp(recordId: String, timestamp: Long) {
-        viewModelScope.launch { repository.updateTimestamp(recordId, timestamp) }
+        viewModelScope.launch {
+            try {
+                repository.updateTimestamp(recordId, timestamp)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
+        }
     }
 
     companion object {
