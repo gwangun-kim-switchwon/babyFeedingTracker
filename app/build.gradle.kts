@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -22,8 +24,16 @@ android {
     }
 
     signingConfigs {
-        getByName("debug") {
-            // 기본 debug keystore 사용
+        create("release") {
+            val props = project.rootProject.file("local.properties")
+            if (props.exists()) {
+                val properties = Properties()
+                properties.load(props.inputStream())
+                storeFile = file(properties.getProperty("RELEASE_STORE_FILE", ""))
+                storePassword = properties.getProperty("RELEASE_STORE_PASSWORD", "")
+                keyAlias = properties.getProperty("RELEASE_KEY_ALIAS", "")
+                keyPassword = properties.getProperty("RELEASE_KEY_PASSWORD", "")
+            }
         }
     }
 
@@ -35,8 +45,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // 테스트용: debug key로 서명. 출시 시 별도 keystore로 교체 필요.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
