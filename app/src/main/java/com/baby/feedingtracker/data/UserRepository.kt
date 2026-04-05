@@ -52,12 +52,19 @@ class UserRepository(
     }
 
     suspend fun createProfile(uid: String, email: String?) {
-        val data = hashMapOf(
-            "dataOwnerUid" to uid,
-            "linkedTo" to null,
-            "email" to email
-        )
-        profileDocRef(uid).set(data).await()
+        val existing = profileDocRef(uid).get().await()
+        if (existing.exists()) {
+            // 이미 프로필 있으면 이메일만 업데이트 (linkedTo, dataOwnerUid 보존)
+            profileDocRef(uid).update("email", email).await()
+        } else {
+            // 최초 생성
+            val data = hashMapOf(
+                "dataOwnerUid" to uid,
+                "linkedTo" to null,
+                "email" to email
+            )
+            profileDocRef(uid).set(data).await()
+        }
     }
 
     suspend fun getDataOwnerUid(uid: String): String {

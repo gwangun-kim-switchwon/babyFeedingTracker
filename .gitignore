@@ -11,5 +11,10 @@ local.properties
 .idea/
 *.iml
 
+# Release
+app/release/
+*.aab
+*.apk
+
 # OS
 .DS_Store
