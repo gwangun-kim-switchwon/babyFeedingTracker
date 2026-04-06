@@ -1,11 +1,14 @@
 package com.baby.feedingtracker.di
 
 import android.content.Context
+import com.baby.feedingtracker.data.ThemePreference
 import com.baby.feedingtracker.data.CleaningDataSource
 import com.baby.feedingtracker.data.CleaningRepository
 import com.baby.feedingtracker.data.DiaperDataSource
 import com.baby.feedingtracker.data.DiaperRepository
 import com.baby.feedingtracker.data.FeedingRepository
+import com.baby.feedingtracker.data.SleepDataSource
+import com.baby.feedingtracker.data.SleepRepository
 import com.baby.feedingtracker.data.FirestoreDataSource
 import com.baby.feedingtracker.data.GoogleAuthHelper
 import com.baby.feedingtracker.data.UserRepository
@@ -26,6 +29,7 @@ class AppContainer(context: Context) {
     val auth: FirebaseAuth = Firebase.auth
     private val firestore = Firebase.firestore
 
+    val themePreference: ThemePreference by lazy { ThemePreference(context) }
     val userRepository = UserRepository(firestore, auth)
     val googleAuthHelper = GoogleAuthHelper(auth, context)
 
@@ -40,6 +44,9 @@ class AppContainer(context: Context) {
 
     private val _diaperRepository = MutableStateFlow<DiaperRepository?>(null)
     val diaperRepository: StateFlow<DiaperRepository?> = _diaperRepository.asStateFlow()
+
+    private val _sleepRepository = MutableStateFlow<SleepRepository?>(null)
+    val sleepRepository: StateFlow<SleepRepository?> = _sleepRepository.asStateFlow()
 
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -76,6 +83,8 @@ class AppContainer(context: Context) {
         _cleaningRepository.value = CleaningRepository(cleaningDataSource)
         val diaperDataSource = DiaperDataSource(firestore, dataOwnerUid)
         _diaperRepository.value = DiaperRepository(diaperDataSource)
+        val sleepDataSource = SleepDataSource(firestore, dataOwnerUid)
+        _sleepRepository.value = SleepRepository(sleepDataSource)
     }
 
     /**

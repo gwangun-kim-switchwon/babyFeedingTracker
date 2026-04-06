@@ -1,10 +1,10 @@
-package com.baby.feedingtracker.ui.diaper
+package com.baby.feedingtracker.ui.sleep
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.baby.feedingtracker.data.DiaperRecord
-import com.baby.feedingtracker.data.DiaperRepository
+import com.baby.feedingtracker.data.SleepRecord
+import com.baby.feedingtracker.data.SleepRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,17 +16,19 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-data class DiaperUiState(
-    val records: List<DiaperRecord> = emptyList(),
+data class SleepUiState(
+    val records: List<SleepRecord> = emptyList(),
     val elapsedMinutes: Long? = null,
-    val todayDiaperCount: Int = 0,
-    val todayUrineCount: Int = 0,
-    val todayStoolCount: Int = 0,
+    val todayTotalSleepMinutes: Long = 0,
+    val todayNapCount: Int = 0,
+    val todayNightCount: Int = 0,
+    val isCurrentlySleeping: Boolean = false,
+    val currentSleepRecord: SleepRecord? = null,
     val isLoadingMore: Boolean = false,
     val hasMoreData: Boolean = true
 )
 
-class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
+class SleepViewModel(private val repository: SleepRepository) : ViewModel() {
 
     private val ticker = flow {
         while (true) {
@@ -36,11 +38,11 @@ class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
     }
 
     private val _refreshTrigger = MutableStateFlow(0L)
-    private val _olderRecords = MutableStateFlow<List<DiaperRecord>>(emptyList())
+    private val _olderRecords = MutableStateFlow<List<SleepRecord>>(emptyList())
     private val _isLoadingMore = MutableStateFlow(false)
     private val _hasMoreData = MutableStateFlow(true)
 
-    val uiState: StateFlow<DiaperUiState> = combine(
+    val uiState: StateFlow<SleepUiState> = combine(
         repository.recentRecords,
         _olderRecords,
         ticker,
@@ -48,18 +50,29 @@ class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
         _isLoadingMore,
         _hasMoreData
     ) { values ->
-        val recentRecords = values[0] as List<DiaperRecord>
-        val olderRecords = values[1] as List<DiaperRecord>
+        val recentRecords = values[0] as List<SleepRecord>
+        val olderRecords = values[1] as List<SleepRecord>
         @Suppress("UNUSED_VARIABLE") val tick = values[2]
         @Suppress("UNUSED_VARIABLE") val refresh = values[3]
         val isLoadingMore = values[4] as Boolean
         val hasMoreData = values[5] as Boolean
 
         val allRecords = recentRecords + olderRecords
-        val latest = allRecords.firstOrNull()
         val now = System.currentTimeMillis()
-        val elapsed = latest?.let { (now - it.timestamp) / 60_000L }
 
+        // 현재 수면 중인 기록 (endTimestamp == null)
+        val currentSleepRecord = allRecords.firstOrNull { it.endTimestamp == null }
+        val isCurrentlySleeping = currentSleepRecord != null
+
+        // 경과 시간: 수면 중이면 시작 시각 기준, 아니면 마지막 수면 종료 기준
+        val elapsed = if (isCurrentlySleeping) {
+            (now - currentSleepRecord!!.timestamp) / 60_000L
+        } else {
+            val latestFinished = allRecords.firstOrNull { it.endTimestamp != null }
+            latestFinished?.endTimestamp?.let { (now - it) / 60_000L }
+        }
+
+        // 오늘 통계
         val todayMidnight = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -68,27 +81,35 @@ class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
         }.timeInMillis
 
         val todayRecords = allRecords.filter { it.timestamp >= todayMidnight }
-        val todayDiaperCount = todayRecords.count { it.type == "diaper" }
-        val todayUrineCount = todayRecords.count { it.type == "urine" }
-        val todayStoolCount = todayRecords.count { it.type == "stool" }
 
-        DiaperUiState(
+        // 오늘 총 수면 시간 (완료된 수면만 + 진행 중인 수면의 현재까지 시간)
+        val todayTotalSleepMinutes = todayRecords.sumOf { record ->
+            val end = record.endTimestamp ?: now
+            ((end - record.timestamp) / 60_000L).coerceAtLeast(0)
+        }
+
+        val todayNapCount = todayRecords.count { it.type == "nap" }
+        val todayNightCount = todayRecords.count { it.type == "night" }
+
+        SleepUiState(
             records = allRecords,
             elapsedMinutes = elapsed,
-            todayDiaperCount = todayDiaperCount,
-            todayUrineCount = todayUrineCount,
-            todayStoolCount = todayStoolCount,
+            todayTotalSleepMinutes = todayTotalSleepMinutes,
+            todayNapCount = todayNapCount,
+            todayNightCount = todayNightCount,
+            isCurrentlySleeping = isCurrentlySleeping,
+            currentSleepRecord = currentSleepRecord,
             isLoadingMore = isLoadingMore,
             hasMoreData = hasMoreData
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = DiaperUiState()
+        initialValue = SleepUiState()
     )
 
-    private val _lastAddedRecord = MutableStateFlow<DiaperRecord?>(null)
-    val lastAddedRecord: StateFlow<DiaperRecord?> = _lastAddedRecord.asStateFlow()
+    private val _lastAddedRecord = MutableStateFlow<SleepRecord?>(null)
+    val lastAddedRecord: StateFlow<SleepRecord?> = _lastAddedRecord.asStateFlow()
 
     fun clearLastAddedRecord() { _lastAddedRecord.value = null }
 
@@ -96,12 +117,13 @@ class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
     private val debounceInterval = 2_000L
 
     fun addRecord() {
+        if (uiState.value.isCurrentlySleeping) return
         val now = System.currentTimeMillis()
         if (now - lastRecordTime < debounceInterval) return
         lastRecordTime = now
         viewModelScope.launch {
             try {
-                val record = repository.addRecord()
+                val record = repository.addSleepRecord()
                 _refreshTrigger.value = now
                 _lastAddedRecord.value = record
             } catch (e: Exception) {
@@ -110,7 +132,19 @@ class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
         }
     }
 
-    fun deleteRecord(record: DiaperRecord) {
+    fun endSleep() {
+        val currentRecord = uiState.value.currentSleepRecord ?: return
+        viewModelScope.launch {
+            try {
+                repository.endSleep(currentRecord.id)
+                _refreshTrigger.value = System.currentTimeMillis()
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
+        }
+    }
+
+    fun deleteRecord(record: SleepRecord) {
         viewModelScope.launch {
             try {
                 repository.deleteRecord(record)
@@ -140,6 +174,16 @@ class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
         }
     }
 
+    fun updateNote(recordId: String, note: String?) {
+        viewModelScope.launch {
+            try {
+                repository.updateNote(recordId, note)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
+        }
+    }
+
     fun loadMore() {
         if (_isLoadingMore.value || !_hasMoreData.value) return
         val currentRecords = uiState.value.records
@@ -163,22 +207,12 @@ class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
         }
     }
 
-    fun updateNote(recordId: String, note: String?) {
-        viewModelScope.launch {
-            try {
-                repository.updateNote(recordId, note)
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
-            }
-        }
-    }
-
     companion object {
-        fun factory(repository: DiaperRepository): ViewModelProvider.Factory {
+        fun factory(repository: SleepRepository): ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return DiaperViewModel(repository) as T
+                    return SleepViewModel(repository) as T
                 }
             }
         }

@@ -14,9 +14,10 @@ class DiaperDataSource(
     private val recordsCollection
         get() = firestore.collection("users").document(uid).collection("diaper_records")
 
-    fun getAll(): Flow<List<DiaperRecord>> {
+    fun getRecent(sinceTimestamp: Long): Flow<List<DiaperRecord>> {
         return recordsCollection
             .orderBy("timestamp", Query.Direction.DESCENDING)
+            .whereGreaterThanOrEqualTo("timestamp", sinceTimestamp)
             .snapshots()
             .map { snapshot ->
                 snapshot.documents.map { doc ->
@@ -25,21 +26,22 @@ class DiaperDataSource(
             }
     }
 
-    fun getLatest(): Flow<DiaperRecord?> {
-        return recordsCollection
+    suspend fun loadOlderRecords(beforeTimestamp: Long, limit: Long = 20): List<DiaperRecord> {
+        val snapshot = recordsCollection
             .orderBy("timestamp", Query.Direction.DESCENDING)
-            .limit(1)
-            .snapshots()
-            .map { snapshot ->
-                snapshot.documents.firstOrNull()?.toDiaperRecord()
-            }
+            .whereLessThan("timestamp", beforeTimestamp)
+            .limit(limit)
+            .get()
+            .await()
+        return snapshot.documents.map { it.toDiaperRecord() }
     }
 
     private fun com.google.firebase.firestore.DocumentSnapshot.toDiaperRecord(): DiaperRecord {
         return DiaperRecord(
             id = id,
             timestamp = getLong("timestamp") ?: 0L,
-            type = getString("type")
+            type = getString("type"),
+            note = getString("note")
         )
     }
 
@@ -47,6 +49,7 @@ class DiaperDataSource(
         val data = hashMapOf(
             "timestamp" to record.timestamp,
             "type" to record.type,
+            "note" to record.note,
             "createdAt" to com.google.firebase.Timestamp.now()
         )
         val docRef = recordsCollection.add(data).await()
@@ -67,5 +70,9 @@ class DiaperDataSource(
         recordsCollection.document(recordId).update(
             mapOf("timestamp" to timestamp)
         ).await()
+    }
+
+    suspend fun updateNote(recordId: String, note: String?) {
+        recordsCollection.document(recordId).update("note", note).await()
     }
 }

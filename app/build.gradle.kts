@@ -14,8 +14,8 @@ android {
         applicationId = "com.baby.feedingtracker"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.0.3"
+        versionCode = 5
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -103,6 +103,9 @@ dependencies {
 
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // Core
     implementation("androidx.core:core-ktx:1.12.0")

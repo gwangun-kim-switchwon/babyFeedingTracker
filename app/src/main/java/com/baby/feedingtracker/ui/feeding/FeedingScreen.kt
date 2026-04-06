@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -36,10 +37,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,11 +59,14 @@ import com.baby.feedingtracker.data.SharingState
 import com.baby.feedingtracker.ui.ShareBottomSheet
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Notes
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.ui.text.style.TextDecoration
@@ -87,6 +93,24 @@ fun FeedingScreen(
     var isNewRecord by remember { mutableStateOf(false) }
     var recordToDelete by remember { mutableStateOf<FeedingRecord?>(null) }
     var showShareSheet by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+
+    // 마지막 3개 아이템 근처에서 자동 loadMore 트리거
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val totalItems = layoutInfo.totalItemsCount
+            val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            totalItems > 0 && lastVisibleIndex >= totalItems - 3
+        }
+    }
+    LaunchedEffect(shouldLoadMore) {
+        snapshotFlow { shouldLoadMore }.collect { should ->
+            if (should && uiState.hasMoreData && !uiState.isLoadingMore) {
+                viewModel.loadMore()
+            }
+        }
+    }
 
     // 새 기록 추가 시 바텀시트 자동 오픈
     LaunchedEffect(lastAddedRecord) {
@@ -120,6 +144,9 @@ fun FeedingScreen(
             },
             onUpdateTimestamp = { newTimestamp ->
                 viewModel.updateRecordTimestamp(record.id, newTimestamp)
+            },
+            onUpdateNote = { note ->
+                viewModel.updateNote(record.id, note)
             },
             onDelete = {
                 recordToDelete = record
@@ -166,6 +193,7 @@ fun FeedingScreen(
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         LazyColumn(
+            state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
             // -- 상단: 경과 시간 영역 + 공유 아이콘 --
@@ -203,9 +231,9 @@ fun FeedingScreen(
                                 .clip(CircleShape)
                                 .background(
                                     if (sharingState is SharingState.Connected) {
-                                        Color(0xFF4CAF50) // green
+                                        extendedColors.statusConnected
                                     } else {
-                                        Color(0xFFFF6B6B) // red
+                                        extendedColors.statusDisconnected
                                     }
                                 )
                         )
@@ -522,6 +550,17 @@ private fun TimelineRecordRow(
                         color = LocalExtendedColors.current.subtleText
                     )
                 }
+
+                // 메모 아이콘
+                if (!record.note.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.Notes,
+                        contentDescription = "메모",
+                        modifier = Modifier.size(16.dp),
+                        tint = LocalExtendedColors.current.subtleText
+                    )
+                }
             }
 
             // 간격 표시
@@ -547,6 +586,7 @@ private fun RecordEditBottomSheet(
     isNewRecord: Boolean,
     onUpdateType: (type: String?, amountMl: Int?, leftMin: Int?, rightMin: Int?) -> Unit,
     onUpdateTimestamp: (Long) -> Unit,
+    onUpdateNote: (String?) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -559,9 +599,16 @@ private fun RecordEditBottomSheet(
     val amounts = listOf(30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160)
     var showTimePicker by remember { mutableStateOf(false) }
     var currentTimestamp by remember { mutableStateOf(record.timestamp) }
+    var noteText by remember(record) { mutableStateOf(record.note ?: "") }
+    val extendedColors = LocalExtendedColors.current
 
     ModalBottomSheet(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            if (noteText.ifBlank { null } != record.note) {
+                onUpdateNote(noteText.ifBlank { null })
+            }
+            onDismiss()
+        },
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.background
     ) {
@@ -784,6 +831,27 @@ private fun RecordEditBottomSheet(
                 }
             }
 
+            // 메모 입력 UI
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "메모",
+                style = MaterialTheme.typography.labelMedium,
+                color = extendedColors.subtleText
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = noteText,
+                onValueChange = { noteText = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("메모를 입력하세요") },
+                maxLines = 3,
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = extendedColors.divider,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                )
+            )
+
             Spacer(modifier = Modifier.height(32.dp))
 
             // 삭제 버튼
@@ -793,7 +861,7 @@ private fun RecordEditBottomSheet(
             ) {
                 Text(
                     text = "삭제",
-                    color = LocalExtendedColors.current.deleteColor,
+                    color = extendedColors.deleteColor,
                     fontWeight = FontWeight.SemiBold
                 )
             }

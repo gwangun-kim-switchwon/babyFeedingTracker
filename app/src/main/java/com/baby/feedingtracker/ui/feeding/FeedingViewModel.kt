@@ -22,7 +22,9 @@ import kotlinx.coroutines.launch
 
 data class FeedingUiState(
     val records: List<FeedingRecord> = emptyList(),
-    val elapsedMinutes: Long? = null
+    val elapsedMinutes: Long? = null,
+    val isLoadingMore: Boolean = false,
+    val hasMoreData: Boolean = true
 )
 
 class FeedingViewModel(
@@ -41,20 +43,36 @@ class FeedingViewModel(
     }
 
     private val _refreshTrigger = MutableStateFlow(0L)
+    private val _olderRecords = MutableStateFlow<List<FeedingRecord>>(emptyList())
+    private val _isLoadingMore = MutableStateFlow(false)
+    private val _hasMoreData = MutableStateFlow(true)
 
     val uiState: StateFlow<FeedingUiState> = combine(
-        repository.allRecords,
-        repository.latestRecord,
+        repository.recentRecords,
+        _olderRecords,
         ticker,
-        _refreshTrigger
-    ) { records, latest, _, _ ->
+        _refreshTrigger,
+        _isLoadingMore,
+        _hasMoreData
+    ) { values ->
+        val recentRecords = values[0] as List<FeedingRecord>
+        val olderRecords = values[1] as List<FeedingRecord>
+        @Suppress("UNUSED_VARIABLE") val tick = values[2]
+        @Suppress("UNUSED_VARIABLE") val refresh = values[3]
+        val isLoadingMore = values[4] as Boolean
+        val hasMoreData = values[5] as Boolean
+
+        val allRecords = recentRecords + olderRecords
+        val latest = allRecords.firstOrNull()
         val now = System.currentTimeMillis()
         val elapsed = latest?.let {
             (now - it.timestamp) / 60_000L
         }
         FeedingUiState(
-            records = records,
-            elapsedMinutes = elapsed
+            records = allRecords,
+            elapsedMinutes = elapsed,
+            isLoadingMore = isLoadingMore,
+            hasMoreData = hasMoreData
         )
     }.stateIn(
         scope = viewModelScope,
@@ -115,6 +133,39 @@ class FeedingViewModel(
         viewModelScope.launch {
             try {
                 repository.updateTimestamp(recordId, timestamp)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
+        }
+    }
+
+    fun loadMore() {
+        if (_isLoadingMore.value || !_hasMoreData.value) return
+        val currentRecords = uiState.value.records
+        val oldestTimestamp = currentRecords.lastOrNull()?.timestamp ?: return
+
+        _isLoadingMore.value = true
+        viewModelScope.launch {
+            try {
+                val older = repository.loadMore(oldestTimestamp)
+                if (older.isEmpty()) {
+                    _hasMoreData.value = false
+                } else {
+                    _olderRecords.value = _olderRecords.value + older
+                    if (older.size < 20) _hasMoreData.value = false
+                }
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시
+            } finally {
+                _isLoadingMore.value = false
+            }
+        }
+    }
+
+    fun updateNote(recordId: String, note: String?) {
+        viewModelScope.launch {
+            try {
+                repository.updateNote(recordId, note)
             } catch (e: Exception) {
                 // Firestore 오류 시 무시 (오프라인 캐시가 처리)
             }

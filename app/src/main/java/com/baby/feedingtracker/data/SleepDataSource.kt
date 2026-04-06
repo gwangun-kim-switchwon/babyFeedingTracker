@@ -7,54 +7,50 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
-class FirestoreDataSource(
+class SleepDataSource(
     private val firestore: FirebaseFirestore,
     private val uid: String
 ) {
     private val recordsCollection
-        get() = firestore.collection("users").document(uid).collection("feeding_records")
+        get() = firestore.collection("users").document(uid).collection("sleep_records")
 
-    fun getRecent(sinceTimestamp: Long): Flow<List<FeedingRecord>> {
+    fun getRecent(sinceTimestamp: Long): Flow<List<SleepRecord>> {
         return recordsCollection
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .whereGreaterThanOrEqualTo("timestamp", sinceTimestamp)
             .snapshots()
             .map { snapshot ->
                 snapshot.documents.map { doc ->
-                    doc.toFeedingRecord()
+                    doc.toSleepRecord()
                 }
             }
     }
 
-    suspend fun loadOlderRecords(beforeTimestamp: Long, limit: Long = 20): List<FeedingRecord> {
+    suspend fun loadOlderRecords(beforeTimestamp: Long, limit: Long = 20): List<SleepRecord> {
         val snapshot = recordsCollection
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .whereLessThan("timestamp", beforeTimestamp)
             .limit(limit)
             .get()
             .await()
-        return snapshot.documents.map { it.toFeedingRecord() }
+        return snapshot.documents.map { it.toSleepRecord() }
     }
 
-    private fun com.google.firebase.firestore.DocumentSnapshot.toFeedingRecord(): FeedingRecord {
-        return FeedingRecord(
+    private fun com.google.firebase.firestore.DocumentSnapshot.toSleepRecord(): SleepRecord {
+        return SleepRecord(
             id = id,
             timestamp = getLong("timestamp") ?: 0L,
+            endTimestamp = getLong("endTimestamp"),
             type = getString("type"),
-            amountMl = getLong("amountMl")?.toInt(),
-            leftMin = getLong("leftMin")?.toInt(),
-            rightMin = getLong("rightMin")?.toInt(),
             note = getString("note")
         )
     }
 
-    suspend fun insert(record: FeedingRecord): String {
+    suspend fun insert(record: SleepRecord): String {
         val data = hashMapOf(
             "timestamp" to record.timestamp,
+            "endTimestamp" to record.endTimestamp,
             "type" to record.type,
-            "amountMl" to record.amountMl,
-            "leftMin" to record.leftMin,
-            "rightMin" to record.rightMin,
             "note" to record.note,
             "createdAt" to com.google.firebase.Timestamp.now()
         )
@@ -66,18 +62,21 @@ class FirestoreDataSource(
         recordsCollection.document(recordId).delete().await()
     }
 
-    suspend fun updateTimestamp(recordId: String, timestamp: Long) {
-        recordsCollection.document(recordId).update("timestamp", timestamp).await()
+    suspend fun updateEndTimestamp(recordId: String, endTimestamp: Long) {
+        recordsCollection.document(recordId).update(
+            mapOf("endTimestamp" to endTimestamp)
+        ).await()
     }
 
-    suspend fun updateRecord(recordId: String, type: String?, amountMl: Int?, leftMin: Int?, rightMin: Int?) {
+    suspend fun updateType(recordId: String, type: String?) {
         recordsCollection.document(recordId).update(
-            mapOf(
-                "type" to type,
-                "amountMl" to amountMl,
-                "leftMin" to leftMin,
-                "rightMin" to rightMin
-            )
+            mapOf("type" to type)
+        ).await()
+    }
+
+    suspend fun updateTimestamp(recordId: String, timestamp: Long) {
+        recordsCollection.document(recordId).update(
+            mapOf("timestamp" to timestamp)
         ).await()
     }
 

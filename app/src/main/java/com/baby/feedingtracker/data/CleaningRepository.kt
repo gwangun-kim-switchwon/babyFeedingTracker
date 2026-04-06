@@ -3,8 +3,13 @@ package com.baby.feedingtracker.data
 import kotlinx.coroutines.flow.Flow
 
 class CleaningRepository(private val dataSource: CleaningDataSource) {
-    val allRecords: Flow<List<CleaningRecord>> = dataSource.getAll()
-    val latestRecord: Flow<CleaningRecord?> = dataSource.getLatest()
+    private val sevenDaysAgo = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000L
+
+    val recentRecords: Flow<List<CleaningRecord>> = dataSource.getRecent(sevenDaysAgo)
+
+    suspend fun loadMore(beforeTimestamp: Long, limit: Long = 20): List<CleaningRecord> {
+        return dataSource.loadOlderRecords(beforeTimestamp, limit)
+    }
 
     suspend fun addRecord(): CleaningRecord {
         val timestamp = System.currentTimeMillis()
@@ -24,4 +29,6 @@ class CleaningRepository(private val dataSource: CleaningDataSource) {
     suspend fun updateTimestamp(id: String, timestamp: Long) {
         dataSource.updateTimestamp(id, timestamp)
     }
+
+    suspend fun updateNote(id: String, note: String?) = dataSource.updateNote(id, note)
 }

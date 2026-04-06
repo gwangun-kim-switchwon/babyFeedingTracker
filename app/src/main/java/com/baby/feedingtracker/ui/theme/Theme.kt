@@ -1,7 +1,9 @@
 package com.baby.feedingtracker.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -11,9 +13,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import java.util.Calendar
 
 // ──────────────────────────────────────────────
-// Soft Minimal Color Palette
+// Theme Mode
+// ──────────────────────────────────────────────
+
+enum class ThemeMode { SYSTEM, AUTO, LIGHT, DARK }
+
+// ──────────────────────────────────────────────
+// Soft Minimal Color Palette (Light)
 // ──────────────────────────────────────────────
 
 // Background & Surface
@@ -41,6 +50,24 @@ val GradientTop = Color(0xFFFFF8F5)
 val GradientBottom = Color(0xFFFFF1EB)
 
 // ──────────────────────────────────────────────
+// Dark Color Palette
+// ──────────────────────────────────────────────
+
+val DarkBackground = Color(0xFF1A1A1E)
+val DarkSurface = Color(0xFF242428)
+val DarkSoftBackground = Color(0xFF2A2A2E)
+val DarkMintGreen = Color(0xFF9AD4BC)
+val DarkMintGreenLight = Color(0xFF6BAF96)
+val DarkMintGreenDark = Color(0xFF7CC4A8)
+val DarkTextPrimary = Color(0xFFE8E2E0)
+val DarkTextSecondary = Color(0xFF9E9896)
+val DarkDivider = Color(0xFF3A3A3E)
+val DarkDeleteBg = Color(0xFF3D2020)
+val DarkSoftRed = Color(0xFFFF8A8A)
+val DarkGradientTop = Color(0xFF1A1A1E)
+val DarkGradientBottom = Color(0xFF222226)
+
+// ──────────────────────────────────────────────
 // Extended Color Scheme (beyond Material3)
 // ──────────────────────────────────────────────
 
@@ -54,14 +81,29 @@ data class ExtendedColors(
     val deleteBackground: Color = SoftRedBg,
     val deleteColor: Color = SoftRed,
     val fabContainer: Color = MintGreen,
+    val statusConnected: Color = Color(0xFF4CAF50),
+    val statusDisconnected: Color = SoftRed,
 )
 
 private val DefaultExtendedColors = ExtendedColors()
 
+private val DarkExtendedColors = ExtendedColors(
+    gradientTop = DarkGradientTop,
+    gradientBottom = DarkGradientBottom,
+    softBackground = DarkSoftBackground,
+    subtleText = DarkTextSecondary,
+    divider = DarkDivider,
+    deleteBackground = DarkDeleteBg,
+    deleteColor = DarkSoftRed,
+    fabContainer = DarkMintGreen,
+    statusConnected = Color(0xFF66BB6A),
+    statusDisconnected = DarkSoftRed,
+)
+
 val LocalExtendedColors = staticCompositionLocalOf { ExtendedColors() }
 
 // ──────────────────────────────────────────────
-// Material3 Color Scheme
+// Material3 Color Schemes
 // ──────────────────────────────────────────────
 
 private val LightColorScheme = lightColorScheme(
@@ -83,6 +125,21 @@ private val LightColorScheme = lightColorScheme(
     onError = Color.White,
     outline = DividerColor,
     outlineVariant = DividerColor,
+)
+
+private val DarkColorScheme = darkColorScheme(
+    primary = DarkMintGreen,
+    onPrimary = DarkBackground,
+    primaryContainer = DarkMintGreenDark,
+    background = DarkBackground,
+    onBackground = DarkTextPrimary,
+    surface = DarkBackground,
+    onSurface = DarkTextPrimary,
+    surfaceVariant = DarkSurface,
+    onSurfaceVariant = DarkTextSecondary,
+    error = DarkSoftRed,
+    onError = DarkBackground,
+    outline = DarkDivider,
 )
 
 // ──────────────────────────────────────────────
@@ -178,12 +235,25 @@ private val AppTypography = Typography(
 
 @Composable
 fun BabyFeedingTrackerTheme(
-    darkTheme: Boolean = false, // 라이트 모드만 우선 지원
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
     content: @Composable () -> Unit
 ) {
-    CompositionLocalProvider(LocalExtendedColors provides DefaultExtendedColors) {
+    val isDark = when (themeMode) {
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+        ThemeMode.AUTO -> {
+            val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            hour >= 22 || hour < 6
+        }
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
+
+    val colorScheme = if (isDark) DarkColorScheme else LightColorScheme
+    val extendedColors = if (isDark) DarkExtendedColors else DefaultExtendedColors
+
+    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
         MaterialTheme(
-            colorScheme = LightColorScheme,
+            colorScheme = colorScheme,
             typography = AppTypography,
             content = content
         )

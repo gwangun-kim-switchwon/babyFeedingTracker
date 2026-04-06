@@ -14,9 +14,10 @@ class CleaningDataSource(
     private val recordsCollection
         get() = firestore.collection("users").document(uid).collection("cleaning_records")
 
-    fun getAll(): Flow<List<CleaningRecord>> {
+    fun getRecent(sinceTimestamp: Long): Flow<List<CleaningRecord>> {
         return recordsCollection
             .orderBy("timestamp", Query.Direction.DESCENDING)
+            .whereGreaterThanOrEqualTo("timestamp", sinceTimestamp)
             .snapshots()
             .map { snapshot ->
                 snapshot.documents.map { doc ->
@@ -25,21 +26,22 @@ class CleaningDataSource(
             }
     }
 
-    fun getLatest(): Flow<CleaningRecord?> {
-        return recordsCollection
+    suspend fun loadOlderRecords(beforeTimestamp: Long, limit: Long = 20): List<CleaningRecord> {
+        val snapshot = recordsCollection
             .orderBy("timestamp", Query.Direction.DESCENDING)
-            .limit(1)
-            .snapshots()
-            .map { snapshot ->
-                snapshot.documents.firstOrNull()?.toCleaningRecord()
-            }
+            .whereLessThan("timestamp", beforeTimestamp)
+            .limit(limit)
+            .get()
+            .await()
+        return snapshot.documents.map { it.toCleaningRecord() }
     }
 
     private fun com.google.firebase.firestore.DocumentSnapshot.toCleaningRecord(): CleaningRecord {
         return CleaningRecord(
             id = id,
             timestamp = getLong("timestamp") ?: 0L,
-            itemType = getString("itemType")
+            itemType = getString("itemType"),
+            note = getString("note")
         )
     }
 
@@ -47,6 +49,7 @@ class CleaningDataSource(
         val data = hashMapOf(
             "timestamp" to record.timestamp,
             "itemType" to record.itemType,
+            "note" to record.note,
             "createdAt" to com.google.firebase.Timestamp.now()
         )
         val docRef = recordsCollection.add(data).await()
@@ -67,5 +70,9 @@ class CleaningDataSource(
         recordsCollection.document(recordId).update(
             mapOf("timestamp" to timestamp)
         ).await()
+    }
+
+    suspend fun updateNote(recordId: String, note: String?) {
+        recordsCollection.document(recordId).update("note", note).await()
     }
 }

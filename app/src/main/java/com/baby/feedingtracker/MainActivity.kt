@@ -28,8 +28,10 @@ import com.baby.feedingtracker.di.AppContainer
 import com.baby.feedingtracker.ui.cleaning.CleaningViewModel
 import com.baby.feedingtracker.ui.diaper.DiaperViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
+import com.baby.feedingtracker.ui.sleep.SleepViewModel
 import com.baby.feedingtracker.ui.navigation.BabyFeedingNavHost
 import com.baby.feedingtracker.ui.theme.BabyFeedingTrackerTheme
+import com.baby.feedingtracker.ui.theme.ThemeMode
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -40,14 +42,18 @@ class MainActivity : ComponentActivity() {
         val app = application as BabyFeedingApp
 
         setContent {
-            BabyFeedingTrackerTheme {
+            val themeMode by app.container.themePreference.themeMode
+                .collectAsState(initial = ThemeMode.SYSTEM)
+
+            BabyFeedingTrackerTheme(themeMode = themeMode) {
                 val repository by app.container.repository.collectAsState()
                 val cleaningRepository by app.container.cleaningRepository.collectAsState()
                 val diaperRepository by app.container.diaperRepository.collectAsState()
+                val sleepRepository by app.container.sleepRepository.collectAsState()
                 val initError by app.container.initError.collectAsState()
                 val coroutineScope = rememberCoroutineScope()
 
-                if (repository != null && cleaningRepository != null && diaperRepository != null) {
+                if (repository != null && cleaningRepository != null && diaperRepository != null && sleepRepository != null) {
                     // repository 인스턴스가 바뀌면 (Google 로그인 후 uid 변경 등)
                     // ViewModel을 새로 생성하여 새 데이터를 로드
                     val viewModel: FeedingViewModel = viewModel(
@@ -71,6 +77,11 @@ class MainActivity : ComponentActivity() {
                     val diaperViewModel: DiaperViewModel = viewModel(
                         key = "diaper_vm_${diaperRepository.hashCode()}",
                         factory = DiaperViewModel.factory(diaperRepository!!)
+                    )
+
+                    val sleepViewModel: SleepViewModel = viewModel(
+                        key = "sleep_vm_${sleepRepository.hashCode()}",
+                        factory = SleepViewModel.factory(sleepRepository!!)
                     )
 
                     // Refresh login state after Google Sign-In callback
@@ -103,6 +114,7 @@ class MainActivity : ComponentActivity() {
                         feedingViewModel = viewModel,
                         cleaningViewModel = cleaningViewModel,
                         diaperViewModel = diaperViewModel,
+                        sleepViewModel = sleepViewModel,
                         googleAuthHelper = app.container.googleAuthHelper,
                         googleSignInLauncher = googleSignInLauncherWithRefresh
                     )

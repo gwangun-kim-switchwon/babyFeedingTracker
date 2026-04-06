@@ -1,4 +1,4 @@
-package com.baby.feedingtracker.ui.diaper
+package com.baby.feedingtracker.ui.sleep
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Notes
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -59,7 +60,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.baby.feedingtracker.data.DiaperRecord
+import com.baby.feedingtracker.data.SleepRecord
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -68,14 +69,14 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiaperScreen(viewModel: DiaperViewModel) {
+fun SleepScreen(viewModel: SleepViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lastAddedRecord by viewModel.lastAddedRecord.collectAsStateWithLifecycle()
     val extendedColors = LocalExtendedColors.current
 
-    var selectedRecord by remember { mutableStateOf<DiaperRecord?>(null) }
+    var selectedRecord by remember { mutableStateOf<SleepRecord?>(null) }
     var isNewRecord by remember { mutableStateOf(false) }
-    var recordToDelete by remember { mutableStateOf<DiaperRecord?>(null) }
+    var recordToDelete by remember { mutableStateOf<SleepRecord?>(null) }
     val listState = rememberLazyListState()
 
     // 마지막 3개 아이템 근처에서 자동 loadMore 트리거
@@ -106,7 +107,7 @@ fun DiaperScreen(viewModel: DiaperViewModel) {
 
     // 삭제 확인 다이얼로그
     recordToDelete?.let { record ->
-        DiaperDeleteConfirmDialog(
+        SleepDeleteConfirmDialog(
             record = record,
             onConfirm = {
                 viewModel.deleteRecord(record)
@@ -119,7 +120,7 @@ fun DiaperScreen(viewModel: DiaperViewModel) {
 
     // 바텀시트
     selectedRecord?.let { record ->
-        DiaperEditBottomSheet(
+        SleepEditBottomSheet(
             record = record,
             isNewRecord = isNewRecord,
             onUpdateType = { type ->
@@ -166,11 +167,12 @@ fun DiaperScreen(viewModel: DiaperViewModel) {
                         .padding(horizontal = 24.dp)
                         .padding(top = 48.dp, bottom = 16.dp)
                 ) {
-                    DiaperElapsedTimeSection(
+                    SleepElapsedTimeSection(
                         elapsedMinutes = uiState.elapsedMinutes,
-                        todayDiaperCount = uiState.todayDiaperCount,
-                        todayUrineCount = uiState.todayUrineCount,
-                        todayStoolCount = uiState.todayStoolCount,
+                        isCurrentlySleeping = uiState.isCurrentlySleeping,
+                        todayTotalSleepMinutes = uiState.todayTotalSleepMinutes,
+                        todayNapCount = uiState.todayNapCount,
+                        todayNightCount = uiState.todayNightCount,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -179,26 +181,26 @@ fun DiaperScreen(viewModel: DiaperViewModel) {
             // -- 중단: 기록 목록 --
             if (uiState.records.isEmpty()) {
                 item {
-                    DiaperEmptyState(
+                    SleepEmptyState(
                         modifier = Modifier
                             .fillParentMaxHeight(0.5f)
                             .fillMaxWidth()
                     )
                 }
             } else {
-                val groupedRecords = groupDiaperRecordsByDate(uiState.records)
+                val groupedRecords = groupSleepRecordsByDate(uiState.records)
 
                 item { Spacer(modifier = Modifier.height(8.dp)) }
 
                 groupedRecords.forEach { (dateLabel, dayRecords) ->
                     item(key = "header_$dateLabel") {
                         Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            DiaperDateSectionHeader(dateLabel)
+                            SleepDateSectionHeader(dateLabel)
                         }
                     }
                     item(key = "stats_$dateLabel") {
                         Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            DiaperDailyStats(dayRecords)
+                            SleepDailyStats(dayRecords)
                         }
                     }
                     itemsIndexed(
@@ -206,14 +208,10 @@ fun DiaperScreen(viewModel: DiaperViewModel) {
                         key = { _, record -> record.id }
                     ) { index, record ->
                         val isLast = index == dayRecords.lastIndex
-                        val previousRecord = if (index + 1 < dayRecords.size) dayRecords[index + 1] else null
 
                         Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            DiaperTimelineRecordRow(
+                            SleepTimelineRecordRow(
                                 record = record,
-                                intervalMinutes = previousRecord?.let {
-                                    ((record.timestamp - it.timestamp) / 60_000L)
-                                },
                                 showLine = !isLast,
                                 onClick = { selectedRecord = record }
                             )
@@ -234,19 +232,23 @@ fun DiaperScreen(viewModel: DiaperViewModel) {
         FloatingActionButton(
             onClick = {
                 if (selectedRecord == null) {
-                    viewModel.addRecord()
+                    if (uiState.isCurrentlySleeping) {
+                        viewModel.endSleep()
+                    } else {
+                        viewModel.addRecord()
+                    }
                 }
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 24.dp, end = 24.dp),
-            containerColor = extendedColors.fabContainer,
+            containerColor = if (uiState.isCurrentlySleeping) extendedColors.deleteColor else extendedColors.fabContainer,
             contentColor = Color.White,
             shape = CircleShape
         ) {
             Icon(
-                imageVector = Icons.Rounded.Add,
-                contentDescription = "기저귀 기록 추가"
+                imageVector = if (uiState.isCurrentlySleeping) Icons.Rounded.Stop else Icons.Rounded.Add,
+                contentDescription = if (uiState.isCurrentlySleeping) "수면 종료" else "수면 기록 추가"
             )
         }
     }
@@ -257,11 +259,12 @@ fun DiaperScreen(viewModel: DiaperViewModel) {
 // ──────────────────────────────────────────────
 
 @Composable
-private fun DiaperElapsedTimeSection(
+private fun SleepElapsedTimeSection(
     elapsedMinutes: Long?,
-    todayDiaperCount: Int,
-    todayUrineCount: Int,
-    todayStoolCount: Int,
+    isCurrentlySleeping: Boolean,
+    todayTotalSleepMinutes: Long,
+    todayNapCount: Int,
+    todayNightCount: Int,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -270,7 +273,7 @@ private fun DiaperElapsedTimeSection(
     ) {
         if (elapsedMinutes != null) {
             Text(
-                text = "마지막 기저귀",
+                text = if (isCurrentlySleeping) "수면 중" else "마지막 수면",
                 style = MaterialTheme.typography.bodyMedium,
                 color = LocalExtendedColors.current.subtleText
             )
@@ -278,7 +281,7 @@ private fun DiaperElapsedTimeSection(
         }
 
         Text(
-            text = formatDiaperElapsedTime(elapsedMinutes),
+            text = formatSleepElapsedTime(elapsedMinutes, isCurrentlySleeping),
             style = MaterialTheme.typography.displayLarge.copy(
                 fontWeight = FontWeight.Bold,
                 letterSpacing = (-1.5).sp
@@ -288,9 +291,9 @@ private fun DiaperElapsedTimeSection(
 
         // 오늘 통계
         val statParts = buildList {
-            if (todayDiaperCount > 0) add("기저귀 ${todayDiaperCount}회")
-            if (todayUrineCount > 0) add("소변 ${todayUrineCount}회")
-            if (todayStoolCount > 0) add("대변 ${todayStoolCount}회")
+            if (todayTotalSleepMinutes > 0) add("총 ${formatSleepDuration(todayTotalSleepMinutes)}")
+            if (todayNapCount > 0) add("낮잠 ${todayNapCount}회")
+            if (todayNightCount > 0) add("밤잠 ${todayNightCount}회")
         }
         if (statParts.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
@@ -308,7 +311,7 @@ private fun DiaperElapsedTimeSection(
 // ──────────────────────────────────────────────
 
 @Composable
-private fun DiaperEmptyState(modifier: Modifier = Modifier) {
+private fun SleepEmptyState(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
@@ -317,7 +320,7 @@ private fun DiaperEmptyState(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "\uD83D\uDC76",
+                text = "\uD83D\uDE34",
                 fontSize = 48.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -329,7 +332,7 @@ private fun DiaperEmptyState(modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "+ 버튼을 눌러\n첫 기저귀를 기록해보세요",
+                text = "+ 버튼을 눌러\n첫 수면을 기록해보세요",
                 style = MaterialTheme.typography.bodyMedium,
                 color = LocalExtendedColors.current.subtleText.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center,
@@ -344,7 +347,7 @@ private fun DiaperEmptyState(modifier: Modifier = Modifier) {
 // ──────────────────────────────────────────────
 
 @Composable
-private fun DiaperDateSectionHeader(label: String) {
+private fun SleepDateSectionHeader(label: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -374,11 +377,14 @@ private fun DiaperDateSectionHeader(label: String) {
 // ──────────────────────────────────────────────
 
 @Composable
-private fun DiaperDailyStats(records: List<DiaperRecord>) {
-    val totalCount = records.size
-    val diaperCount = records.count { it.type == "diaper" }
-    val urineCount = records.count { it.type == "urine" }
-    val stoolCount = records.count { it.type == "stool" }
+private fun SleepDailyStats(records: List<SleepRecord>) {
+    val now = System.currentTimeMillis()
+    val totalMinutes = records.sumOf { record ->
+        val end = record.endTimestamp ?: now
+        ((end - record.timestamp) / 60_000L).coerceAtLeast(0)
+    }
+    val napCount = records.count { it.type == "nap" }
+    val nightCount = records.count { it.type == "night" }
 
     Row(
         modifier = Modifier
@@ -386,15 +392,14 @@ private fun DiaperDailyStats(records: List<DiaperRecord>) {
             .padding(bottom = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        DiaperStatChip(label = "총", value = "${totalCount}회")
-        if (diaperCount > 0) DiaperStatChip(label = "기저귀", value = "${diaperCount}회")
-        if (urineCount > 0) DiaperStatChip(label = "소변", value = "${urineCount}회")
-        if (stoolCount > 0) DiaperStatChip(label = "대변", value = "${stoolCount}회")
+        SleepStatChip(label = "총", value = formatSleepDuration(totalMinutes))
+        if (napCount > 0) SleepStatChip(label = "낮잠", value = "${napCount}회")
+        if (nightCount > 0) SleepStatChip(label = "밤잠", value = "${nightCount}회")
     }
 }
 
 @Composable
-private fun DiaperStatChip(label: String, value: String) {
+private fun SleepStatChip(label: String, value: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -419,9 +424,8 @@ private fun DiaperStatChip(label: String, value: String) {
 // ──────────────────────────────────────────────
 
 @Composable
-private fun DiaperTimelineRecordRow(
-    record: DiaperRecord,
-    intervalMinutes: Long?,
+private fun SleepTimelineRecordRow(
+    record: SleepRecord,
     showLine: Boolean,
     onClick: () -> Unit
 ) {
@@ -469,15 +473,23 @@ private fun DiaperTimelineRecordRow(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // 시작~종료 시간 표시
+                val startTime = timeFormat.format(Date(record.timestamp))
+                val timeText = if (record.endTimestamp != null) {
+                    "$startTime ~ ${timeFormat.format(Date(record.endTimestamp))}"
+                } else {
+                    "$startTime ~"
+                }
+
                 Text(
-                    text = timeFormat.format(Date(record.timestamp)),
+                    text = timeText,
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Medium
                     ),
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                val typeText = formatDiaperType(record.type)
+                val typeText = formatSleepType(record.type)
                 if (typeText != null) {
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
@@ -499,11 +511,21 @@ private fun DiaperTimelineRecordRow(
                 }
             }
 
-            if (intervalMinutes != null && intervalMinutes > 0) {
+            // 수면 시간 또는 "수면 중" 표시
+            val now = System.currentTimeMillis()
+            if (record.endTimestamp != null) {
+                val durationMinutes = ((record.endTimestamp - record.timestamp) / 60_000L).coerceAtLeast(0)
                 Text(
-                    text = formatDiaperIntervalText(intervalMinutes),
+                    text = formatSleepDuration(durationMinutes),
                     style = MaterialTheme.typography.bodySmall,
                     color = LocalExtendedColors.current.subtleText.copy(alpha = 0.7f)
+                )
+            } else {
+                val durationMinutes = ((now - record.timestamp) / 60_000L).coerceAtLeast(0)
+                Text(
+                    text = "수면 중 · ${formatSleepDuration(durationMinutes)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -511,13 +533,13 @@ private fun DiaperTimelineRecordRow(
 }
 
 // ──────────────────────────────────────────────
-// 바텀시트: 기저귀 유형 선택
+// 바텀시트: 수면 편집
 // ──────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DiaperEditBottomSheet(
-    record: DiaperRecord,
+private fun SleepEditBottomSheet(
+    record: SleepRecord,
     isNewRecord: Boolean,
     onUpdateType: (type: String?) -> Unit,
     onUpdateTimestamp: (timestamp: Long) -> Unit,
@@ -564,7 +586,7 @@ private fun DiaperEditBottomSheet(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "기저귀 기록",
+                    text = "수면 기록",
                     style = MaterialTheme.typography.headlineSmall.copy(
                         fontWeight = FontWeight.SemiBold
                     ),
@@ -611,38 +633,27 @@ private fun DiaperEditBottomSheet(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 유형 선택 (3개 버튼 한 행)
+            // 유형 선택 (2개 버튼 한 행)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                DiaperToggleButton(
-                    text = "기저귀",
-                    selected = selectedType == "diaper",
+                SleepToggleButton(
+                    text = "낮잠",
+                    selected = selectedType == "nap",
                     onClick = {
-                        val newType = if (selectedType == "diaper") null else "diaper"
+                        val newType = if (selectedType == "nap") null else "nap"
                         selectedType = newType
                         onUpdateType(newType)
                         if (isNewRecord && newType != null) onDismiss()
                     },
                     modifier = Modifier.weight(1f)
                 )
-                DiaperToggleButton(
-                    text = "소변",
-                    selected = selectedType == "urine",
+                SleepToggleButton(
+                    text = "밤잠",
+                    selected = selectedType == "night",
                     onClick = {
-                        val newType = if (selectedType == "urine") null else "urine"
-                        selectedType = newType
-                        onUpdateType(newType)
-                        if (isNewRecord && newType != null) onDismiss()
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-                DiaperToggleButton(
-                    text = "대변",
-                    selected = selectedType == "stool",
-                    onClick = {
-                        val newType = if (selectedType == "stool") null else "stool"
+                        val newType = if (selectedType == "night") null else "night"
                         selectedType = newType
                         onUpdateType(newType)
                         if (isNewRecord && newType != null) onDismiss()
@@ -693,7 +704,7 @@ private fun DiaperEditBottomSheet(
 // ──────────────────────────────────────────────
 
 @Composable
-private fun DiaperToggleButton(
+private fun SleepToggleButton(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
@@ -737,8 +748,8 @@ private fun DiaperToggleButton(
 // ──────────────────────────────────────────────
 
 @Composable
-private fun DiaperDeleteConfirmDialog(
-    record: DiaperRecord,
+private fun SleepDeleteConfirmDialog(
+    record: SleepRecord,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -755,7 +766,7 @@ private fun DiaperDeleteConfirmDialog(
         },
         text = {
             Text(
-                text = "${timeStr} 기저귀 기록을 삭제할까요?",
+                text = "${timeStr} 수면 기록을 삭제할까요?",
                 style = MaterialTheme.typography.bodyLarge,
                 color = LocalExtendedColors.current.subtleText
             )
@@ -784,38 +795,47 @@ private fun DiaperDeleteConfirmDialog(
 // 유틸리티 함수
 // ──────────────────────────────────────────────
 
-private fun formatDiaperElapsedTime(elapsedMinutes: Long?): String {
-    if (elapsedMinutes == null) return "첫 기저귀를\n기록해보세요"
+private fun formatSleepElapsedTime(elapsedMinutes: Long?, isCurrentlySleeping: Boolean): String {
+    if (elapsedMinutes == null) return "첫 수면을\n기록해보세요"
     val hours = elapsedMinutes / 60
     val minutes = elapsedMinutes % 60
-    return when {
-        hours > 0 && minutes > 0 -> "${hours}시간 ${minutes}분 전"
-        hours > 0 -> "${hours}시간 전"
-        minutes > 0 -> "${minutes}분 전"
-        else -> "방금"
+    return if (isCurrentlySleeping) {
+        // 수면 중: 진행 시간 표시
+        when {
+            hours > 0 && minutes > 0 -> "${hours}시간 ${minutes}분째"
+            hours > 0 -> "${hours}시간째"
+            minutes > 0 -> "${minutes}분째"
+            else -> "방금 시작"
+        }
+    } else {
+        when {
+            hours > 0 && minutes > 0 -> "${hours}시간 ${minutes}분 전"
+            hours > 0 -> "${hours}시간 전"
+            minutes > 0 -> "${minutes}분 전"
+            else -> "방금"
+        }
     }
 }
 
-private fun formatDiaperIntervalText(intervalMinutes: Long): String {
-    val hours = intervalMinutes / 60
-    val minutes = intervalMinutes % 60
+private fun formatSleepDuration(totalMinutes: Long): String {
+    val hours = totalMinutes / 60
+    val minutes = totalMinutes % 60
     return when {
-        hours > 0 && minutes > 0 -> "${hours}h ${minutes}m 간격"
-        hours > 0 -> "${hours}h 간격"
-        else -> "${minutes}m 간격"
+        hours > 0 && minutes > 0 -> "${hours}h ${minutes}m"
+        hours > 0 -> "${hours}h"
+        else -> "${minutes}m"
     }
 }
 
-private fun formatDiaperType(type: String?): String? {
+private fun formatSleepType(type: String?): String? {
     return when (type) {
-        "diaper" -> "기저귀"
-        "urine" -> "소변"
-        "stool" -> "대변"
+        "nap" -> "낮잠"
+        "night" -> "밤잠"
         else -> null
     }
 }
 
-private fun groupDiaperRecordsByDate(records: List<DiaperRecord>): List<Pair<String, List<DiaperRecord>>> {
+private fun groupSleepRecordsByDate(records: List<SleepRecord>): List<Pair<String, List<SleepRecord>>> {
     val today = Calendar.getInstance().apply {
         set(Calendar.HOUR_OF_DAY, 0)
         set(Calendar.MINUTE, 0)

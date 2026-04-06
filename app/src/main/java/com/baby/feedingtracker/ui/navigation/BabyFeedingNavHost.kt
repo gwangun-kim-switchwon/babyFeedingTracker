@@ -27,6 +27,8 @@ import com.baby.feedingtracker.ui.diaper.DiaperScreen
 import com.baby.feedingtracker.ui.diaper.DiaperViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingScreen
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
+import com.baby.feedingtracker.ui.sleep.SleepScreen
+import com.baby.feedingtracker.ui.sleep.SleepViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 
 @Composable
@@ -34,6 +36,7 @@ fun BabyFeedingNavHost(
     feedingViewModel: FeedingViewModel,
     cleaningViewModel: CleaningViewModel,
     diaperViewModel: DiaperViewModel,
+    sleepViewModel: SleepViewModel,
     googleAuthHelper: GoogleAuthHelper,
     googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
@@ -60,13 +63,16 @@ fun BabyFeedingNavHost(
             composable(BottomNavItem.Cleaning.route) {
                 CleaningScreen(viewModel = cleaningViewModel)
             }
+            composable(BottomNavItem.Sleep.route) {
+                SleepScreen(viewModel = sleepViewModel)
+            }
         }
     }
 }
 
 @Composable
 private fun BottomNavBar(navController: NavHostController) {
-    val items = listOf(BottomNavItem.Feeding, BottomNavItem.Diaper, BottomNavItem.Cleaning)
+    val items = listOf(BottomNavItem.Feeding, BottomNavItem.Diaper, BottomNavItem.Cleaning, BottomNavItem.Sleep)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 

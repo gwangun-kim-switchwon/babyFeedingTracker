@@ -34,8 +34,7 @@ class CleaningViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         repository = mock()
-        whenever(repository.allRecords).thenReturn(flowOf(emptyList()))
-        whenever(repository.latestRecord).thenReturn(flowOf(null))
+        whenever(repository.recentRecords).thenReturn(flowOf(emptyList()))
 
         viewModel = CleaningViewModel(repository)
     }
@@ -91,8 +90,7 @@ class CleaningViewModelTest {
             CleaningRecord(id = "1", timestamp = 1000L, itemType = "bottle"),
             CleaningRecord(id = "2", timestamp = 2000L, itemType = "pot")
         )
-        whenever(repository.allRecords).thenReturn(flowOf(records))
-        whenever(repository.latestRecord).thenReturn(flowOf(records.last()))
+        whenever(repository.recentRecords).thenReturn(flowOf(records))
 
         viewModel = CleaningViewModel(repository)
 

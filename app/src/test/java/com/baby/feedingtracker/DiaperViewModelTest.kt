@@ -34,8 +34,7 @@ class DiaperViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         repository = mock()
-        whenever(repository.allRecords).thenReturn(flowOf(emptyList()))
-        whenever(repository.latestRecord).thenReturn(flowOf(null))
+        whenever(repository.recentRecords).thenReturn(flowOf(emptyList()))
 
         viewModel = DiaperViewModel(repository)
     }
@@ -93,8 +92,7 @@ class DiaperViewModelTest {
             DiaperRecord(id = "1", timestamp = 1000L, type = "diaper"),
             DiaperRecord(id = "2", timestamp = 2000L, type = "urine")
         )
-        whenever(repository.allRecords).thenReturn(flowOf(records))
-        whenever(repository.latestRecord).thenReturn(flowOf(records.last()))
+        whenever(repository.recentRecords).thenReturn(flowOf(records))
 
         viewModel = DiaperViewModel(repository)
 

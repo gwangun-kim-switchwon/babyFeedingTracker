@@ -443,7 +443,7 @@ private fun ConnectedContent(partnerEmail: String?) {
             modifier = Modifier
                 .size(12.dp)
                 .clip(CircleShape)
-                .background(Color(0xFF4CAF50))
+                .background(LocalExtendedColors.current.statusConnected)
         )
 
         Spacer(modifier = Modifier.width(8.dp))

@@ -44,8 +44,7 @@ class FeedingViewModelTest {
         googleAuthHelper = mock()
         auth = mock()
 
-        whenever(repository.allRecords).thenReturn(flowOf(emptyList()))
-        whenever(repository.latestRecord).thenReturn(flowOf(null))
+        whenever(repository.recentRecords).thenReturn(flowOf(emptyList()))
         whenever(googleAuthHelper.isLoggedIn()).thenReturn(false)
         whenever(auth.currentUser).thenReturn(null)
 
@@ -107,8 +106,7 @@ class FeedingViewModelTest {
             FeedingRecord(id = "1", timestamp = 1000L),
             FeedingRecord(id = "2", timestamp = 2000L)
         )
-        whenever(repository.allRecords).thenReturn(flowOf(records))
-        whenever(repository.latestRecord).thenReturn(flowOf(records.last()))
+        whenever(repository.recentRecords).thenReturn(flowOf(records))
 
         viewModel = FeedingViewModel(
             repository = repository,
