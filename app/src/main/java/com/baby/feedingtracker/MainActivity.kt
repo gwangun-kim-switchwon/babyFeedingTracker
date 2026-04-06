@@ -88,6 +88,13 @@ class MainActivity : ComponentActivity() {
                                 val dataOwnerUid = app.container.userRepository.getDataOwnerUid(uid)
                                 app.container.reinitializeWithDataOwner(dataOwnerUid)
                                 viewModel.refreshLoginState()
+                            }.onFailure { e ->
+                                android.util.Log.e("GoogleSignIn", "로그인 실패: ${e.message}", e)
+                                android.widget.Toast.makeText(
+                                    this@MainActivity,
+                                    "Google 로그인 실패: ${e.message}",
+                                    android.widget.Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
