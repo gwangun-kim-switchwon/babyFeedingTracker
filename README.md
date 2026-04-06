@@ -146,7 +146,7 @@ users/{uid}/
 
 ## 라이선스
 
-이 프로젝트는 비공개 소프트웨어입니다. All rights reserved.
+이 프로젝트는 [MIT License](LICENSE)로 배포됩니다.
 
 ## 연락처
 
