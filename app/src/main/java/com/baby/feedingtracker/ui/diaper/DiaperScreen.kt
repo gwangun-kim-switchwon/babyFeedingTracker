@@ -123,41 +123,86 @@ fun DiaperScreen(viewModel: DiaperViewModel) {
             )
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
             // -- 상단: 경과 시간 영역 --
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(top = 48.dp, bottom = 16.dp)
-            ) {
-                DiaperElapsedTimeSection(
-                    elapsedMinutes = uiState.elapsedMinutes,
-                    todayDiaperCount = uiState.todayDiaperCount,
-                    todayUrineCount = uiState.todayUrineCount,
-                    todayStoolCount = uiState.todayStoolCount,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 48.dp, bottom = 16.dp)
+                ) {
+                    DiaperElapsedTimeSection(
+                        elapsedMinutes = uiState.elapsedMinutes,
+                        todayDiaperCount = uiState.todayDiaperCount,
+                        todayUrineCount = uiState.todayUrineCount,
+                        todayStoolCount = uiState.todayStoolCount,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
 
             // -- 중단: 기록 목록 --
-            DiaperRecordList(
-                records = uiState.records,
-                onRecordClick = { record -> selectedRecord = record },
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-            )
+            if (uiState.records.isEmpty()) {
+                item {
+                    DiaperEmptyState(
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.5f)
+                            .fillMaxWidth()
+                    )
+                }
+            } else {
+                val groupedRecords = groupDiaperRecordsByDate(uiState.records)
+
+                item { Spacer(modifier = Modifier.height(8.dp)) }
+
+                groupedRecords.forEach { (dateLabel, dayRecords) ->
+                    item(key = "header_$dateLabel") {
+                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                            DiaperDateSectionHeader(dateLabel)
+                        }
+                    }
+                    item(key = "stats_$dateLabel") {
+                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                            DiaperDailyStats(dayRecords)
+                        }
+                    }
+                    itemsIndexed(
+                        items = dayRecords,
+                        key = { _, record -> record.id }
+                    ) { index, record ->
+                        val isLast = index == dayRecords.lastIndex
+                        val previousRecord = if (index + 1 < dayRecords.size) dayRecords[index + 1] else null
+
+                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                            DiaperTimelineRecordRow(
+                                record = record,
+                                intervalMinutes = previousRecord?.let {
+                                    ((record.timestamp - it.timestamp) / 60_000L)
+                                },
+                                showLine = !isLast,
+                                onClick = { selectedRecord = record }
+                            )
+                        }
+                    }
+
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
+                }
+
+                item { Spacer(modifier = Modifier.height(8.dp)) }
+            }
 
             // -- 하단: 기저귀 기록 버튼 --
-            DiaperBottomActionButton(
-                onClick = { viewModel.addRecord() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
-            )
+            item {
+                DiaperBottomActionButton(
+                    onClick = { viewModel.addRecord() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                )
+            }
         }
     }
 }
@@ -561,7 +606,7 @@ private fun DiaperEditBottomSheet(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 DiaperToggleButton(
-                    text = "기저귀 교체",
+                    text = "기저귀",
                     selected = selectedType == "diaper",
                     onClick = {
                         val newType = if (selectedType == "diaper") null else "diaper"
@@ -763,7 +808,7 @@ private fun formatDiaperIntervalText(intervalMinutes: Long): String {
 
 private fun formatDiaperType(type: String?): String? {
     return when (type) {
-        "diaper" -> "기저귀 교체"
+        "diaper" -> "기저귀"
         "urine" -> "소변"
         "stool" -> "대변"
         else -> null
