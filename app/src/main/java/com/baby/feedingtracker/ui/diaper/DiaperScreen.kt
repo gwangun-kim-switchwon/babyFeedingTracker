@@ -20,10 +20,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -194,15 +198,28 @@ fun DiaperScreen(viewModel: DiaperViewModel) {
                 item { Spacer(modifier = Modifier.height(8.dp)) }
             }
 
-            // -- 하단: 기저귀 기록 버튼 --
-            item {
-                DiaperBottomActionButton(
-                    onClick = { viewModel.addRecord() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 16.dp)
-                )
-            }
+            // -- 하단: FAB가 가리지 않도록 Spacer --
+            item { Spacer(modifier = Modifier.height(80.dp)) }
+        }
+
+        // FAB
+        FloatingActionButton(
+            onClick = {
+                if (selectedRecord == null) {
+                    viewModel.addRecord()
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 24.dp, end = 24.dp),
+            containerColor = extendedColors.fabContainer,
+            contentColor = Color.White,
+            shape = CircleShape
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Add,
+                contentDescription = "기저귀 기록 추가"
+            )
         }
     }
 }
@@ -259,59 +276,6 @@ private fun DiaperElapsedTimeSection(
 }
 
 // ──────────────────────────────────────────────
-// 기록 목록 (타임라인)
-// ──────────────────────────────────────────────
-
-@Composable
-private fun DiaperRecordList(
-    records: List<DiaperRecord>,
-    onRecordClick: (DiaperRecord) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    if (records.isEmpty()) {
-        DiaperEmptyState(modifier = modifier)
-    } else {
-        val groupedRecords = groupDiaperRecordsByDate(records)
-
-        LazyColumn(
-            modifier = modifier.padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(0.dp)
-        ) {
-            item { Spacer(modifier = Modifier.height(8.dp)) }
-
-            groupedRecords.forEach { (dateLabel, dayRecords) ->
-                item(key = "header_$dateLabel") {
-                    DiaperDateSectionHeader(dateLabel)
-                }
-                item(key = "stats_$dateLabel") {
-                    DiaperDailyStats(dayRecords)
-                }
-                itemsIndexed(
-                    items = dayRecords,
-                    key = { _, record -> record.id }
-                ) { index, record ->
-                    val isLast = index == dayRecords.lastIndex
-                    val previousRecord = if (index + 1 < dayRecords.size) dayRecords[index + 1] else null
-
-                    DiaperTimelineRecordRow(
-                        record = record,
-                        intervalMinutes = previousRecord?.let {
-                            ((record.timestamp - it.timestamp) / 60_000L)
-                        },
-                        showLine = !isLast,
-                        onClick = { onRecordClick(record) }
-                    )
-                }
-
-                item { Spacer(modifier = Modifier.height(16.dp)) }
-            }
-
-            item { Spacer(modifier = Modifier.height(8.dp)) }
-        }
-    }
-}
-
-// ──────────────────────────────────────────────
 // 빈 상태
 // ──────────────────────────────────────────────
 
@@ -337,7 +301,7 @@ private fun DiaperEmptyState(modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "아래 버튼을 눌러\n첫 기저귀를 기록해보세요",
+                text = "+ 버튼을 눌러\n첫 기저귀를 기록해보세요",
                 style = MaterialTheme.typography.bodyMedium,
                 color = LocalExtendedColors.current.subtleText.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center,
@@ -697,38 +661,6 @@ private fun DiaperToggleButton(
                 style = MaterialTheme.typography.labelLarge
             )
         }
-    }
-}
-
-// ──────────────────────────────────────────────
-// 하단 액션 버튼
-// ──────────────────────────────────────────────
-
-@Composable
-private fun DiaperBottomActionButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(56.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.White
-        ),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp
-        )
-    ) {
-        Text(
-            text = "+ 기저귀 기록",
-            style = MaterialTheme.typography.labelLarge.copy(
-                fontSize = 17.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        )
     }
 }
 

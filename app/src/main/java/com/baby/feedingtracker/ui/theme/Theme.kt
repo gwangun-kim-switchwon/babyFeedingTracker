@@ -53,6 +53,7 @@ data class ExtendedColors(
     val divider: Color = DividerColor,
     val deleteBackground: Color = SoftRedBg,
     val deleteColor: Color = SoftRed,
+    val fabContainer: Color = MintGreen,
 )
 
 private val DefaultExtendedColors = ExtendedColors()

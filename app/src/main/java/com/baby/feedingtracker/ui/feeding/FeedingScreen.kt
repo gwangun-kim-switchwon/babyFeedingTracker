@@ -57,6 +57,8 @@ import com.baby.feedingtracker.ui.ShareBottomSheet
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TimePicker
@@ -261,15 +263,28 @@ fun FeedingScreen(
                 item { Spacer(modifier = Modifier.height(8.dp)) }
             }
 
-            // -- 하단: 수유 기록 버튼 --
-            item {
-                BottomActionButton(
-                    onClick = { viewModel.addRecord() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 16.dp)
-                )
-            }
+            // -- 하단: FAB가 가리지 않도록 Spacer --
+            item { Spacer(modifier = Modifier.height(80.dp)) }
+        }
+
+        // FAB
+        FloatingActionButton(
+            onClick = {
+                if (selectedRecord == null) {
+                    viewModel.addRecord()
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 24.dp, end = 24.dp),
+            containerColor = extendedColors.fabContainer,
+            contentColor = Color.White,
+            shape = CircleShape
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Add,
+                contentDescription = "수유 기록 추가"
+            )
         }
     }
 }
@@ -309,59 +324,6 @@ private fun ElapsedTimeSection(
 }
 
 // ──────────────────────────────────────────────
-// 기록 목록 (타임라인)
-// ──────────────────────────────────────────────
-
-@Composable
-private fun FeedingRecordList(
-    records: List<FeedingRecord>,
-    onRecordClick: (FeedingRecord) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    if (records.isEmpty()) {
-        EmptyState(modifier = modifier)
-    } else {
-        val groupedRecords = groupRecordsByDate(records)
-
-        LazyColumn(
-            modifier = modifier.padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(0.dp)
-        ) {
-            item { Spacer(modifier = Modifier.height(8.dp)) }
-
-            groupedRecords.forEach { (dateLabel, dayRecords) ->
-                item(key = "header_$dateLabel") {
-                    DateSectionHeader(dateLabel)
-                }
-                item(key = "stats_$dateLabel") {
-                    DailyStats(dayRecords)
-                }
-                itemsIndexed(
-                    items = dayRecords,
-                    key = { _, record -> record.id }
-                ) { index, record ->
-                    val isLast = index == dayRecords.lastIndex
-                    val previousRecord = if (index + 1 < dayRecords.size) dayRecords[index + 1] else null
-
-                    TimelineRecordRow(
-                        record = record,
-                        intervalMinutes = previousRecord?.let {
-                            ((record.timestamp - it.timestamp) / 60_000L)
-                        },
-                        showLine = !isLast,
-                        onClick = { onRecordClick(record) }
-                    )
-                }
-
-                item { Spacer(modifier = Modifier.height(16.dp)) }
-            }
-
-            item { Spacer(modifier = Modifier.height(8.dp)) }
-        }
-    }
-}
-
-// ──────────────────────────────────────────────
 // 빈 상태
 // ──────────────────────────────────────────────
 
@@ -387,7 +349,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "아래 버튼을 눌러\n첫 수유를 기록해보세요",
+                text = "+ 버튼을 눌러\n첫 수유를 기록해보세요",
                 style = MaterialTheme.typography.bodyMedium,
                 color = LocalExtendedColors.current.subtleText.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center,
@@ -926,38 +888,6 @@ private fun AmountButton(
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
-    }
-}
-
-// ──────────────────────────────────────────────
-// 하단 액션 버튼
-// ──────────────────────────────────────────────
-
-@Composable
-private fun BottomActionButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(56.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.White
-        ),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp
-        )
-    ) {
-        Text(
-            text = "+ 수유 기록",
-            style = MaterialTheme.typography.labelLarge.copy(
-                fontSize = 17.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        )
     }
 }
 
