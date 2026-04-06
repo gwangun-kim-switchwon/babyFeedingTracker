@@ -1,5 +1,18 @@
 # Changelog — Baby Feeding Tracker
 
+## v1.0.3 (2026-04-06)
+
+### 기능 개선
+- feat: 기록 추가 버튼을 FAB(Floating Action Button)으로 변경 — 스크롤 위치와 무관하게 항상 접근 가능
+
+### 리팩토링
+- refactor: FAB 색상을 ExtendedColors 테마 시스템으로 추출 (향후 다크모드 대응 준비)
+
+### 정리
+- chore: 미사용 Dead Code 제거 (FeedingRecordList, DiaperRecordList, CleaningRecordList)
+
+---
+
 ## 2026-03-31: 전체 세션 작업 기록
 
 ### Cycle 1: 기능 개선
