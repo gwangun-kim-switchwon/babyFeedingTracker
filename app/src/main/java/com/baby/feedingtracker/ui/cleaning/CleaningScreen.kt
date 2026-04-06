@@ -29,7 +29,9 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +45,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -94,6 +97,9 @@ fun CleaningScreen(viewModel: CleaningViewModel) {
             onUpdateItemType = { itemType ->
                 viewModel.updateItemType(record.id, itemType)
             },
+            onUpdateTimestamp = { timestamp ->
+                viewModel.updateTimestamp(record.id, timestamp)
+            },
             onDelete = {
                 recordToDelete = record
             },
@@ -117,39 +123,84 @@ fun CleaningScreen(viewModel: CleaningViewModel) {
             )
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
             // -- 상단: 경과 시간 영역 --
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(top = 48.dp, bottom = 16.dp)
-            ) {
-                CleaningElapsedTimeSection(
-                    elapsedMinutes = uiState.elapsedMinutes,
-                    perTypeElapsed = uiState.perTypeElapsed,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 48.dp, bottom = 16.dp)
+                ) {
+                    CleaningElapsedTimeSection(
+                        elapsedMinutes = uiState.elapsedMinutes,
+                        perTypeElapsed = uiState.perTypeElapsed,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
 
             // -- 중단: 기록 목록 --
-            CleaningRecordList(
-                records = uiState.records,
-                onRecordClick = { record -> selectedRecord = record },
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-            )
+            if (uiState.records.isEmpty()) {
+                item {
+                    CleaningEmptyState(
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.5f)
+                            .fillMaxWidth()
+                    )
+                }
+            } else {
+                val groupedRecords = groupCleaningRecordsByDate(uiState.records)
+
+                item { Spacer(modifier = Modifier.height(8.dp)) }
+
+                groupedRecords.forEach { (dateLabel, dayRecords) ->
+                    item(key = "header_$dateLabel") {
+                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                            CleaningDateSectionHeader(dateLabel)
+                        }
+                    }
+                    item(key = "stats_$dateLabel") {
+                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                            CleaningDailyStats(dayRecords)
+                        }
+                    }
+                    itemsIndexed(
+                        items = dayRecords,
+                        key = { _, record -> record.id }
+                    ) { index, record ->
+                        val isLast = index == dayRecords.lastIndex
+                        val previousRecord = if (index + 1 < dayRecords.size) dayRecords[index + 1] else null
+
+                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                            CleaningTimelineRecordRow(
+                                record = record,
+                                intervalMinutes = previousRecord?.let {
+                                    ((record.timestamp - it.timestamp) / 60_000L)
+                                },
+                                showLine = !isLast,
+                                onClick = { selectedRecord = record }
+                            )
+                        }
+                    }
+
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
+                }
+
+                item { Spacer(modifier = Modifier.height(8.dp)) }
+            }
 
             // -- 하단: 세척 기록 버튼 --
-            CleaningBottomActionButton(
-                onClick = { viewModel.addRecord() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
-            )
+            item {
+                CleaningBottomActionButton(
+                    onClick = { viewModel.addRecord() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                )
+            }
         }
     }
 }
@@ -473,12 +524,15 @@ private fun CleaningEditBottomSheet(
     record: CleaningRecord,
     isNewRecord: Boolean,
     onUpdateItemType: (itemType: String?) -> Unit,
+    onUpdateTimestamp: (timestamp: Long) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
     var selectedItemType by remember { mutableStateOf(record.itemType) }
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
+    var showTimePicker by remember { mutableStateOf(false) }
+    var currentTimestamp by remember { mutableStateOf(record.timestamp) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -491,13 +545,64 @@ private fun CleaningEditBottomSheet(
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
         ) {
-            Text(
-                text = "${timeFormat.format(Date(record.timestamp))} 세척 기록",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.SemiBold
-                ),
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable { showTimePicker = true }
+            ) {
+                Text(
+                    text = timeFormat.format(Date(currentTimestamp)),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "세척 기록",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+
+            if (showTimePicker) {
+                val calendar = remember {
+                    Calendar.getInstance().apply { timeInMillis = currentTimestamp }
+                }
+                val timePickerState = rememberTimePickerState(
+                    initialHour = calendar.get(Calendar.HOUR_OF_DAY),
+                    initialMinute = calendar.get(Calendar.MINUTE),
+                    is24Hour = true
+                )
+
+                AlertDialog(
+                    onDismissRequest = { showTimePicker = false },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            val newCal = Calendar.getInstance().apply {
+                                timeInMillis = currentTimestamp
+                                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                                set(Calendar.MINUTE, timePickerState.minute)
+                            }
+                            currentTimestamp = newCal.timeInMillis
+                            onUpdateTimestamp(currentTimestamp)
+                            showTimePicker = false
+                        }) {
+                            Text("확인")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showTimePicker = false }) {
+                            Text("취소", color = LocalExtendedColors.current.subtleText)
+                        }
+                    },
+                    text = {
+                        TimePicker(state = timePickerState)
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

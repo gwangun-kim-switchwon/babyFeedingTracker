@@ -98,6 +98,16 @@ class CleaningViewModel(private val repository: CleaningRepository) : ViewModel(
         }
     }
 
+    fun updateTimestamp(recordId: String, timestamp: Long) {
+        viewModelScope.launch {
+            try {
+                repository.updateTimestamp(recordId, timestamp)
+            } catch (e: Exception) {
+                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            }
+        }
+    }
+
     companion object {
         fun factory(repository: CleaningRepository): ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {

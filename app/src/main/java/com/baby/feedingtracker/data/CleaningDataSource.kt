@@ -62,4 +62,10 @@ class CleaningDataSource(
             mapOf("itemType" to itemType)
         ).await()
     }
+
+    suspend fun updateTimestamp(recordId: String, timestamp: Long) {
+        recordsCollection.document(recordId).update(
+            mapOf("timestamp" to timestamp)
+        ).await()
+    }
 }

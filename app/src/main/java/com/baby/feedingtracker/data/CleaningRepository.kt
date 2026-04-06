@@ -20,4 +20,8 @@ class CleaningRepository(private val dataSource: CleaningDataSource) {
     suspend fun updateItemType(id: String, itemType: String?) {
         dataSource.updateItemType(id, itemType)
     }
+
+    suspend fun updateTimestamp(id: String, timestamp: Long) {
+        dataSource.updateTimestamp(id, timestamp)
+    }
 }
