@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Pretendard — Downloadable Font via Google Fonts Provider
+    R9 §5 Typography — "세련된 한국 디자인" Critical 리소스
+    Pretendard는 한글/영문/숫자 모두 균형 잡힌 현대적 산세리프.
+    APK 크기 증가 없이 Google Fonts CDN에서 on-demand 다운로드.
+-->
+<font-family xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:fontProviderAuthority="com.google.android.gms.fonts"
+    app:fontProviderPackage="com.google.android.gms"
+    app:fontProviderQuery="name=Pretendard&amp;weight=400"
+    app:fontProviderCerts="@array/com_google_android_gms_fonts_certs">
+</font-family>

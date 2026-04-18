@@ -27,8 +27,12 @@ import com.baby.feedingtracker.ui.diaper.DiaperScreen
 import com.baby.feedingtracker.ui.diaper.DiaperViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingScreen
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
+import com.baby.feedingtracker.ui.profile.BabyProfileScreen
+import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.sleep.SleepScreen
 import com.baby.feedingtracker.ui.sleep.SleepViewModel
+import com.baby.feedingtracker.ui.statistics.StatisticsScreen
+import com.baby.feedingtracker.ui.statistics.StatisticsViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 
 @Composable
@@ -37,13 +41,22 @@ fun BabyFeedingNavHost(
     cleaningViewModel: CleaningViewModel,
     diaperViewModel: DiaperViewModel,
     sleepViewModel: SleepViewModel,
+    statisticsViewModel: StatisticsViewModel,
+    babyProfileViewModel: BabyProfileViewModel,
     googleAuthHelper: GoogleAuthHelper,
     googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
     val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = { BottomNavBar(navController) }
+        bottomBar = {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+            // 프로필 화면에서는 BottomNavBar 숨김
+            if (currentRoute != "baby_profile") {
+                BottomNavBar(navController)
+            }
+        }
     ) { padding ->
         NavHost(
             navController = navController,
@@ -53,18 +66,55 @@ fun BabyFeedingNavHost(
             composable(BottomNavItem.Feeding.route) {
                 FeedingScreen(
                     viewModel = feedingViewModel,
+                    babyProfileViewModel = babyProfileViewModel,
                     googleAuthHelper = googleAuthHelper,
-                    googleSignInLauncher = googleSignInLauncher
+                    googleSignInLauncher = googleSignInLauncher,
+                    onNavigateToProfile = {
+                        navController.navigate("baby_profile")
+                    }
                 )
             }
             composable(BottomNavItem.Diaper.route) {
-                DiaperScreen(viewModel = diaperViewModel)
+                DiaperScreen(
+                    viewModel = diaperViewModel,
+                    babyProfileViewModel = babyProfileViewModel,
+                    onNavigateToProfile = {
+                        navController.navigate("baby_profile")
+                    }
+                )
             }
             composable(BottomNavItem.Cleaning.route) {
-                CleaningScreen(viewModel = cleaningViewModel)
+                CleaningScreen(
+                    viewModel = cleaningViewModel,
+                    babyProfileViewModel = babyProfileViewModel,
+                    onNavigateToProfile = {
+                        navController.navigate("baby_profile")
+                    }
+                )
             }
             composable(BottomNavItem.Sleep.route) {
-                SleepScreen(viewModel = sleepViewModel)
+                SleepScreen(
+                    viewModel = sleepViewModel,
+                    babyProfileViewModel = babyProfileViewModel,
+                    onNavigateToProfile = {
+                        navController.navigate("baby_profile")
+                    }
+                )
+            }
+            composable(BottomNavItem.Statistics.route) {
+                StatisticsScreen(
+                    viewModel = statisticsViewModel,
+                    babyProfileViewModel = babyProfileViewModel,
+                    onNavigateToProfile = {
+                        navController.navigate("baby_profile")
+                    }
+                )
+            }
+            composable("baby_profile") {
+                BabyProfileScreen(
+                    viewModel = babyProfileViewModel,
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
         }
     }
@@ -72,7 +122,7 @@ fun BabyFeedingNavHost(
 
 @Composable
 private fun BottomNavBar(navController: NavHostController) {
-    val items = listOf(BottomNavItem.Feeding, BottomNavItem.Diaper, BottomNavItem.Cleaning, BottomNavItem.Sleep)
+    val items = listOf(BottomNavItem.Feeding, BottomNavItem.Sleep, BottomNavItem.Diaper, BottomNavItem.Cleaning, BottomNavItem.Statistics)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 

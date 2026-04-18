@@ -2,6 +2,7 @@ package com.baby.feedingtracker
 
 import com.baby.feedingtracker.data.CleaningRecord
 import com.baby.feedingtracker.data.CleaningRepository
+import com.baby.feedingtracker.data.DataResult
 import com.baby.feedingtracker.ui.cleaning.CleaningViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,7 +48,7 @@ class CleaningViewModelTest {
     @Test
     fun `addRecord delegates to repository and sets lastAddedRecord`() = runTest(testDispatcher) {
         val record = CleaningRecord(id = "c-1", timestamp = 1000L)
-        whenever(repository.addRecord()).thenReturn(record)
+        whenever(repository.addRecord()).thenReturn(DataResult.Success(record))
 
         viewModel.addRecord()
 
@@ -67,7 +68,7 @@ class CleaningViewModelTest {
     @Test
     fun `clearLastAddedRecord resets to null`() = runTest(testDispatcher) {
         val record = CleaningRecord(id = "c-1", timestamp = 1000L)
-        whenever(repository.addRecord()).thenReturn(record)
+        whenever(repository.addRecord()).thenReturn(DataResult.Success(record))
 
         viewModel.addRecord()
         assertNotNull(viewModel.lastAddedRecord.value)
@@ -119,7 +120,7 @@ class CleaningViewModelTest {
     @Test
     fun `addRecord debounces rapid calls`() = runTest(testDispatcher) {
         val record = CleaningRecord(id = "c-1", timestamp = 1000L)
-        whenever(repository.addRecord()).thenReturn(record)
+        whenever(repository.addRecord()).thenReturn(DataResult.Success(record))
 
         viewModel.addRecord()
         viewModel.addRecord()

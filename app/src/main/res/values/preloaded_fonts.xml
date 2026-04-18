@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Preloaded Fonts — AndroidManifest <meta-data android:name="preloaded_fonts">에서 참조.
+    앱 시작 시 백그라운드에서 Pretendard 4종을 미리 받아 첫 프레임 지연/FOUT 최소화.
+-->
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/pretendard</item>
+        <item>@font/pretendard_medium</item>
+        <item>@font/pretendard_semibold</item>
+        <item>@font/pretendard_bold</item>
+    </array>
+</resources>

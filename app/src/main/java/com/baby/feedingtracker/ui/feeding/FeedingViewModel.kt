@@ -3,6 +3,7 @@ package com.baby.feedingtracker.ui.feeding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.baby.feedingtracker.data.DataResult
 import com.baby.feedingtracker.data.FeedingRecord
 import com.baby.feedingtracker.data.FeedingRepository
 import com.baby.feedingtracker.data.GoogleAuthHelper
@@ -46,6 +47,13 @@ class FeedingViewModel(
     private val _olderRecords = MutableStateFlow<List<FeedingRecord>>(emptyList())
     private val _isLoadingMore = MutableStateFlow(false)
     private val _hasMoreData = MutableStateFlow(true)
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    fun clearError() {
+        _errorMessage.value = null
+    }
 
     val uiState: StateFlow<FeedingUiState> = combine(
         repository.recentRecords,
@@ -99,42 +107,42 @@ class FeedingViewModel(
         if (now - lastRecordTime < debounceInterval) return
         lastRecordTime = now
         viewModelScope.launch {
-            try {
-                val record = repository.addRecord()
-                _refreshTrigger.value = now
-                _lastAddedRecord.value = record
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.addRecord()
+            when (result) {
+                is DataResult.Success -> {
+                    _refreshTrigger.value = now
+                    _lastAddedRecord.value = result.data
+                }
+                is DataResult.Error -> {
+                    _errorMessage.value = result.message
+                }
             }
         }
     }
 
     fun deleteRecord(record: FeedingRecord) {
         viewModelScope.launch {
-            try {
-                repository.deleteRecord(record)
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.deleteRecord(record)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
             }
         }
     }
 
     fun updateRecordType(recordId: String, type: String?, amountMl: Int?, leftMin: Int? = null, rightMin: Int? = null) {
         viewModelScope.launch {
-            try {
-                repository.updateRecord(recordId, type, amountMl, leftMin, rightMin)
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.updateRecord(recordId, type, amountMl, leftMin, rightMin)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
             }
         }
     }
 
     fun updateRecordTimestamp(recordId: String, timestamp: Long) {
         viewModelScope.launch {
-            try {
-                repository.updateTimestamp(recordId, timestamp)
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.updateTimestamp(recordId, timestamp)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
             }
         }
     }
@@ -164,10 +172,9 @@ class FeedingViewModel(
 
     fun updateNote(recordId: String, note: String?) {
         viewModelScope.launch {
-            try {
-                repository.updateNote(recordId, note)
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.updateNote(recordId, note)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
             }
         }
     }
@@ -206,7 +213,6 @@ class FeedingViewModel(
 
     fun refreshLoginState() {
         _isGoogleLoggedIn.value = googleAuthHelper.isLoggedIn()
-        // After login, ensure profile exists and start observing sharing state
         val uid = auth.currentUser?.uid ?: return
         viewModelScope.launch {
             val email = googleAuthHelper.currentUserEmail()
@@ -232,7 +238,6 @@ class FeedingViewModel(
             val result = userRepository.redeemInviteCode(code.uppercase())
             result.onSuccess { hostUid ->
                 _sharingError.value = null
-                // 게스트의 데이터 경로를 호스트로 전환
                 onDataOwnerChanged(hostUid)
             }
             result.onFailure { e ->

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.baby.feedingtracker.data.CleaningRecord
 import com.baby.feedingtracker.data.CleaningRepository
+import com.baby.feedingtracker.data.DataResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,6 +37,13 @@ class CleaningViewModel(private val repository: CleaningRepository) : ViewModel(
     private val _olderRecords = MutableStateFlow<List<CleaningRecord>>(emptyList())
     private val _isLoadingMore = MutableStateFlow(false)
     private val _hasMoreData = MutableStateFlow(true)
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    fun clearError() {
+        _errorMessage.value = null
+    }
 
     val uiState: StateFlow<CleaningUiState> = combine(
         repository.recentRecords,
@@ -90,42 +98,42 @@ class CleaningViewModel(private val repository: CleaningRepository) : ViewModel(
         if (now - lastRecordTime < debounceInterval) return
         lastRecordTime = now
         viewModelScope.launch {
-            try {
-                val record = repository.addRecord()
-                _refreshTrigger.value = now
-                _lastAddedRecord.value = record
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.addRecord()
+            when (result) {
+                is DataResult.Success -> {
+                    _refreshTrigger.value = now
+                    _lastAddedRecord.value = result.data
+                }
+                is DataResult.Error -> {
+                    _errorMessage.value = result.message
+                }
             }
         }
     }
 
     fun deleteRecord(record: CleaningRecord) {
         viewModelScope.launch {
-            try {
-                repository.deleteRecord(record)
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.deleteRecord(record)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
             }
         }
     }
 
     fun updateItemType(recordId: String, itemType: String?) {
         viewModelScope.launch {
-            try {
-                repository.updateItemType(recordId, itemType)
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.updateItemType(recordId, itemType)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
             }
         }
     }
 
     fun updateTimestamp(recordId: String, timestamp: Long) {
         viewModelScope.launch {
-            try {
-                repository.updateTimestamp(recordId, timestamp)
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.updateTimestamp(recordId, timestamp)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
             }
         }
     }
@@ -155,10 +163,9 @@ class CleaningViewModel(private val repository: CleaningRepository) : ViewModel(
 
     fun updateNote(recordId: String, note: String?) {
         viewModelScope.launch {
-            try {
-                repository.updateNote(recordId, note)
-            } catch (e: Exception) {
-                // Firestore 오류 시 무시 (오프라인 캐시가 처리)
+            val result = repository.updateNote(recordId, note)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
             }
         }
     }

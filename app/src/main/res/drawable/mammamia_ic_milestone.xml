@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Mammamia custom icon: 마일스톤 뱃지
+    24x24 grid, 2dp stroke, round cap/join.
+    정오각별 기하 (cx=12, cy=12, 외접 R=9, 내접 r=3.436).
+    - 5개 꼭지점 (외접): θ = -90°, -18°, 54°, 126°, 198°
+    - 5개 내접점:         θ = -54°, 18°, 90°, 162°, 234°
+    정확한 좌표:
+      P1 (top):  (12,    3)
+      I1:        (13.04, 10.27)
+      P2:        (20.56, 8.22)
+      I2:        (15.78, 13.36)
+      P3:        (17.29, 19.78)
+      I3:        (12,    15.44)
+      P4:        (6.71,  19.78)
+      I4:        (8.22,  13.36)
+      P5:        (3.44,  8.22)
+      I5:        (10.96, 10.27)
+    - 중앙에 작은 점 (cx=12, cy=12.5, r=0.8)
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- 5각 별 (stroke) -->
+    <path
+        android:strokeWidth="2"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M12,3 L13.04,10.27 L20.56,8.22 L15.78,13.36 L17.29,19.78 L12,15.44 L6.71,19.78 L8.22,13.36 L3.44,8.22 L10.96,10.27 Z" />
+    <!-- 중앙 점 -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M12,12.5 a0.8,0.8 0 1,0 0.01,0 Z" />
+</vector>

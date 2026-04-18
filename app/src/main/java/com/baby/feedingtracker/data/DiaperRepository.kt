@@ -1,34 +1,19 @@
 package com.baby.feedingtracker.data
 
-import kotlinx.coroutines.flow.Flow
+class DiaperRepository(
+    private val diaperDataSource: DiaperDataSource
+) : BaseRepository<DiaperRecord>(diaperDataSource) {
 
-class DiaperRepository(private val dataSource: DiaperDataSource) {
-    private val sevenDaysAgo = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000L
-
-    val recentRecords: Flow<List<DiaperRecord>> = dataSource.getRecent(sevenDaysAgo)
-
-    suspend fun loadMore(beforeTimestamp: Long, limit: Long = 20): List<DiaperRecord> {
-        return dataSource.loadOlderRecords(beforeTimestamp, limit)
-    }
-
-    suspend fun addRecord(): DiaperRecord {
+    suspend fun addRecord(): DataResult<DiaperRecord> {
         val timestamp = System.currentTimeMillis()
         val record = DiaperRecord(timestamp = timestamp)
-        val id = dataSource.insert(record)
-        return record.copy(id = id)
+        return when (val result = diaperDataSource.insert(record)) {
+            is DataResult.Success -> DataResult.Success(record.copy(id = result.data))
+            is DataResult.Error -> DataResult.Error(result.message)
+        }
     }
 
-    suspend fun deleteRecord(record: DiaperRecord) {
-        dataSource.delete(record.id)
+    suspend fun updateType(id: String, type: String?): DataResult<Unit> {
+        return diaperDataSource.updateType(id, type)
     }
-
-    suspend fun updateType(id: String, type: String?) {
-        dataSource.updateType(id, type)
-    }
-
-    suspend fun updateTimestamp(id: String, timestamp: Long) {
-        dataSource.updateTimestamp(id, timestamp)
-    }
-
-    suspend fun updateNote(id: String, note: String?) = dataSource.updateNote(id, note)
 }

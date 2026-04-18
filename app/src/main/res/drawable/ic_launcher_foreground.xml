@@ -1,87 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  맘마미아 런처 아이콘 Foreground
+  - 108dp × 108dp Adaptive Icon 표준
+  - Safe zone 66dp (center 21~87) 안에 모티프 배치
+  - 민트(#4ECDC4) 배경 위에 크림화이트 아기 실루엣 + 코럴 하트/블러셔
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- 맘마미아 아이콘: 귀여운 아기 얼굴 + 작은 젖병 -->
+    <!-- 아기 머리 실루엣 (중앙 원): cx=54, cy=48, r=24 -->
+    <path
+        android:fillColor="#FFF8F2"
+        android:pathData="M54,48 m-24,0 a24,24 0,1 1,48 0 a24,24 0,1 1,-48 0" />
 
-    <!-- 아기 얼굴 (큰 원) -->
+    <!-- 왼쪽 볼 (코럴 블러셔): cx=44, cy=54, r=4 -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,52 m-20,0 a20,20 0,1 1,40 0 a20,20 0,1 1,-40 0" />
+        android:fillColor="#FF8A7A"
+        android:pathData="M44,54 m-4,0 a4,4 0,1 1,8 0 a4,4 0,1 1,-8 0" />
 
-    <!-- 왼쪽 볼 (핑크 블러시) -->
+    <!-- 오른쪽 볼 (코럴 블러셔): cx=64, cy=54, r=4 -->
     <path
-        android:fillColor="#F4A0B6"
-        android:alpha="0.4"
-        android:pathData="M40,55 m-4,0 a4,3 0,1 1,8 0 a4,3 0,1 1,-8 0" />
+        android:fillColor="#FF8A7A"
+        android:pathData="M64,54 m-4,0 a4,4 0,1 1,8 0 a4,4 0,1 1,-8 0" />
 
-    <!-- 오른쪽 볼 (핑크 블러시) -->
+    <!-- 왼쪽 눈 (검정): cx=46, cy=44, r=2 -->
     <path
-        android:fillColor="#F4A0B6"
-        android:alpha="0.4"
-        android:pathData="M68,55 m-4,0 a4,3 0,1 1,8 0 a4,3 0,1 1,-8 0" />
+        android:fillColor="#1C1C1E"
+        android:pathData="M46,44 m-2,0 a2,2 0,1 1,4 0 a2,2 0,1 1,-4 0" />
 
-    <!-- 왼쪽 눈 -->
+    <!-- 오른쪽 눈 (검정): cx=62, cy=44, r=2 -->
     <path
-        android:fillColor="#2D2626"
-        android:pathData="M47,48 m-2.5,0 a2.5,2.5 0,1 1,5 0 a2.5,2.5 0,1 1,-5 0" />
+        android:fillColor="#1C1C1E"
+        android:pathData="M62,44 m-2,0 a2,2 0,1 1,4 0 a2,2 0,1 1,-4 0" />
 
-    <!-- 오른쪽 눈 -->
+    <!-- 하트 심볼 (가슴 위치): 좌우 두 반원 + 아래 삼각, 중심 x=54 y=76 -->
+    <!-- safe zone 여유 확보: 아래 삼각 y 85 → 83 으로 2px 상향 -->
+    <!-- 왼쪽 반원: cx=50, cy=74, r=3.5 -->
     <path
-        android:fillColor="#2D2626"
-        android:pathData="M61,48 m-2.5,0 a2.5,2.5 0,1 1,5 0 a2.5,2.5 0,1 1,-5 0" />
+        android:fillColor="#FF8A7A"
+        android:pathData="M50,74 m-3.5,0 a3.5,3.5 0,1 1,7 0 a3.5,3.5 0,1 1,-7 0" />
 
-    <!-- 눈 하이라이트 (왼쪽) -->
+    <!-- 오른쪽 반원: cx=58, cy=74, r=3.5 -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M46,47 m-1,0 a1,1 0,1 1,2 0 a1,1 0,1 1,-2 0" />
+        android:fillColor="#FF8A7A"
+        android:pathData="M58,74 m-3.5,0 a3.5,3.5 0,1 1,7 0 a3.5,3.5 0,1 1,-7 0" />
 
-    <!-- 눈 하이라이트 (오른쪽) -->
+    <!-- 하트 아래 삼각형 (두 원을 이어주는 뾰족한 꼭지점) -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M60,47 m-1,0 a1,1 0,1 1,2 0 a1,1 0,1 1,-2 0" />
-
-    <!-- 입 (활짝 웃는) -->
-    <path
-        android:fillColor="@android:color/transparent"
-        android:strokeColor="#2D2626"
-        android:strokeWidth="1.5"
-        android:strokeLineCap="round"
-        android:pathData="M49,56 Q54,62 59,56" />
-
-    <!-- 작은 젖병 (오른쪽 위) -->
-    <!-- 젖병 몸체 -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M68,28 L74,28 C74.6,28 75,28.4 75,29 L75,39 C75,40.7 73.7,42 72,42 L70,42 C68.3,42 67,40.7 67,39 L67,29 C67,28.4 67.4,28 68,28 Z" />
-
-    <!-- 젖병 꼭지 -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:alpha="0.9"
-        android:pathData="M69.5,24 C69.5,24 69,25 69,26 C69,27 69.5,28 70,28 L72,28 C72.5,28 73,27 73,26 C73,25 72.5,24 72.5,24 C72,23 70,23 69.5,24 Z" />
-
-    <!-- 젖병 눈금선 -->
-    <path
-        android:strokeColor="#8CC9B0"
-        android:strokeWidth="0.8"
-        android:pathData="M68,32 L70.5,32" />
-    <path
-        android:strokeColor="#8CC9B0"
-        android:strokeWidth="0.8"
-        android:pathData="M68,35 L71.5,35" />
-    <path
-        android:strokeColor="#8CC9B0"
-        android:strokeWidth="0.8"
-        android:pathData="M68,38 L70.5,38" />
-
-    <!-- 하트 (왼쪽 위, 작은) -->
-    <path
-        android:fillColor="#F4A0B6"
-        android:alpha="0.7"
-        android:pathData="M35,30 C35,28 37,26 39,28 C41,26 43,28 43,30 C43,33 39,36 39,36 C39,36 35,33 35,30 Z" />
+        android:fillColor="#FF8A7A"
+        android:pathData="M46.8,75.5 L54,83 L61.2,75.5 Z" />
 
 </vector>

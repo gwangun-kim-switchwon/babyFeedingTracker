@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +29,9 @@ import com.baby.feedingtracker.di.AppContainer
 import com.baby.feedingtracker.ui.cleaning.CleaningViewModel
 import com.baby.feedingtracker.ui.diaper.DiaperViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
+import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.sleep.SleepViewModel
+import com.baby.feedingtracker.ui.statistics.StatisticsViewModel
 import com.baby.feedingtracker.ui.navigation.BabyFeedingNavHost
 import com.baby.feedingtracker.ui.theme.BabyFeedingTrackerTheme
 import com.baby.feedingtracker.ui.theme.ThemeMode
@@ -36,6 +39,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -50,10 +54,13 @@ class MainActivity : ComponentActivity() {
                 val cleaningRepository by app.container.cleaningRepository.collectAsState()
                 val diaperRepository by app.container.diaperRepository.collectAsState()
                 val sleepRepository by app.container.sleepRepository.collectAsState()
+                val babyProfileRepository by app.container.babyProfileRepository.collectAsState()
+                val statisticsRepository by app.container.statisticsRepository.collectAsState()
+                val milestoneManager by app.container.milestoneManager.collectAsState()
                 val initError by app.container.initError.collectAsState()
                 val coroutineScope = rememberCoroutineScope()
 
-                if (repository != null && cleaningRepository != null && diaperRepository != null && sleepRepository != null) {
+                if (repository != null && cleaningRepository != null && diaperRepository != null && sleepRepository != null && babyProfileRepository != null && statisticsRepository != null && milestoneManager != null) {
                     // repository 인스턴스가 바뀌면 (Google 로그인 후 uid 변경 등)
                     // ViewModel을 새로 생성하여 새 데이터를 로드
                     val viewModel: FeedingViewModel = viewModel(
@@ -82,6 +89,20 @@ class MainActivity : ComponentActivity() {
                     val sleepViewModel: SleepViewModel = viewModel(
                         key = "sleep_vm_${sleepRepository.hashCode()}",
                         factory = SleepViewModel.factory(sleepRepository!!)
+                    )
+
+                    val babyProfileViewModel: BabyProfileViewModel = viewModel(
+                        key = "baby_profile_vm_${babyProfileRepository.hashCode()}",
+                        factory = BabyProfileViewModel.factory(babyProfileRepository!!)
+                    )
+
+                    val statisticsViewModel: StatisticsViewModel = viewModel(
+                        key = "statistics_vm_${statisticsRepository.hashCode()}",
+                        factory = StatisticsViewModel.factory(
+                            statisticsRepository!!,
+                            milestoneManager!!,
+                            babyProfileRepository!!
+                        )
                     )
 
                     // Refresh login state after Google Sign-In callback
@@ -115,6 +136,8 @@ class MainActivity : ComponentActivity() {
                         cleaningViewModel = cleaningViewModel,
                         diaperViewModel = diaperViewModel,
                         sleepViewModel = sleepViewModel,
+                        statisticsViewModel = statisticsViewModel,
+                        babyProfileViewModel = babyProfileViewModel,
                         googleAuthHelper = app.container.googleAuthHelper,
                         googleSignInLauncher = googleSignInLauncherWithRefresh
                     )

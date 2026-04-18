@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Mammamia custom icon: 유축 (Pump)
+    24x24 grid, 2dp stroke, round cap/join. R9 §2.3 명세.
+    - 모터 박스 (상단 가로 사각형): x=5~19, y=4~9
+    - 젖병 몸통 (라운드 바텀): x=7~17, y=10~22
+    - 아래로 향한 화살표: (12,11) → (12,17), 촉은 (10,15), (14,15)
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- 모터 박스 (상단) -->
+    <path
+        android:strokeWidth="2"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M5,4 L19,4 L19,9 L5,9 Z" />
+    <!-- 젖병 몸통 (라운드 바텀) -->
+    <path
+        android:strokeWidth="2"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M7,10 L17,10 L17,20 Q17,22 15,22 L9,22 Q7,22 7,20 Z" />
+    <!-- 아래로 향한 화살표 (펌핑 방향) -->
+    <path
+        android:strokeWidth="2"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M12,11 L12,17 M10,15 L12,17 L14,15" />
+</vector>

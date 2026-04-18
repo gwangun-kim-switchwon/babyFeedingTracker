@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  맘마미아 런처 아이콘 Monochrome (Android 13+ Themed Icon)
+  - foreground와 동일한 아기 머리 실루엣만 단색 black (#000000)
+  - 볼/하트 제거 (단순화)
+  - 시스템이 사용자 월페이퍼 톤으로 자동 틴트
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- 아기 머리 실루엣 (단색): cx=54, cy=48, r=24 -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M54,48 m-24,0 a24,24 0,1 1,48 0 a24,24 0,1 1,-48 0" />
+
+    <!-- 하트 심볼 (단색, 가슴 위치) -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M50,76 m-3.5,0 a3.5,3.5 0,1 1,7 0 a3.5,3.5 0,1 1,-7 0" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M58,76 m-3.5,0 a3.5,3.5 0,1 1,7 0 a3.5,3.5 0,1 1,-7 0" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M46.8,77.5 L54,85 L61.2,77.5 Z" />
+
+</vector>

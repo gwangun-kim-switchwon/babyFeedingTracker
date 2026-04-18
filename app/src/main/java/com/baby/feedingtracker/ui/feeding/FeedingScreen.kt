@@ -32,6 +32,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -57,6 +59,8 @@ import com.baby.feedingtracker.data.FeedingRecord
 import com.baby.feedingtracker.data.GoogleAuthHelper
 import com.baby.feedingtracker.data.SharingState
 import com.baby.feedingtracker.ui.ShareBottomSheet
+import com.baby.feedingtracker.ui.profile.BabyProfileBanner
+import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Notes
@@ -79,8 +83,10 @@ import java.util.Locale
 @Composable
 fun FeedingScreen(
     viewModel: FeedingViewModel,
+    babyProfileViewModel: BabyProfileViewModel,
     googleAuthHelper: GoogleAuthHelper,
-    googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
+    googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    onNavigateToProfile: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lastAddedRecord by viewModel.lastAddedRecord.collectAsStateWithLifecycle()
@@ -88,7 +94,19 @@ fun FeedingScreen(
     val isGoogleLoggedIn by viewModel.isGoogleLoggedIn.collectAsStateWithLifecycle()
     val inviteCode by viewModel.inviteCode.collectAsStateWithLifecycle()
     val sharingError by viewModel.sharingError.collectAsStateWithLifecycle()
+    val babyProfile by babyProfileViewModel.profile.collectAsStateWithLifecycle()
+    val daysOld by babyProfileViewModel.daysOld.collectAsStateWithLifecycle()
+    val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
     val extendedColors = LocalExtendedColors.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearError()
+        }
+    }
+
     var selectedRecord by remember { mutableStateOf<FeedingRecord?>(null) }
     var isNewRecord by remember { mutableStateOf(false) }
     var recordToDelete by remember { mutableStateOf<FeedingRecord?>(null) }
@@ -196,13 +214,22 @@ fun FeedingScreen(
             state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
+            // -- 아기 프로필 배너 --
+            item {
+                BabyProfileBanner(
+                    profile = babyProfile,
+                    daysOld = daysOld,
+                    onNavigateToProfile = onNavigateToProfile
+                )
+            }
+
             // -- 상단: 경과 시간 영역 + 공유 아이콘 --
             item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
-                        .padding(top = 48.dp, bottom = 16.dp)
+                        .padding(top = 24.dp, bottom = 16.dp)
                 ) {
                     ElapsedTimeSection(
                         elapsedMinutes = uiState.elapsedMinutes,
@@ -314,6 +341,13 @@ fun FeedingScreen(
                 contentDescription = "수유 기록 추가"
             )
         }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp)
+        )
     }
 }
 
@@ -590,7 +624,7 @@ private fun RecordEditBottomSheet(
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedType by remember { mutableStateOf(record.type) }
     var selectedAmount by remember { mutableStateOf(record.amountMl) }
     var selectedLeftMin by remember { mutableStateOf(record.leftMin) }

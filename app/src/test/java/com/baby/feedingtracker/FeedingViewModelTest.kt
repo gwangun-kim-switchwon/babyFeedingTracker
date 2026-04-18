@@ -1,5 +1,6 @@
 package com.baby.feedingtracker
 
+import com.baby.feedingtracker.data.DataResult
 import com.baby.feedingtracker.data.FeedingRecord
 import com.baby.feedingtracker.data.FeedingRepository
 import com.baby.feedingtracker.data.GoogleAuthHelper
@@ -64,7 +65,7 @@ class FeedingViewModelTest {
     @Test
     fun `addRecord delegates to repository and sets lastAddedRecord`() = runTest(testDispatcher) {
         val record = FeedingRecord(id = "test-id", timestamp = 1000L)
-        whenever(repository.addRecord()).thenReturn(record)
+        whenever(repository.addRecord()).thenReturn(DataResult.Success(record))
 
         viewModel.addRecord()
 
@@ -75,6 +76,7 @@ class FeedingViewModelTest {
     @Test
     fun `deleteRecord delegates to repository`() = runTest(testDispatcher) {
         val record = FeedingRecord(id = "del-id", timestamp = 2000L)
+        whenever(repository.deleteRecord(record)).thenReturn(DataResult.Success(Unit))
 
         viewModel.deleteRecord(record)
 
@@ -84,7 +86,7 @@ class FeedingViewModelTest {
     @Test
     fun `clearLastAddedRecord resets to null`() = runTest(testDispatcher) {
         val record = FeedingRecord(id = "test-id", timestamp = 1000L)
-        whenever(repository.addRecord()).thenReturn(record)
+        whenever(repository.addRecord()).thenReturn(DataResult.Success(record))
 
         viewModel.addRecord()
         assertNotNull(viewModel.lastAddedRecord.value)
@@ -129,7 +131,7 @@ class FeedingViewModelTest {
     @Test
     fun `addRecord debounces rapid calls`() = runTest(testDispatcher) {
         val record = FeedingRecord(id = "test-id", timestamp = 1000L)
-        whenever(repository.addRecord()).thenReturn(record)
+        whenever(repository.addRecord()).thenReturn(DataResult.Success(record))
 
         viewModel.addRecord()
         viewModel.addRecord()
@@ -139,6 +141,8 @@ class FeedingViewModelTest {
 
     @Test
     fun `updateRecordType delegates to repository`() = runTest(testDispatcher) {
+        whenever(repository.updateRecord("id-1", "breast", null, 10, 5)).thenReturn(DataResult.Success(Unit))
+
         viewModel.updateRecordType("id-1", "breast", null, 10, 5)
 
         verify(repository).updateRecord("id-1", "breast", null, 10, 5)
@@ -146,6 +150,8 @@ class FeedingViewModelTest {
 
     @Test
     fun `updateRecordTimestamp delegates to repository`() = runTest(testDispatcher) {
+        whenever(repository.updateTimestamp("id-1", 5000L)).thenReturn(DataResult.Success(Unit))
+
         viewModel.updateRecordTimestamp("id-1", 5000L)
 
         verify(repository).updateTimestamp("id-1", 5000L)

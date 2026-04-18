@@ -11,8 +11,13 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
+import com.baby.feedingtracker.R
 import java.util.Calendar
 
 // ──────────────────────────────────────────────
@@ -22,53 +27,138 @@ import java.util.Calendar
 enum class ThemeMode { SYSTEM, AUTO, LIGHT, DARK }
 
 // ──────────────────────────────────────────────
-// Soft Minimal Color Palette (Light)
+// Mammamia Brand Palette (R9 §3 — 2026 트렌드 기반)
+// Primary 민트 / Secondary 코럴 / Tertiary 앰버
 // ──────────────────────────────────────────────
 
-// Background & Surface
-val CreamWhite = Color(0xFFFFF8F5)          // 메인 배경
-val WarmWhite = Color(0xFFFFFBF8)           // 카드/섹션 배경
-val SoftBeige = Color(0xFFFFF1EB)           // 미세한 구분 배경
+// Primary — Mint (런처 아이콘과 통일)
+val MintPrimary = Color(0xFF4ECDC4)
+val MintPrimaryDark = Color(0xFF7DDDD5)       // 다크모드 대비 유지
+val MintContainerLight = Color(0xFFB8EEEA)    // FAB/primaryContainer 배경
+val MintContainerDark = Color(0xFF004D47)
+val MintOnContainerLight = Color(0xFF00332F)
+val MintOnContainerDark = Color(0xFFB8EEEA)
 
-// Accent / Primary
-val MintGreen = Color(0xFF8CC9B0)           // 메인 액센트
-val MintGreenLight = Color(0xFFB5DFCC)      // 연한 액센트
-val MintGreenDark = Color(0xFF6BAF96)       // 눌림 상태
+// Secondary — Coral (하트, 알림, 마일스톤 액센트)
+val CoralSecondary = Color(0xFFFF8A7A)
+val CoralSecondaryDark = Color(0xFFFFB3A5)
+val CoralContainerLight = Color(0xFFFFDAD2)
+val CoralContainerDark = Color(0xFF5C1D12)
+val CoralOnContainerLight = Color(0xFF3B0A02)
+val CoralOnContainerDark = Color(0xFFFFDAD2)
 
-// Text
-val DarkCharcoal = Color(0xFF2D2626)        // 주요 텍스트
-val WarmGray = Color(0xFF8E8685)            // 서브 텍스트
-val LightGray = Color(0xFFBEB8B6)           // 비활성 텍스트
-
-// Utility
-val SoftRed = Color(0xFFFF6B6B)             // 삭제/경고
-val SoftRedBg = Color(0xFFFFE8E8)           // 삭제 배경
-val DividerColor = Color(0xFFF0E8E4)        // 구분선
-
-// Gradient colors
-val GradientTop = Color(0xFFFFF8F5)
-val GradientBottom = Color(0xFFFFF1EB)
+// Tertiary — Amber (성장/성취 뱃지)
+val AmberTertiary = Color(0xFFFFB74D)
+val AmberTertiaryDark = Color(0xFFFFD08A)
+val AmberContainerLight = Color(0xFFFFE0A8)
+val AmberContainerDark = Color(0xFF4A3500)
+val AmberOnContainerLight = Color(0xFF261A00)
+val AmberOnContainerDark = Color(0xFFFFE0A8)
 
 // ──────────────────────────────────────────────
-// Dark Color Palette
+// Light Surfaces (Cream 계열)
 // ──────────────────────────────────────────────
 
-val DarkBackground = Color(0xFF1A1A1E)
-val DarkSurface = Color(0xFF242428)
-val DarkSoftBackground = Color(0xFF2A2A2E)
-val DarkMintGreen = Color(0xFF9AD4BC)
-val DarkMintGreenLight = Color(0xFF6BAF96)
-val DarkMintGreenDark = Color(0xFF7CC4A8)
-val DarkTextPrimary = Color(0xFFE8E2E0)
-val DarkTextSecondary = Color(0xFF9E9896)
-val DarkDivider = Color(0xFF3A3A3E)
-val DarkDeleteBg = Color(0xFF3D2020)
-val DarkSoftRed = Color(0xFFFF8A8A)
-val DarkGradientTop = Color(0xFF1A1A1E)
-val DarkGradientBottom = Color(0xFF222226)
+val CreamWhite = Color(0xFFFFF8F2)           // 메인 배경 (R9 §3.1)
+val WarmWhite = Color(0xFFFFFFFF)            // 카드 surface
+val SurfaceContainerLight = Color(0xFFF4F0EB) // 벤토 카드
+val SurfaceContainerHighLight = Color(0xFFEBE6E0) // 바텀시트
+val SoftBeige = Color(0xFFFFF1EB)            // 미세한 구분 배경 (gradient bottom)
+
+// ──────────────────────────────────────────────
+// Dark Surfaces (R9 §3.3 — 블루 섞인 딥 블랙)
+// 순수 블랙 금지, 눈 피로 감소 우선
+// ──────────────────────────────────────────────
+
+val BackgroundDark = Color(0xFF0A0A0F)
+val SurfaceDark = Color(0xFF14141A)
+val SurfaceContainerDark = Color(0xFF1C1C24)
+val SurfaceContainerHighDark = Color(0xFF24242E)
+
+// ──────────────────────────────────────────────
+// Text & Ink
+// ──────────────────────────────────────────────
+
+val InkLight = Color(0xFF1C1B1F)              // 본문 텍스트 (Light)
+val InkDark = Color(0xFFE8E6F0)               // 웜 화이트 (Dark) — 순백 금지
+val WarmGray = Color(0xFF6E6A73)              // 서브 텍스트 (Light)
+val WarmGrayDark = Color(0xFF9E99A6)          // 서브 텍스트 (Dark)
+val MutedGrayLight = Color(0xFFBEB8B6)        // 비활성
+
+// 하위호환 용도 (기존 호출처 보존)
+val DarkCharcoal = InkLight
+val LightGray = MutedGrayLight
+
+// ──────────────────────────────────────────────
+// Utility Colors
+// ──────────────────────────────────────────────
+
+val ErrorLight = Color(0xFFD84545)            // R9 §3.1 error
+val ErrorDark = Color(0xFFFF9B8A)             // R9 §3.3 dark error
+val ErrorBgLight = Color(0xFFFFE8E8)
+val ErrorBgDark = Color(0xFF3D2020)
+val OutlineLight = Color(0xFFCAC4CF)
+val OutlineDark = Color(0xFF3F3F47)
+val DividerLight = Color(0xFFF0E8E4)          // subtle 구분선
+val DividerDark = Color(0xFF2A2A33)
+
+// 하위호환 alias
+val SoftRed = ErrorLight
+val SoftRedBg = ErrorBgLight
+val DividerColor = DividerLight
+val DarkBackground = BackgroundDark
+val DarkSurface = SurfaceDark
+val DarkTextPrimary = InkDark
+val DarkTextSecondary = WarmGrayDark
+val DarkDivider = DividerDark
+val DarkDeleteBg = ErrorBgDark
+val DarkSoftRed = ErrorDark
+
+// Gradient (홈 히어로 배경)
+val GradientTop = CreamWhite
+val GradientBottom = SoftBeige
+val DarkGradientTop = BackgroundDark
+val DarkGradientBottom = Color(0xFF16161E)
+
+// ──────────────────────────────────────────────
+// Category Colors (R9 §3.2)
+// 카테고리별 액센트 바 & 카드 탭 컬러
+// ──────────────────────────────────────────────
+
+// Light mode
+val CategoryFeedingLight = Color(0xFF4ECDC4)      // Primary 민트 (가장 빈도 높음)
+val CategoryDiaperLight = Color(0xFFFFB788)       // 웜 피치
+val CategorySleepLight = Color(0xFFB3A3E8)        // 라벤더 (국내 사용자 인식)
+val CategoryBathLight = Color(0xFF74C0FC)         // 스카이블루 (물 메타포)
+val CategoryGrowthLight = Color(0xFFFFB74D)       // 앰버
+val CategoryMedicalLight = Color(0xFFD84545)      // 소프트 레드 (주의)
+val CategoryMilestoneLight = Color(0xFFFF8A7A)    // 코럴
+
+// Dark mode — 채도/밝기 조정으로 눈부심 감소
+val CategoryFeedingDark = Color(0xFF7DDDD5)
+val CategoryDiaperDark = Color(0xFFFFCFA8)
+val CategorySleepDark = Color(0xFFC7BBEF)
+val CategoryBathDark = Color(0xFF9DD3FF)
+val CategoryGrowthDark = Color(0xFFFFD08A)
+val CategoryMedicalDark = Color(0xFFFF8A8A)
+val CategoryMilestoneDark = Color(0xFFFFB3A5)
+
+/** 카테고리별 색상 토큰 — 스크린에서 참조 가능 */
+object CategoryColors {
+    val Feeding = CategoryFeedingLight
+    val Diaper = CategoryDiaperLight
+    val Sleep = CategorySleepLight
+    val Bath = CategoryBathLight
+    val Growth = CategoryGrowthLight
+    val Medical = CategoryMedicalLight
+    val Milestone = CategoryMilestoneLight
+}
 
 // ──────────────────────────────────────────────
 // Extended Color Scheme (beyond Material3)
+// 기존 호출처 호환: fabContainer, gradientTop/Bottom, softBackground,
+// subtleText, divider, deleteBackground, deleteColor, statusConnected/Disconnected
+// 신규 토큰: coralAccent, amberTertiary, category* (7개)
 // ──────────────────────────────────────────────
 
 @Immutable
@@ -77,160 +167,266 @@ data class ExtendedColors(
     val gradientBottom: Color = GradientBottom,
     val softBackground: Color = SoftBeige,
     val subtleText: Color = WarmGray,
-    val divider: Color = DividerColor,
-    val deleteBackground: Color = SoftRedBg,
-    val deleteColor: Color = SoftRed,
-    val fabContainer: Color = MintGreen,
+    val divider: Color = DividerLight,
+    val deleteBackground: Color = ErrorBgLight,
+    val deleteColor: Color = ErrorLight,
+    val fabContainer: Color = MintPrimary,
     val statusConnected: Color = Color(0xFF4CAF50),
-    val statusDisconnected: Color = SoftRed,
+    val statusDisconnected: Color = ErrorLight,
+    // ── 신규: 브랜드 액센트 ──
+    val coralAccent: Color = CoralSecondary,
+    val amberTertiary: Color = AmberTertiary,
+    // ── 신규: 카테고리 색상 ──
+    val categoryFeeding: Color = CategoryFeedingLight,
+    val categoryDiaper: Color = CategoryDiaperLight,
+    val categorySleep: Color = CategorySleepLight,
+    val categoryBath: Color = CategoryBathLight,
+    val categoryGrowth: Color = CategoryGrowthLight,
+    val categoryMedical: Color = CategoryMedicalLight,
+    val categoryMilestone: Color = CategoryMilestoneLight,
 )
 
-private val DefaultExtendedColors = ExtendedColors()
+private val LightExtendedColors = ExtendedColors()
 
 private val DarkExtendedColors = ExtendedColors(
     gradientTop = DarkGradientTop,
     gradientBottom = DarkGradientBottom,
-    softBackground = DarkSoftBackground,
-    subtleText = DarkTextSecondary,
-    divider = DarkDivider,
-    deleteBackground = DarkDeleteBg,
-    deleteColor = DarkSoftRed,
-    fabContainer = DarkMintGreen,
+    softBackground = SurfaceContainerDark,
+    subtleText = WarmGrayDark,
+    divider = DividerDark,
+    deleteBackground = ErrorBgDark,
+    deleteColor = ErrorDark,
+    fabContainer = MintPrimaryDark,
     statusConnected = Color(0xFF66BB6A),
-    statusDisconnected = DarkSoftRed,
+    statusDisconnected = ErrorDark,
+    coralAccent = CoralSecondaryDark,
+    amberTertiary = AmberTertiaryDark,
+    categoryFeeding = CategoryFeedingDark,
+    categoryDiaper = CategoryDiaperDark,
+    categorySleep = CategorySleepDark,
+    categoryBath = CategoryBathDark,
+    categoryGrowth = CategoryGrowthDark,
+    categoryMedical = CategoryMedicalDark,
+    categoryMilestone = CategoryMilestoneDark,
 )
 
 val LocalExtendedColors = staticCompositionLocalOf { ExtendedColors() }
 
 // ──────────────────────────────────────────────
-// Material3 Color Schemes
+// Material3 Color Schemes (R9 §3.1, §3.3)
 // ──────────────────────────────────────────────
 
 private val LightColorScheme = lightColorScheme(
-    primary = MintGreen,
+    primary = MintPrimary,
     onPrimary = Color.White,
-    primaryContainer = MintGreenLight,
-    onPrimaryContainer = DarkCharcoal,
-    secondary = MintGreenLight,
-    onSecondary = DarkCharcoal,
-    secondaryContainer = SoftBeige,
-    onSecondaryContainer = DarkCharcoal,
+    primaryContainer = MintContainerLight,
+    onPrimaryContainer = MintOnContainerLight,
+    secondary = CoralSecondary,
+    onSecondary = Color.White,
+    secondaryContainer = CoralContainerLight,
+    onSecondaryContainer = CoralOnContainerLight,
+    tertiary = AmberTertiary,
+    onTertiary = Color(0xFF3D2A00),
+    tertiaryContainer = AmberContainerLight,
+    onTertiaryContainer = AmberOnContainerLight,
     background = CreamWhite,
-    onBackground = DarkCharcoal,
-    surface = CreamWhite,
-    onSurface = DarkCharcoal,
-    surfaceVariant = WarmWhite,
+    onBackground = InkLight,
+    surface = WarmWhite,
+    onSurface = InkLight,
+    surfaceVariant = SurfaceContainerLight,
     onSurfaceVariant = WarmGray,
-    error = SoftRed,
+    surfaceTint = MintPrimary,
+    error = ErrorLight,
     onError = Color.White,
-    outline = DividerColor,
-    outlineVariant = DividerColor,
+    errorContainer = ErrorBgLight,
+    onErrorContainer = Color(0xFF410002),
+    outline = OutlineLight,
+    outlineVariant = DividerLight,
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkMintGreen,
-    onPrimary = DarkBackground,
-    primaryContainer = DarkMintGreenDark,
-    background = DarkBackground,
-    onBackground = DarkTextPrimary,
-    surface = DarkBackground,
-    onSurface = DarkTextPrimary,
-    surfaceVariant = DarkSurface,
-    onSurfaceVariant = DarkTextSecondary,
-    error = DarkSoftRed,
-    onError = DarkBackground,
-    outline = DarkDivider,
+    primary = MintPrimaryDark,
+    onPrimary = Color(0xFF003733),
+    primaryContainer = MintContainerDark,
+    onPrimaryContainer = MintOnContainerDark,
+    secondary = CoralSecondaryDark,
+    onSecondary = Color(0xFF5C1D12),
+    secondaryContainer = CoralContainerDark,
+    onSecondaryContainer = CoralOnContainerDark,
+    tertiary = AmberTertiaryDark,
+    onTertiary = Color(0xFF412D00),
+    tertiaryContainer = AmberContainerDark,
+    onTertiaryContainer = AmberOnContainerDark,
+    background = BackgroundDark,
+    onBackground = InkDark,
+    surface = SurfaceDark,
+    onSurface = InkDark,
+    surfaceVariant = SurfaceContainerDark,
+    onSurfaceVariant = WarmGrayDark,
+    surfaceTint = MintPrimaryDark,
+    error = ErrorDark,
+    onError = Color(0xFF690005),
+    errorContainer = ErrorBgDark,
+    onErrorContainer = Color(0xFFFFDAD6),
+    outline = OutlineDark,
+    outlineVariant = DividerDark,
 )
 
 // ──────────────────────────────────────────────
-// Typography Scale
+// Pretendard Font Family (R9 §5 — "세련된 한국 디자인")
+// androidx.compose.ui:ui-text-google-fonts 방식.
+// Async 로딩 + 시스템 기본 폰트 자동 fallback → 크래시 없음.
+// ──────────────────────────────────────────────
+private val GoogleFontProvider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs,
+)
+
+private val PretendardGoogleFont = GoogleFont("Pretendard")
+
+val PretendardFontFamily = FontFamily(
+    Font(googleFont = PretendardGoogleFont, fontProvider = GoogleFontProvider, weight = FontWeight.Normal, style = FontStyle.Normal),
+    Font(googleFont = PretendardGoogleFont, fontProvider = GoogleFontProvider, weight = FontWeight.Medium, style = FontStyle.Normal),
+    Font(googleFont = PretendardGoogleFont, fontProvider = GoogleFontProvider, weight = FontWeight.SemiBold, style = FontStyle.Normal),
+    Font(googleFont = PretendardGoogleFont, fontProvider = GoogleFontProvider, weight = FontWeight.Bold, style = FontStyle.Normal),
+)
+
+// 숫자 가독성 향상을 위한 OpenType feature: tabular numbers.
+// 수유량/경과시간 등 숫자 정렬 시 자리폭 고정 → 깜빡임 없음.
+private const val TNUM = "tnum"
+
+// ──────────────────────────────────────────────
+// Typography Scale — R9 §5 기반
+// headlineLarge/Medium 가독성 향상: tight letter-spacing 적용
+// Pretendard fontFamily 전체 적용 + 숫자 표시용 TextStyle에 tnum 활성화
 // ──────────────────────────────────────────────
 
 private val AppTypography = Typography(
-    // 경과 시간 (매우 큰 디스플레이)
+    // 경과 시간 (매우 큰 디스플레이) — 숫자 tnum 필수
     displayLarge = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 48.sp,
         lineHeight = 56.sp,
         letterSpacing = (-1).sp,
+        fontFeatureSettings = TNUM,
     ),
     // 보조 큰 텍스트
     displayMedium = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 36.sp,
         lineHeight = 44.sp,
         letterSpacing = (-0.5).sp,
+        fontFeatureSettings = TNUM,
     ),
-    // 섹션 큰 제목
+    displaySmall = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 30.sp,
+        lineHeight = 38.sp,
+        letterSpacing = (-0.25).sp,
+        fontFeatureSettings = TNUM,
+    ),
+    // 섹션 큰 제목 — tight letter-spacing으로 세련된 느낌
     headlineLarge = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
         lineHeight = 36.sp,
+        letterSpacing = (-0.4).sp,
+        fontFeatureSettings = TNUM,
     ),
     // 중간 제목
     headlineMedium = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
+        letterSpacing = (-0.25).sp,
     ),
     // 작은 제목
     headlineSmall = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
         lineHeight = 24.sp,
+        letterSpacing = (-0.1).sp,
     ),
-    // 기록 시간 텍스트
+    // 기록 시간 텍스트 — 시/분 정렬 위해 tnum
     titleLarge = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         lineHeight = 28.sp,
+        letterSpacing = (-0.15).sp,
+        fontFeatureSettings = TNUM,
     ),
     titleMedium = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 24.sp,
+        letterSpacing = 0.1.sp,
     ),
     titleSmall = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
+        letterSpacing = 0.1.sp,
     ),
     // 본문
     bodyLarge = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
+        letterSpacing = 0.15.sp,
     ),
     bodyMedium = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
+        letterSpacing = 0.2.sp,
     ),
     bodySmall = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
+        letterSpacing = 0.3.sp,
     ),
-    // 버튼 / 라벨
+    // 버튼 / 라벨 — 버튼 내 숫자 표기 시 tnum 이점
     labelLarge = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 24.sp,
+        letterSpacing = 0.1.sp,
+        fontFeatureSettings = TNUM,
     ),
     labelMedium = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
+        letterSpacing = 0.5.sp,
     ),
     labelSmall = TextStyle(
+        fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 10.sp,
         lineHeight = 14.sp,
+        letterSpacing = 0.5.sp,
     ),
 )
 
 // ──────────────────────────────────────────────
 // Theme Composable
+// 이름 BabyFeedingTrackerTheme 유지 — 기존 호출처 보존
 // ──────────────────────────────────────────────
 
 @Composable
@@ -249,12 +445,13 @@ fun BabyFeedingTrackerTheme(
     }
 
     val colorScheme = if (isDark) DarkColorScheme else LightColorScheme
-    val extendedColors = if (isDark) DarkExtendedColors else DefaultExtendedColors
+    val extendedColors = if (isDark) DarkExtendedColors else LightExtendedColors
 
     CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = AppTypography,
+            shapes = MammamiaShapes,
             content = content
         )
     }

@@ -36,6 +36,8 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -61,6 +63,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.baby.feedingtracker.data.SleepRecord
+import com.baby.feedingtracker.ui.profile.BabyProfileBanner
+import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -69,10 +73,25 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SleepScreen(viewModel: SleepViewModel) {
+fun SleepScreen(
+    viewModel: SleepViewModel,
+    babyProfileViewModel: BabyProfileViewModel,
+    onNavigateToProfile: () -> Unit = {}
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lastAddedRecord by viewModel.lastAddedRecord.collectAsStateWithLifecycle()
+    val babyProfile by babyProfileViewModel.profile.collectAsStateWithLifecycle()
+    val daysOld by babyProfileViewModel.daysOld.collectAsStateWithLifecycle()
+    val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
     val extendedColors = LocalExtendedColors.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearError()
+        }
+    }
 
     var selectedRecord by remember { mutableStateOf<SleepRecord?>(null) }
     var isNewRecord by remember { mutableStateOf(false) }
@@ -159,13 +178,22 @@ fun SleepScreen(viewModel: SleepViewModel) {
             state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
+            // -- 아기 프로필 배너 --
+            item {
+                BabyProfileBanner(
+                    profile = babyProfile,
+                    daysOld = daysOld,
+                    onNavigateToProfile = onNavigateToProfile
+                )
+            }
+
             // -- 상단: 경과 시간 영역 --
             item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
-                        .padding(top = 48.dp, bottom = 16.dp)
+                        .padding(top = 24.dp, bottom = 16.dp)
                 ) {
                     SleepElapsedTimeSection(
                         elapsedMinutes = uiState.elapsedMinutes,
@@ -251,6 +279,13 @@ fun SleepScreen(viewModel: SleepViewModel) {
                 contentDescription = if (uiState.isCurrentlySleeping) "수면 종료" else "수면 기록 추가"
             )
         }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp)
+        )
     }
 }
 
@@ -547,7 +582,7 @@ private fun SleepEditBottomSheet(
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedType by remember { mutableStateOf(record.type) }
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
     var showTimePicker by remember { mutableStateOf(false) }

@@ -1,5 +1,6 @@
 package com.baby.feedingtracker
 
+import com.baby.feedingtracker.data.DataResult
 import com.baby.feedingtracker.data.DiaperRecord
 import com.baby.feedingtracker.data.DiaperRepository
 import com.baby.feedingtracker.ui.diaper.DiaperViewModel
@@ -47,7 +48,7 @@ class DiaperViewModelTest {
     @Test
     fun `addRecord delegates to repository and sets lastAddedRecord`() = runTest(testDispatcher) {
         val record = DiaperRecord(id = "d-1", timestamp = 1000L)
-        whenever(repository.addRecord()).thenReturn(record)
+        whenever(repository.addRecord()).thenReturn(DataResult.Success(record))
 
         viewModel.addRecord()
 
@@ -67,7 +68,7 @@ class DiaperViewModelTest {
     @Test
     fun `clearLastAddedRecord resets to null`() = runTest(testDispatcher) {
         val record = DiaperRecord(id = "d-1", timestamp = 1000L)
-        whenever(repository.addRecord()).thenReturn(record)
+        whenever(repository.addRecord()).thenReturn(DataResult.Success(record))
 
         viewModel.addRecord()
         assertNotNull(viewModel.lastAddedRecord.value)
@@ -121,7 +122,7 @@ class DiaperViewModelTest {
     @Test
     fun `addRecord debounces rapid calls`() = runTest(testDispatcher) {
         val record = DiaperRecord(id = "d-1", timestamp = 1000L)
-        whenever(repository.addRecord()).thenReturn(record)
+        whenever(repository.addRecord()).thenReturn(DataResult.Success(record))
 
         viewModel.addRecord()
         viewModel.addRecord()
