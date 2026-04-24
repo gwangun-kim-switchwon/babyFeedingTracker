@@ -101,6 +101,9 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
+    // Play Store 보안 경고 대응: firebase-auth가 transitive로 recaptcha:18.1.2를
+    // 가져오지만 18.4.0 미만은 critical vulnerability. 명시적으로 최신 override.
+    implementation("com.google.android.recaptcha:recaptcha:18.4.0")
     implementation("com.google.firebase:firebase-firestore-ktx")
 
     // Google Sign-In
