@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { padding: 40px; background: #ddd; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Noto Sans KR', sans-serif; }
+  .banner {
+    width: 1024px; height: 500px;
+    background: linear-gradient(135deg, #8CC9B0 0%, #A8D8C0 40%, #FFF8F5 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding-left: 80px;
+  }
+  .circle1 { position: absolute; width: 350px; height: 350px; border-radius: 50%; background: rgba(255,255,255,0.12); top: -100px; right: -80px; }
+  .circle2 { position: absolute; width: 250px; height: 250px; border-radius: 50%; background: rgba(255,255,255,0.08); bottom: -80px; left: -50px; }
+  .circle3 { position: absolute; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.06); top: 60px; right: 300px; }
+
+  .content {
+    display: flex;
+    align-items: center;
+    gap: 70px;
+    z-index: 1;
+  }
+
+  .icon-wrap {
+    width: 200px; height: 200px;
+    background: white;
+    border-radius: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    flex-shrink: 0;
+  }
+  .icon-inner {
+    width: 160px; height: 160px;
+    background: #8CC9B0;
+    border-radius: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .baby-face { width: 70px; height: 70px; background: white; border-radius: 50%; position: absolute; top: 55px; left: 45px; }
+  .baby-eye { width: 8px; height: 8px; background: #2D2626; border-radius: 50%; position: absolute; }
+  .baby-eye.l { top: 75px; left: 62px; }
+  .baby-eye.r { top: 75px; left: 90px; }
+  .baby-highlight { width: 3px; height: 3px; background: white; border-radius: 50%; position: absolute; }
+  .baby-highlight.l { top: 73px; left: 60px; }
+  .baby-highlight.r { top: 73px; left: 88px; }
+  .baby-cheek { width: 14px; height: 10px; background: rgba(244,160,182,0.4); border-radius: 50%; position: absolute; }
+  .baby-cheek.l { top: 84px; left: 52px; }
+  .baby-cheek.r { top: 84px; left: 96px; }
+  .baby-mouth { position: absolute; top: 90px; left: 70px; width: 22px; height: 11px; border-bottom: 3px solid #2D2626; border-radius: 0 0 50% 50%; }
+  .mini-bottle { position: absolute; top: 25px; right: 22px; width: 14px; height: 26px; background: white; border-radius: 0 0 4px 4px; }
+  .mini-bottle-top { position: absolute; top: 18px; right: 24px; width: 10px; height: 7px; background: rgba(255,255,255,0.9); border-radius: 3px 3px 0 0; }
+  .mini-nipple { position: absolute; top: 12px; right: 26px; width: 6px; height: 6px; background: rgba(255,255,255,0.85); border-radius: 50% 50% 0 0; }
+  .mini-heart { position: absolute; top: 30px; left: 20px; font-size: 18px; color: rgba(244,160,182,0.7); line-height: 1; }
+
+  .text-area {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .app-name {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    color: #2D2626;
+    letter-spacing: -3px;
+    line-height: 1;
+  }
+  .tagline {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 26px;
+    color: #5a5555;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .features {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+  }
+  .chip {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: rgba(255,255,255,0.75);
+    padding: 10px 22px;
+    border-radius: 24px;
+    font-size: 18px;
+    color: #6BAF96;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="circle1"></div>
+  <div class="circle2"></div>
+  <div class="circle3"></div>
+  <div class="content">
+    <div class="icon-wrap">
+      <div class="icon-inner">
+        <span class="mini-heart">&#9829;</span>
+        <div class="mini-nipple"></div>
+        <div class="mini-bottle-top"></div>
+        <div class="mini-bottle"></div>
+        <div class="baby-face"></div>
+        <div class="baby-eye l"></div>
+        <div class="baby-eye r"></div>
+        <div class="baby-highlight l"></div>
+        <div class="baby-highlight r"></div>
+        <div class="baby-cheek l"></div>
+        <div class="baby-cheek r"></div>
+        <div class="baby-mouth"></div>
+      </div>
+    </div>
+    <div class="text-area">
+      <div class="app-name">맘마미아</div>
+      <div class="tagline">배우자와 함께 쓰는 육아 기록</div>
+      <div class="features">
+        <span class="chip">🍼 수유</span>
+        <span class="chip">👶 기저귀</span>
+        <span class="chip">✨ 세척</span>
+        <span class="chip">🔗 실시간 공유</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
