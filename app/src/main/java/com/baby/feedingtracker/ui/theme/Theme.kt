@@ -27,19 +27,27 @@ import java.util.Calendar
 enum class ThemeMode { SYSTEM, AUTO, LIGHT, DARK }
 
 // ──────────────────────────────────────────────
-// Mammamia Brand Palette (R9 §3 — 2026 트렌드 기반)
-// Primary 민트 / Secondary 코럴 / Tertiary 앰버
+// Mammamia Brand Palette (CEO 확정 — Warm Peach 다홍 톤)
+// Primary Warm Peach / Secondary 코럴 / Tertiary Terracotta
 // ──────────────────────────────────────────────
 
-// Primary — Mint (런처 아이콘과 통일)
-val MintPrimary = Color(0xFF4ECDC4)
-val MintPrimaryDark = Color(0xFF7DDDD5)       // 다크모드 대비 유지
-val MintContainerLight = Color(0xFFB8EEEA)    // FAB/primaryContainer 배경
-val MintContainerDark = Color(0xFF004D47)
-val MintOnContainerLight = Color(0xFF00332F)
-val MintOnContainerDark = Color(0xFFB8EEEA)
+// Primary — Warm Peach (런처 아이콘과 통일)
+val PeachPrimary = Color(0xFFFFB59A)
+val PeachPrimaryDark = Color(0xFFFFC9B0)      // 다크모드 디밍 피치
+val PeachContainerLight = Color(0xFFFFD4C4)   // FAB/primaryContainer 배경 (Light Peach)
+val PeachContainerDark = Color(0xFF5A3015)    // Deep Peach
+val PeachOnContainerLight = Color(0xFF3D1F00)
+val PeachOnContainerDark = Color(0xFFFFD4C4)
 
-// Secondary — Coral (하트, 알림, 마일스톤 액센트)
+// 하위호환 alias — 기존 호출처(MintPrimary 등) 보존을 위해 새 색상으로 매핑
+val MintPrimary = PeachPrimary
+val MintPrimaryDark = PeachPrimaryDark
+val MintContainerLight = PeachContainerLight
+val MintContainerDark = PeachContainerDark
+val MintOnContainerLight = PeachOnContainerLight
+val MintOnContainerDark = PeachOnContainerDark
+
+// Secondary — Coral (하트, 알림, 마일스톤 액센트, 통일감 유지)
 val CoralSecondary = Color(0xFFFF8A7A)
 val CoralSecondaryDark = Color(0xFFFFB3A5)
 val CoralContainerLight = Color(0xFFFFDAD2)
@@ -47,13 +55,21 @@ val CoralContainerDark = Color(0xFF5C1D12)
 val CoralOnContainerLight = Color(0xFF3B0A02)
 val CoralOnContainerDark = Color(0xFFFFDAD2)
 
-// Tertiary — Amber (성장/성취 뱃지)
-val AmberTertiary = Color(0xFFFFB74D)
-val AmberTertiaryDark = Color(0xFFFFD08A)
-val AmberContainerLight = Color(0xFFFFE0A8)
-val AmberContainerDark = Color(0xFF4A3500)
-val AmberOnContainerLight = Color(0xFF261A00)
-val AmberOnContainerDark = Color(0xFFFFE0A8)
+// Tertiary — Terracotta (성장/성취 뱃지, Peach와 톤 통일)
+val TerracottaTertiary = Color(0xFFF4A88A)
+val TerracottaTertiaryDark = Color(0xFFF4B59A)
+val TerracottaContainerLight = Color(0xFFFAD4C0)
+val TerracottaContainerDark = Color(0xFF4A3500)
+val TerracottaOnContainerLight = Color(0xFF261A00)
+val TerracottaOnContainerDark = Color(0xFFFAD4C0)
+
+// 하위호환 alias — 기존 AmberTertiary 호출처 보존
+val AmberTertiary = TerracottaTertiary
+val AmberTertiaryDark = TerracottaTertiaryDark
+val AmberContainerLight = TerracottaContainerLight
+val AmberContainerDark = TerracottaContainerDark
+val AmberOnContainerLight = TerracottaOnContainerLight
+val AmberOnContainerDark = TerracottaOnContainerDark
 
 // ──────────────────────────────────────────────
 // Light Surfaces (Cream 계열)
@@ -126,20 +142,20 @@ val DarkGradientBottom = Color(0xFF16161E)
 // ──────────────────────────────────────────────
 
 // Light mode
-val CategoryFeedingLight = Color(0xFF4ECDC4)      // Primary 민트 (가장 빈도 높음)
-val CategoryDiaperLight = Color(0xFFFFB788)       // 웜 피치
+val CategoryFeedingLight = Color(0xFFFFB59A)      // Primary Warm Peach (가장 빈도 높음)
+val CategoryDiaperLight = Color(0xFFD4B59A)       // Sand (Feeding과 분리)
 val CategorySleepLight = Color(0xFFB3A3E8)        // 라벤더 (국내 사용자 인식)
 val CategoryBathLight = Color(0xFF74C0FC)         // 스카이블루 (물 메타포)
-val CategoryGrowthLight = Color(0xFFFFB74D)       // 앰버
+val CategoryGrowthLight = Color(0xFFA8D4A0)       // Sage Green (Peach 보색)
 val CategoryMedicalLight = Color(0xFFD84545)      // 소프트 레드 (주의)
 val CategoryMilestoneLight = Color(0xFFFF8A7A)    // 코럴
 
 // Dark mode — 채도/밝기 조정으로 눈부심 감소
-val CategoryFeedingDark = Color(0xFF7DDDD5)
-val CategoryDiaperDark = Color(0xFFFFCFA8)
+val CategoryFeedingDark = Color(0xFFFFC9B0)
+val CategoryDiaperDark = Color(0xFFE0CCB5)
 val CategorySleepDark = Color(0xFFC7BBEF)
 val CategoryBathDark = Color(0xFF9DD3FF)
-val CategoryGrowthDark = Color(0xFFFFD08A)
+val CategoryGrowthDark = Color(0xFFC5DCBA)
 val CategoryMedicalDark = Color(0xFFFF8A8A)
 val CategoryMilestoneDark = Color(0xFFFFB3A5)
 
@@ -217,25 +233,25 @@ val LocalExtendedColors = staticCompositionLocalOf { ExtendedColors() }
 // ──────────────────────────────────────────────
 
 private val LightColorScheme = lightColorScheme(
-    primary = MintPrimary,
-    onPrimary = Color.White,
-    primaryContainer = MintContainerLight,
-    onPrimaryContainer = MintOnContainerLight,
+    primary = PeachPrimary,
+    onPrimary = Color(0xFF3D1F00),
+    primaryContainer = PeachContainerLight,
+    onPrimaryContainer = PeachOnContainerLight,
     secondary = CoralSecondary,
     onSecondary = Color.White,
     secondaryContainer = CoralContainerLight,
     onSecondaryContainer = CoralOnContainerLight,
-    tertiary = AmberTertiary,
-    onTertiary = Color(0xFF3D2A00),
-    tertiaryContainer = AmberContainerLight,
-    onTertiaryContainer = AmberOnContainerLight,
+    tertiary = TerracottaTertiary,
+    onTertiary = Color(0xFF3D1F00),
+    tertiaryContainer = TerracottaContainerLight,
+    onTertiaryContainer = TerracottaOnContainerLight,
     background = CreamWhite,
     onBackground = InkLight,
     surface = WarmWhite,
     onSurface = InkLight,
     surfaceVariant = SurfaceContainerLight,
     onSurfaceVariant = WarmGray,
-    surfaceTint = MintPrimary,
+    surfaceTint = PeachPrimary,
     error = ErrorLight,
     onError = Color.White,
     errorContainer = ErrorBgLight,
@@ -245,25 +261,25 @@ private val LightColorScheme = lightColorScheme(
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = MintPrimaryDark,
-    onPrimary = Color(0xFF003733),
-    primaryContainer = MintContainerDark,
-    onPrimaryContainer = MintOnContainerDark,
+    primary = PeachPrimaryDark,
+    onPrimary = Color(0xFF4A2200),
+    primaryContainer = PeachContainerDark,
+    onPrimaryContainer = PeachOnContainerDark,
     secondary = CoralSecondaryDark,
     onSecondary = Color(0xFF5C1D12),
     secondaryContainer = CoralContainerDark,
     onSecondaryContainer = CoralOnContainerDark,
-    tertiary = AmberTertiaryDark,
+    tertiary = TerracottaTertiaryDark,
     onTertiary = Color(0xFF412D00),
-    tertiaryContainer = AmberContainerDark,
-    onTertiaryContainer = AmberOnContainerDark,
+    tertiaryContainer = TerracottaContainerDark,
+    onTertiaryContainer = TerracottaOnContainerDark,
     background = BackgroundDark,
     onBackground = InkDark,
     surface = SurfaceDark,
     onSurface = InkDark,
     surfaceVariant = SurfaceContainerDark,
     onSurfaceVariant = WarmGrayDark,
-    surfaceTint = MintPrimaryDark,
+    surfaceTint = PeachPrimaryDark,
     error = ErrorDark,
     onError = Color(0xFF690005),
     errorContainer = ErrorBgDark,
