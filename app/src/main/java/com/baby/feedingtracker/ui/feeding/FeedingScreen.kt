@@ -71,8 +71,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.TimePicker
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.ui.text.style.TextDecoration
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -279,6 +277,14 @@ fun FeedingScreen(
                 }
             } else {
                 val groupedRecords = groupRecordsByDate(uiState.records)
+                // 자정을 가로지르는 간격도 표시되도록 전체 기록(시간순 정렬)에서
+                // 각 record.id → 직전(과거) 기록 매핑을 미리 구축한다.
+                val previousByRecordId = buildMap<String, FeedingRecord> {
+                    uiState.records.forEachIndexed { i, r ->
+                        val older = uiState.records.getOrNull(i + 1)
+                        if (older != null) put(r.id, older)
+                    }
+                }
 
                 item { Spacer(modifier = Modifier.height(8.dp).padding(horizontal = 24.dp)) }
 
@@ -298,7 +304,7 @@ fun FeedingScreen(
                         key = { _, record -> record.id }
                     ) { index, record ->
                         val isLast = index == dayRecords.lastIndex
-                        val previousRecord = if (index + 1 < dayRecords.size) dayRecords[index + 1] else null
+                        val previousRecord = previousByRecordId[record.id]
 
                         Box(modifier = Modifier.padding(horizontal = 24.dp)) {
                             TimelineRecordRow(
@@ -629,9 +635,7 @@ private fun RecordEditBottomSheet(
     var selectedAmount by remember { mutableStateOf(record.amountMl) }
     var selectedLeftMin by remember { mutableStateOf(record.leftMin) }
     var selectedRightMin by remember { mutableStateOf(record.rightMin) }
-    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
     val amounts = listOf(30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160)
-    var showTimePicker by remember { mutableStateOf(false) }
     var currentTimestamp by remember { mutableStateOf(record.timestamp) }
     var noteText by remember(record) { mutableStateOf(record.note ?: "") }
     val extendedColors = LocalExtendedColors.current
@@ -652,65 +656,15 @@ private fun RecordEditBottomSheet(
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
         ) {
-            // 시간 표시
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { showTimePicker = true }
-            ) {
-                Text(
-                    text = timeFormat.format(Date(currentTimestamp)),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "수유 기록",
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
-            if (showTimePicker) {
-                val calendar = remember {
-                    Calendar.getInstance().apply { timeInMillis = currentTimestamp }
+            // 날짜 + 시간 편집 헤더
+            com.baby.feedingtracker.ui.components.RecordDateTimeEditor(
+                timestamp = currentTimestamp,
+                titleSuffix = "수유 기록",
+                onTimestampChange = {
+                    currentTimestamp = it
+                    onUpdateTimestamp(it)
                 }
-                val timePickerState = rememberTimePickerState(
-                    initialHour = calendar.get(Calendar.HOUR_OF_DAY),
-                    initialMinute = calendar.get(Calendar.MINUTE),
-                    is24Hour = true
-                )
-
-                AlertDialog(
-                    onDismissRequest = { showTimePicker = false },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            val newCal = Calendar.getInstance().apply {
-                                timeInMillis = currentTimestamp
-                                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                                set(Calendar.MINUTE, timePickerState.minute)
-                            }
-                            currentTimestamp = newCal.timeInMillis
-                            onUpdateTimestamp(currentTimestamp)
-                            showTimePicker = false
-                        }) {
-                            Text("확인")
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { showTimePicker = false }) {
-                            Text("취소", color = LocalExtendedColors.current.subtleText)
-                        }
-                    },
-                    text = {
-                        TimePicker(state = timePickerState)
-                    }
-                )
-            }
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 

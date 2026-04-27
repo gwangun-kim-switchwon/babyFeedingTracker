@@ -40,9 +40,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -584,8 +582,6 @@ private fun SleepEditBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedType by remember { mutableStateOf(record.type) }
-    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
-    var showTimePicker by remember { mutableStateOf(false) }
     var currentTimestamp by remember { mutableStateOf(record.timestamp) }
     var noteText by remember(record) { mutableStateOf(record.note ?: "") }
     val extendedColors = LocalExtendedColors.current
@@ -606,65 +602,15 @@ private fun SleepEditBottomSheet(
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
         ) {
-            // 시간 표시 (탭하면 TimePicker 오픈)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { showTimePicker = true }
-            ) {
-                Text(
-                    text = timeFormat.format(Date(currentTimestamp)),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "수면 기록",
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
-            if (showTimePicker) {
-                val calendar = remember {
-                    Calendar.getInstance().apply { timeInMillis = currentTimestamp }
+            // 날짜 + 시간 편집 헤더
+            com.baby.feedingtracker.ui.components.RecordDateTimeEditor(
+                timestamp = currentTimestamp,
+                titleSuffix = "수면 기록",
+                onTimestampChange = {
+                    currentTimestamp = it
+                    onUpdateTimestamp(it)
                 }
-                val timePickerState = rememberTimePickerState(
-                    initialHour = calendar.get(Calendar.HOUR_OF_DAY),
-                    initialMinute = calendar.get(Calendar.MINUTE),
-                    is24Hour = true
-                )
-
-                AlertDialog(
-                    onDismissRequest = { showTimePicker = false },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            val newCal = Calendar.getInstance().apply {
-                                timeInMillis = currentTimestamp
-                                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                                set(Calendar.MINUTE, timePickerState.minute)
-                            }
-                            currentTimestamp = newCal.timeInMillis
-                            onUpdateTimestamp(currentTimestamp)
-                            showTimePicker = false
-                        }) {
-                            Text("확인")
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { showTimePicker = false }) {
-                            Text("취소", color = LocalExtendedColors.current.subtleText)
-                        }
-                    },
-                    text = {
-                        TimePicker(state = timePickerState)
-                    }
-                )
-            }
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
