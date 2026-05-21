@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,70 +52,89 @@ fun GrowthScreen(
         errorMessage?.let { snackbarHost.showSnackbar(it); viewModel.clearError() }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHost) },
-        floatingActionButton = { LiquidGlassFab(onClick = { showSheet = true }) },
-        containerColor = Color.Transparent,
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .padding(padding)
+    val extendedColors = LocalExtendedColors.current
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .windowInsetsPadding(WindowInsets.statusBars)
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 80.dp),
         ) {
-            LazyColumn(contentPadding = PaddingValues(bottom = 80.dp)) {
-                // 1. 생후 배너
+            // 1. 생후 배너
+            item {
+                GrowthHeroCard(
+                    profile = profile,
+                    daysOld = daysOld,
+                    onNavigateToProfile = onNavigateToProfile,
+                )
+            }
+
+            // 2. 최신값 요약 카드
+            item {
+                GrowthSummaryRow(
+                    latestHeight = uiState.latestHeight,
+                    latestWeight = uiState.latestWeight,
+                    latestHead   = uiState.latestHead,
+                )
+            }
+
+            // 3. 기록 타임라인
+            if (uiState.records.isEmpty()) {
                 item {
-                    GrowthHeroCard(
-                        profile = profile,
-                        daysOld = daysOld,
-                        onNavigateToProfile = onNavigateToProfile,
+                    Text(
+                        text = "아직 성장 기록이 없어요\n+ 버튼을 눌러 첫 기록을 추가하세요",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = LocalExtendedColors.current.subtleText,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 40.dp),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     )
                 }
-
-                // 2. 최신값 요약 카드
-                item {
-                    GrowthSummaryRow(
-                        latestHeight = uiState.latestHeight,
-                        latestWeight = uiState.latestWeight,
-                        latestHead   = uiState.latestHead,
+            } else {
+                items(uiState.records, key = { it.id }) { record ->
+                    GrowthRecordCard(
+                        record   = record,
+                        onDelete = { viewModel.deleteRecord(record) },
                     )
                 }
-
-                // 3. 기록 타임라인
-                if (uiState.records.isEmpty()) {
+                if (uiState.hasMoreData) {
                     item {
-                        Text(
-                            text = "아직 성장 기록이 없어요\n+ 버튼을 눌러 첫 기록을 추가하세요",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = LocalExtendedColors.current.subtleText,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 40.dp),
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                        )
-                    }
-                } else {
-                    items(uiState.records, key = { it.id }) { record ->
-                        GrowthRecordCard(
-                            record   = record,
-                            onDelete = { viewModel.deleteRecord(record) },
-                        )
-                    }
-                    if (uiState.hasMoreData) {
-                        item {
-                            LaunchedEffect(Unit) { viewModel.loadMore() }
-                            if (uiState.isLoadingMore) {
-                                Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-                                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                                }
+                        LaunchedEffect(Unit) { viewModel.loadMore() }
+                        if (uiState.isLoadingMore) {
+                            Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator(modifier = Modifier.size(24.dp))
                             }
                         }
                     }
                 }
             }
         }
+
+        FloatingActionButton(
+            onClick = { showSheet = true },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 24.dp, end = 24.dp),
+            containerColor = extendedColors.categoryGrowth,
+            contentColor = Color.White,
+            shape = androidx.compose.foundation.shape.CircleShape,
+        ) {
+            Icon(
+                imageVector = androidx.compose.material.icons.Icons.Rounded.Add,
+                contentDescription = "성장 기록 추가",
+            )
+        }
+
+        SnackbarHost(
+            hostState = snackbarHost,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp),
+        )
     }
 
     if (showSheet) {
@@ -162,7 +182,7 @@ private fun GrowthHeroCard(
         ) {
             Column {
                 Text(
-                    text = "${profile.name}이 📏",
+                    text = "${profile.name} 📏",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,

@@ -247,7 +247,7 @@ fun DiaperScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 24.dp, end = 24.dp),
-            containerColor = extendedColors.fabContainer,
+            containerColor = extendedColors.categoryDiaper,
             contentColor = Color.White,
             shape = CircleShape
         ) {
@@ -645,7 +645,7 @@ private fun DiaperHeroCard(
             ) {
                 Column {
                     val babyName = if (profile != null && profile.name.isNotBlank())
-                        "${profile.name}이 💧" else "아기 💧"
+                        "${profile.name} 💧" else "아기 💧"
                     Text(text = babyName, fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)
                     if (daysOld != null) {
                         Text(text = "생후 ${daysOld}일", fontSize = 12.sp, fontWeight = FontWeight.Medium,

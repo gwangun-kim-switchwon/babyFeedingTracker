@@ -49,6 +49,7 @@ fun BabyFeedingNavHost(
     val navController = rememberNavController()
 
     Scaffold(
+        containerColor = Color.White,
         bottomBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route

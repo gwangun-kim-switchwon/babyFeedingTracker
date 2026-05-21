@@ -280,21 +280,21 @@ private fun StatTabSwitcher(selectedTab: Int, onTabSelected: (Int) -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFF4F0F8))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(3.dp)
     ) {
         listOf("주간", "일일").forEachIndexed { index, label ->
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(if (selectedTab == index) Color.White else Color.Transparent)
-                    .clickable { onTabSelected(index) }
                     .then(
                         if (selectedTab == index)
                             Modifier.shadow(elevation = 1.dp, shape = RoundedCornerShape(10.dp))
                         else Modifier
                     )
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(if (selectedTab == index) Color.White else Color.Transparent)
+                    .clickable { onTabSelected(index) }
                     .padding(vertical = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -302,7 +302,10 @@ private fun StatTabSwitcher(selectedTab: Int, onTabSelected: (Int) -> Unit) {
                     text = label,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = if (selectedTab == index) Color(0xFF1C1B1F) else Color(0xFF9E9E9E)
+                    color = if (selectedTab == index)
+                        MaterialTheme.colorScheme.onSurface
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
