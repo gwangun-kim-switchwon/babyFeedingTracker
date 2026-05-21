@@ -22,7 +22,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -262,6 +264,35 @@ class FeedingViewModel(
 
     init {
         observeSharingState()
+        syncWidgetOnInit()
+    }
+
+    private fun syncWidgetOnInit() {
+        viewModelScope.launch {
+            val latest = repository.recentRecords.mapNotNull { it.firstOrNull() }.first()
+            appContext?.let { ctx ->
+                try {
+                    val glanceIds = GlanceAppWidgetManager(ctx)
+                        .getGlanceIds(FeedingWidget::class.java)
+                    if (glanceIds.isNotEmpty()) {
+                        val widget = FeedingWidget()
+                        glanceIds.forEach { glanceId ->
+                            updateAppWidgetState(
+                                ctx,
+                                PreferencesGlanceStateDefinition,
+                                glanceId
+                            ) { prefs ->
+                                prefs.toMutablePreferences().apply {
+                                    this[WidgetPreferenceKeys.LAST_FEEDING_TS] = latest.timestamp
+                                    this[WidgetPreferenceKeys.LAST_FEEDING_TYPE] = latest.type ?: ""
+                                }
+                            }
+                            widget.update(ctx, glanceId)
+                        }
+                    }
+                } catch (_: Exception) {}
+            }
+        }
     }
 
     private fun observeSharingState() {

@@ -124,8 +124,8 @@ private fun BottomNavBar(navController: NavHostController) {
         BottomNavItem.Feeding,
         BottomNavItem.Sleep,
         BottomNavItem.Diaper,
-        BottomNavItem.Statistics,
         BottomNavItem.Growth,
+        BottomNavItem.Statistics,
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
