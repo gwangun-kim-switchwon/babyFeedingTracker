@@ -30,6 +30,7 @@ import com.baby.feedingtracker.ui.diaper.DiaperViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.sleep.SleepViewModel
+import com.baby.feedingtracker.ui.growth.GrowthViewModel
 import com.baby.feedingtracker.ui.statistics.StatisticsViewModel
 import com.baby.feedingtracker.ui.navigation.BabyFeedingNavHost
 import com.baby.feedingtracker.ui.theme.BabyFeedingTrackerTheme
@@ -54,11 +55,12 @@ class MainActivity : ComponentActivity() {
                 val sleepRepository by app.container.sleepRepository.collectAsState()
                 val babyProfileRepository by app.container.babyProfileRepository.collectAsState()
                 val statisticsRepository by app.container.statisticsRepository.collectAsState()
+                val growthRepository by app.container.growthRepository.collectAsState()
                 val milestoneManager by app.container.milestoneManager.collectAsState()
                 val initError by app.container.initError.collectAsState()
                 val coroutineScope = rememberCoroutineScope()
 
-                if (repository != null && diaperRepository != null && sleepRepository != null && babyProfileRepository != null && statisticsRepository != null && milestoneManager != null) {
+                if (repository != null && diaperRepository != null && sleepRepository != null && babyProfileRepository != null && statisticsRepository != null && growthRepository != null && milestoneManager != null) {
                     // repository 인스턴스가 바뀌면 (Google 로그인 후 uid 변경 등)
                     // ViewModel을 새로 생성하여 새 데이터를 로드
                     val viewModel: FeedingViewModel = viewModel(
@@ -98,6 +100,11 @@ class MainActivity : ComponentActivity() {
                         )
                     )
 
+                    val growthViewModel: GrowthViewModel = viewModel(
+                        key = "growth_vm_${growthRepository.hashCode()}",
+                        factory = GrowthViewModel.factory(growthRepository!!)
+                    )
+
                     // Refresh login state after Google Sign-In callback
                     val googleSignInLauncherWithRefresh = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.StartActivityForResult()
@@ -129,6 +136,7 @@ class MainActivity : ComponentActivity() {
                         diaperViewModel = diaperViewModel,
                         sleepViewModel = sleepViewModel,
                         statisticsViewModel = statisticsViewModel,
+                        growthViewModel = growthViewModel,
                         babyProfileViewModel = babyProfileViewModel,
                         googleAuthHelper = app.container.googleAuthHelper,
                         googleSignInLauncher = googleSignInLauncherWithRefresh

@@ -29,6 +29,8 @@ import com.baby.feedingtracker.ui.profile.BabyProfileScreen
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.sleep.SleepScreen
 import com.baby.feedingtracker.ui.sleep.SleepViewModel
+import com.baby.feedingtracker.ui.growth.GrowthScreen
+import com.baby.feedingtracker.ui.growth.GrowthViewModel
 import com.baby.feedingtracker.ui.statistics.StatisticsScreen
 import com.baby.feedingtracker.ui.statistics.StatisticsViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
@@ -39,6 +41,7 @@ fun BabyFeedingNavHost(
     diaperViewModel: DiaperViewModel,
     sleepViewModel: SleepViewModel,
     statisticsViewModel: StatisticsViewModel,
+    growthViewModel: GrowthViewModel,
     babyProfileViewModel: BabyProfileViewModel,
     googleAuthHelper: GoogleAuthHelper,
     googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
@@ -98,6 +101,13 @@ fun BabyFeedingNavHost(
                     }
                 )
             }
+            composable(BottomNavItem.Growth.route) {
+                GrowthScreen(
+                    viewModel            = growthViewModel,
+                    babyProfileViewModel = babyProfileViewModel,
+                    onNavigateToProfile  = { navController.navigate("baby_profile") },
+                )
+            }
             composable("baby_profile") {
                 BabyProfileScreen(
                     viewModel = babyProfileViewModel,
@@ -115,6 +125,7 @@ private fun BottomNavBar(navController: NavHostController) {
         BottomNavItem.Sleep,
         BottomNavItem.Diaper,
         BottomNavItem.Statistics,
+        BottomNavItem.Growth,
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

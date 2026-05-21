@@ -14,6 +14,8 @@ import com.baby.feedingtracker.data.SleepRepository
 import com.baby.feedingtracker.data.FeedingDataSource
 import com.baby.feedingtracker.data.GoogleAuthHelper
 import com.baby.feedingtracker.data.MilestoneManager
+import com.baby.feedingtracker.data.GrowthDataSource
+import com.baby.feedingtracker.data.GrowthRepository
 import com.baby.feedingtracker.data.StatisticsRepository
 import com.baby.feedingtracker.data.UserRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -57,6 +59,9 @@ class AppContainer(context: Context) {
 
     private val _statisticsRepository = MutableStateFlow<StatisticsRepository?>(null)
     val statisticsRepository: StateFlow<StatisticsRepository?> = _statisticsRepository.asStateFlow()
+
+    private val _growthRepository = MutableStateFlow<GrowthRepository?>(null)
+    val growthRepository: StateFlow<GrowthRepository?> = _growthRepository.asStateFlow()
 
     private val _milestoneManager = MutableStateFlow<MilestoneManager?>(null)
     val milestoneManager: StateFlow<MilestoneManager?> = _milestoneManager.asStateFlow()
@@ -111,6 +116,8 @@ class AppContainer(context: Context) {
             firestore = firestore,
             dataOwnerUid = dataOwnerUid
         )
+        val growthDataSource = GrowthDataSource(firestore, dataOwnerUid, currentUserUid)
+        _growthRepository.value = GrowthRepository(growthDataSource)
         _milestoneManager.value = MilestoneManager(
             statisticsRepository = _statisticsRepository.value!!,
             babyProfileRepository = _babyProfileRepository.value!!
