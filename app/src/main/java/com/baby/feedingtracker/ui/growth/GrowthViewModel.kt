@@ -63,7 +63,7 @@ class GrowthViewModel(
             return
         }
         viewModelScope.launch {
-            val result = repository.addGrowthRecord(record.copy(timestamp = System.currentTimeMillis()))
+            val result = repository.addGrowthRecord(record)
             if (result is DataResult.Error) _errorMessage.value = result.message
         }
     }

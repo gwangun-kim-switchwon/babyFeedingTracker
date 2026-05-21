@@ -3,6 +3,9 @@ package com.baby.feedingtracker.ui.growth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.baby.feedingtracker.data.BabyProfile
 import com.baby.feedingtracker.data.GrowthRecord
 import com.baby.feedingtracker.ui.components.LiquidGlassFab
+import com.baby.feedingtracker.ui.components.RecordDateTimeEditor
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import java.text.SimpleDateFormat
@@ -63,6 +67,7 @@ fun GrowthScreen(
                         )
                     )
                 )
+                .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(padding)
         ) {
             LazyColumn(contentPadding = PaddingValues(bottom = 80.dp)) {
@@ -297,6 +302,7 @@ private fun GrowthBottomSheet(onDismiss: () -> Unit, onSave: (GrowthRecord) -> U
     var weightInput by remember { mutableStateOf("") }
     var headInput   by remember { mutableStateOf("") }
     var noteInput   by remember { mutableStateOf("") }
+    var timestampMs by remember { mutableStateOf(System.currentTimeMillis()) }
 
     val hasAny = heightInput.isNotBlank() || weightInput.isNotBlank() || headInput.isNotBlank()
 
@@ -314,6 +320,12 @@ private fun GrowthBottomSheet(onDismiss: () -> Unit, onSave: (GrowthRecord) -> U
             MeasurementField("몸무게 (kg)",   weightInput, "예) 4.8")  { weightInput = it }
             MeasurementField("머리둘레 (cm)", headInput,   "예) 37.5") { headInput = it }
 
+            RecordDateTimeEditor(
+                timestamp         = timestampMs,
+                titleSuffix       = "성장 기록",
+                onTimestampChange = { timestampMs = it },
+            )
+
             OutlinedTextField(
                 value         = noteInput,
                 onValueChange = { noteInput = it },
@@ -326,10 +338,11 @@ private fun GrowthBottomSheet(onDismiss: () -> Unit, onSave: (GrowthRecord) -> U
             Button(
                 onClick = {
                     onSave(GrowthRecord(
-                        heightCm = heightInput.toFloatOrNull(),
-                        weightKg = weightInput.toFloatOrNull(),
-                        headCm   = headInput.toFloatOrNull(),
-                        note     = noteInput.takeIf { it.isNotBlank() },
+                        timestamp = timestampMs,
+                        heightCm  = heightInput.toFloatOrNull(),
+                        weightKg  = weightInput.toFloatOrNull(),
+                        headCm    = headInput.toFloatOrNull(),
+                        note      = noteInput.takeIf { it.isNotBlank() },
                     ))
                 },
                 enabled  = hasAny,

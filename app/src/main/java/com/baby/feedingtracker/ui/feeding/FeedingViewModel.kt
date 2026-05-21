@@ -147,9 +147,27 @@ class FeedingViewModel(
 
     fun deleteRecord(record: FeedingRecord) {
         viewModelScope.launch {
+            val wasLatest = uiState.value.records.firstOrNull()?.id == record.id
+            val newLatest = uiState.value.records.drop(1).firstOrNull()
             val result = repository.deleteRecord(record)
             if (result is DataResult.Error) {
                 _errorMessage.value = result.message
+            } else if (wasLatest && appContext != null) {
+                try {
+                    val ctx = appContext
+                    val widget = FeedingWidget()
+                    val glanceIds = GlanceAppWidgetManager(ctx)
+                        .getGlanceIds(FeedingWidget::class.java)
+                    glanceIds.forEach { glanceId ->
+                        updateAppWidgetState(ctx, PreferencesGlanceStateDefinition, glanceId) { prefs ->
+                            prefs.toMutablePreferences().apply {
+                                this[WidgetPreferenceKeys.LAST_FEEDING_TS]   = newLatest?.timestamp ?: 0L
+                                this[WidgetPreferenceKeys.LAST_FEEDING_TYPE] = newLatest?.type ?: ""
+                            }
+                        }
+                        widget.update(ctx, glanceId)
+                    }
+                } catch (_: Exception) {}
             }
         }
     }
