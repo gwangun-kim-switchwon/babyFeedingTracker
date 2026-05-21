@@ -70,6 +70,7 @@ class MainActivity : ComponentActivity() {
                             app.container.userRepository,
                             app.container.googleAuthHelper,
                             app.container.auth,
+                            appContext = applicationContext,
                             onDataOwnerChanged = { hostUid ->
                                 app.container.reinitializeWithDataOwner(hostUid)
                             }

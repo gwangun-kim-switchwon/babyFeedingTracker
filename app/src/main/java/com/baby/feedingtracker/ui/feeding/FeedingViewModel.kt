@@ -1,5 +1,9 @@
 package com.baby.feedingtracker.ui.feeding
 
+import android.content.Context
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.updateAppWidgetState
+import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -9,6 +13,8 @@ import com.baby.feedingtracker.data.FeedingRepository
 import com.baby.feedingtracker.data.GoogleAuthHelper
 import com.baby.feedingtracker.data.SharingState
 import com.baby.feedingtracker.data.UserRepository
+import com.baby.feedingtracker.ui.widget.FeedingWidget
+import com.baby.feedingtracker.ui.widget.WidgetPreferenceKeys
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +39,7 @@ class FeedingViewModel(
     private val userRepository: UserRepository,
     private val googleAuthHelper: GoogleAuthHelper,
     private val auth: FirebaseAuth,
+    private val appContext: Context? = null,
     private val onDataOwnerChanged: (String) -> Unit = {}
 ) : ViewModel() {
 
@@ -112,6 +119,24 @@ class FeedingViewModel(
                 is DataResult.Success -> {
                     _refreshTrigger.value = now
                     _lastAddedRecord.value = result.data
+                    appContext?.let { ctx ->
+                        viewModelScope.launch {
+                            try {
+                                val widget = FeedingWidget()
+                                val manager = GlanceAppWidgetManager(ctx)
+                                val glanceIds = manager.getGlanceIds(FeedingWidget::class.java)
+                                glanceIds.forEach { glanceId ->
+                                    updateAppWidgetState(ctx, PreferencesGlanceStateDefinition, glanceId) { prefs ->
+                                        prefs.toMutablePreferences().apply {
+                                            this[WidgetPreferenceKeys.LAST_FEEDING_TS] = now
+                                            this[WidgetPreferenceKeys.LAST_FEEDING_TYPE] = ""
+                                        }
+                                    }
+                                    widget.update(ctx, glanceId)
+                                }
+                            } catch (_: Exception) { /* widget not installed */ }
+                        }
+                    }
                 }
                 is DataResult.Error -> {
                     _errorMessage.value = result.message
@@ -134,6 +159,26 @@ class FeedingViewModel(
             val result = repository.updateRecord(recordId, type, amountMl, leftMin, rightMin)
             if (result is DataResult.Error) {
                 _errorMessage.value = result.message
+            } else if (type != null && appContext != null) {
+                val latestId = uiState.value.records.firstOrNull()?.id
+                if (latestId == recordId) {
+                    try {
+                        val latestTs = uiState.value.records.first().timestamp
+                        val ctx = appContext
+                        val widget = FeedingWidget()
+                        val glanceIds = GlanceAppWidgetManager(ctx)
+                            .getGlanceIds(FeedingWidget::class.java)
+                        glanceIds.forEach { glanceId ->
+                            updateAppWidgetState(ctx, PreferencesGlanceStateDefinition, glanceId) { prefs ->
+                                prefs.toMutablePreferences().apply {
+                                    this[WidgetPreferenceKeys.LAST_FEEDING_TS]   = latestTs
+                                    this[WidgetPreferenceKeys.LAST_FEEDING_TYPE] = type
+                                }
+                            }
+                            widget.update(ctx, glanceId)
+                        }
+                    } catch (_: Exception) {}
+                }
             }
         }
     }
@@ -260,12 +305,16 @@ class FeedingViewModel(
             userRepository: UserRepository,
             googleAuthHelper: GoogleAuthHelper,
             auth: FirebaseAuth,
+            appContext: Context,
             onDataOwnerChanged: (String) -> Unit
         ): ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return FeedingViewModel(repository, userRepository, googleAuthHelper, auth, onDataOwnerChanged) as T
+                    return FeedingViewModel(
+                        repository, userRepository, googleAuthHelper,
+                        auth, appContext, onDataOwnerChanged
+                    ) as T
                 }
             }
         }
