@@ -35,7 +35,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -56,12 +55,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import com.baby.feedingtracker.data.DiaperRecord
-import com.baby.feedingtracker.ui.profile.BabyProfileBanner
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import java.text.SimpleDateFormat
@@ -162,45 +161,30 @@ fun DiaperScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        extendedColors.gradientTop,
-                        extendedColors.gradientBottom
-                    )
-                )
-            )
+            .background(Color.White)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
-            // -- 아기 프로필 배너 --
+            // -- Hero Card --
             item {
-                BabyProfileBanner(
+                val todayMillis = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+                }.timeInMillis
+                val todayRecs = uiState.records.filter { it.timestamp >= todayMillis }
+                DiaperHeroCard(
                     profile = babyProfile,
                     daysOld = daysOld,
+                    elapsedMinutes = uiState.elapsedMinutes,
+                    lastRecord = uiState.records.firstOrNull(),
+                    todayTotalCount = todayRecs.size,
+                    todayUrineCount = todayRecs.count { it.type == "urine" },
+                    todayStoolCount = todayRecs.count { it.type == "stool" },
                     onNavigateToProfile = onNavigateToProfile
                 )
-            }
-
-            // -- 상단: 경과 시간 영역 --
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 24.dp, bottom = 16.dp)
-                ) {
-                    DiaperElapsedTimeSection(
-                        elapsedMinutes = uiState.elapsedMinutes,
-                        todayDiaperCount = uiState.todayDiaperCount,
-                        todayUrineCount = uiState.todayUrineCount,
-                        todayStoolCount = uiState.todayStoolCount,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
             }
 
             // -- 중단: 기록 목록 --
@@ -227,32 +211,20 @@ fun DiaperScreen(
 
                 groupedRecords.forEach { (dateLabel, dayRecords) ->
                     item(key = "header_$dateLabel") {
-                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                             DiaperDateSectionHeader(dateLabel)
-                        }
-                    }
-                    item(key = "stats_$dateLabel") {
-                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            DiaperDailyStats(dayRecords)
                         }
                     }
                     itemsIndexed(
                         items = dayRecords,
                         key = { _, record -> record.id }
-                    ) { index, record ->
-                        val isLast = index == dayRecords.lastIndex
+                    ) { _, record ->
                         val previousRecord = previousByRecordId[record.id]
-
-                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            DiaperTimelineRecordRow(
-                                record = record,
-                                intervalMinutes = previousRecord?.let {
-                                    ((record.timestamp - it.timestamp) / 60_000L)
-                                },
-                                showLine = !isLast,
-                                onClick = { selectedRecord = record }
-                            )
-                        }
+                        DiaperRecordCard(
+                            record = record,
+                            intervalMinutes = previousRecord?.let { (record.timestamp - it.timestamp) / 60_000L },
+                            onClick = { selectedRecord = record }
+                        )
                     }
 
                     item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -291,57 +263,6 @@ fun DiaperScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 80.dp)
         )
-    }
-}
-
-// ──────────────────────────────────────────────
-// 경과 시간 섹션
-// ──────────────────────────────────────────────
-
-@Composable
-private fun DiaperElapsedTimeSection(
-    elapsedMinutes: Long?,
-    todayDiaperCount: Int,
-    todayUrineCount: Int,
-    todayStoolCount: Int,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.Start
-    ) {
-        if (elapsedMinutes != null) {
-            Text(
-                text = "마지막 기저귀",
-                style = MaterialTheme.typography.bodyMedium,
-                color = LocalExtendedColors.current.subtleText
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        Text(
-            text = formatDiaperElapsedTime(elapsedMinutes),
-            style = MaterialTheme.typography.displayLarge.copy(
-                fontWeight = FontWeight.Bold,
-                letterSpacing = (-1.5).sp
-            ),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        // 오늘 통계
-        val statParts = buildList {
-            if (todayDiaperCount > 0) add("기저귀 ${todayDiaperCount}회")
-            if (todayUrineCount > 0) add("소변 ${todayUrineCount}회")
-            if (todayStoolCount > 0) add("대변 ${todayStoolCount}회")
-        }
-        if (statParts.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "오늘: ${statParts.joinToString(" · ")}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = LocalExtendedColors.current.subtleText
-            )
-        }
     }
 }
 
@@ -408,147 +329,6 @@ private fun DiaperDateSectionHeader(label: String) {
                 .height(0.5.dp)
                 .background(LocalExtendedColors.current.divider)
         )
-    }
-}
-
-// ──────────────────────────────────────────────
-// 일일 통계
-// ──────────────────────────────────────────────
-
-@Composable
-private fun DiaperDailyStats(records: List<DiaperRecord>) {
-    val totalCount = records.size
-    val diaperCount = records.count { it.type == "diaper" }
-    val urineCount = records.count { it.type == "urine" }
-    val stoolCount = records.count { it.type == "stool" }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        DiaperStatChip(label = "총", value = "${totalCount}회")
-        if (diaperCount > 0) DiaperStatChip(label = "기저귀", value = "${diaperCount}회")
-        if (urineCount > 0) DiaperStatChip(label = "소변", value = "${urineCount}회")
-        if (stoolCount > 0) DiaperStatChip(label = "대변", value = "${stoolCount}회")
-    }
-}
-
-@Composable
-private fun DiaperStatChip(label: String, value: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = LocalExtendedColors.current.subtleText
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = value,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.SemiBold
-            ),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
-}
-
-// ──────────────────────────────────────────────
-// 타임라인 기록 행
-// ──────────────────────────────────────────────
-
-@Composable
-private fun DiaperTimelineRecordRow(
-    record: DiaperRecord,
-    intervalMinutes: Long?,
-    showLine: Boolean,
-    onClick: () -> Unit
-) {
-    val dotSize = 10.dp
-    val lineWidth = 1.5.dp
-    val accentColor = MaterialTheme.colorScheme.primary
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = 2.dp),
-        verticalAlignment = Alignment.Top
-    ) {
-        // 타임라인 (동그라미 + 세로선)
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(24.dp)
-        ) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .size(dotSize)
-                    .clip(CircleShape)
-                    .background(accentColor)
-            )
-            if (showLine) {
-                Box(
-                    modifier = Modifier
-                        .width(lineWidth)
-                        .height(36.dp)
-                        .background(accentColor.copy(alpha = 0.3f))
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        // 컨텐츠
-        Column(
-            modifier = Modifier.padding(bottom = if (showLine) 0.dp else 4.dp)
-        ) {
-            val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = timeFormat.format(Date(record.timestamp)),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Medium
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-                val typeText = formatDiaperType(record.type)
-                if (typeText != null) {
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = typeText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = LocalExtendedColors.current.subtleText
-                    )
-                }
-
-                // 메모 아이콘
-                if (!record.note.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.Notes,
-                        contentDescription = "메모",
-                        modifier = Modifier.size(16.dp),
-                        tint = LocalExtendedColors.current.subtleText
-                    )
-                }
-            }
-
-            if (intervalMinutes != null && intervalMinutes > 0) {
-                Text(
-                    text = formatDiaperIntervalText(intervalMinutes),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = LocalExtendedColors.current.subtleText.copy(alpha = 0.7f)
-                )
-            }
-        }
     }
 }
 
@@ -830,4 +610,156 @@ private fun groupDiaperRecordsByDate(records: List<DiaperRecord>): List<Pair<Str
             }
         }
         .toList()
+}
+
+// ──────────────────────────────────────────────
+// Diaper Hero Card (샌드 그라디언트)
+// ──────────────────────────────────────────────
+
+@Composable
+private fun DiaperHeroCard(
+    profile: com.baby.feedingtracker.data.BabyProfile?,
+    daysOld: Int?,
+    elapsedMinutes: Long?,
+    lastRecord: com.baby.feedingtracker.data.DiaperRecord?,
+    todayTotalCount: Int,
+    todayUrineCount: Int,
+    todayStoolCount: Int,
+    onNavigateToProfile: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(Brush.linearGradient(listOf(Color(0xFFD4B59A), Color(0xFFC4956A))))
+            .clickable(onClick = onNavigateToProfile)
+            .padding(20.dp)
+    ) {
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    val babyName = if (profile != null && profile.name.isNotBlank())
+                        "${profile.name}이 💧" else "아기 💧"
+                    Text(text = babyName, fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    if (daysOld != null) {
+                        Text(text = "생후 ${daysOld}일", fontSize = 12.sp, fontWeight = FontWeight.Medium,
+                            color = Color.White.copy(alpha = 0.85f))
+                    }
+                }
+                Box(
+                    modifier = Modifier.size(40.dp).clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.25f)),
+                    contentAlignment = Alignment.Center
+                ) { Text(text = "🧷", fontSize = 20.sp) }
+            }
+            Spacer(Modifier.height(14.dp))
+            Text(text = "마지막 기저귀", fontSize = 11.sp, fontWeight = FontWeight.SemiBold,
+                color = Color.White.copy(alpha = 0.80f), letterSpacing = 0.5.sp)
+            Spacer(Modifier.height(4.dp))
+            Text(text = formatDiaperElapsedTime(elapsedMinutes), fontSize = 36.sp,
+                fontWeight = FontWeight.Black, color = Color.White,
+                letterSpacing = (-1).sp, lineHeight = 40.sp)
+            if (lastRecord != null) {
+                val sub = formatDiaperType(lastRecord.type)
+                if (sub != null) {
+                    Spacer(Modifier.height(6.dp))
+                    Text(text = "💧 $sub", fontSize = 13.sp, fontWeight = FontWeight.Medium,
+                        color = Color.White.copy(alpha = 0.80f))
+                }
+            }
+            if (todayTotalCount > 0) {
+                Spacer(Modifier.height(14.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White.copy(alpha = 0.15f))
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DiaperHeroStatItem("${todayTotalCount}회", "오늘 총")
+                    Box(Modifier.width(1.dp).height(28.dp).background(Color.White.copy(alpha = 0.30f)))
+                    DiaperHeroStatItem("${todayUrineCount}회", "소변")
+                    Box(Modifier.width(1.dp).height(28.dp).background(Color.White.copy(alpha = 0.30f)))
+                    DiaperHeroStatItem("${todayStoolCount}회", "대변")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DiaperHeroStatItem(value: String, label: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = value, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
+        Text(text = label, fontSize = 10.sp, fontWeight = FontWeight.Medium, color = Color.White.copy(alpha = 0.80f))
+    }
+}
+
+// ──────────────────────────────────────────────
+// Diaper Record Card
+// ──────────────────────────────────────────────
+
+@Composable
+private fun DiaperRecordCard(
+    record: com.baby.feedingtracker.data.DiaperRecord,
+    intervalMinutes: Long?,
+    onClick: () -> Unit
+) {
+    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 10.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(text = timeFormat.format(Date(record.timestamp)), fontSize = 13.sp,
+                fontWeight = FontWeight.Bold, color = Color(0xFF6E6A73), modifier = Modifier.width(38.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    DiaperTypePill(type = record.type)
+                    if (!record.note.isNullOrBlank()) {
+                        Icon(imageVector = Icons.AutoMirrored.Outlined.Notes, contentDescription = null,
+                            modifier = Modifier.size(14.dp), tint = Color(0xFF9E9E9E))
+                    }
+                }
+                if (!record.note.isNullOrBlank()) {
+                    Text(text = record.note!!, fontSize = 12.sp, color = Color(0xFF9E9E9E),
+                        maxLines = 1, modifier = Modifier.padding(top = 2.dp))
+                }
+            }
+            if (intervalMinutes != null && intervalMinutes > 0) {
+                Text(text = formatDiaperIntervalText(intervalMinutes), fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium, color = Color(0xFF9E9E9E), textAlign = TextAlign.End)
+            }
+        }
+    }
+}
+
+@Composable
+private fun DiaperTypePill(type: String?) {
+    val (bgColor, textColor, label) = when (type) {
+        "urine" -> Triple(Color(0xFFD6ECFF), Color(0xFF2066B0), "소변")
+        "stool" -> Triple(Color(0xFFF0E4D4), Color(0xFF8B5E3C), "대변")
+        "diaper" -> Triple(Color(0xFFE8E8E8), Color(0xFF555555), "기저귀")
+        else -> return
+    }
+    Box(
+        modifier = Modifier.clip(RoundedCornerShape(20.dp)).background(bgColor)
+            .padding(horizontal = 9.dp, vertical = 3.dp)
+    ) {
+        Text(text = label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = textColor)
+    }
 }

@@ -59,21 +59,14 @@ fun GrowthScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            LocalExtendedColors.current.gradientTop,
-                            LocalExtendedColors.current.gradientBottom,
-                        )
-                    )
-                )
+                .background(Color.White)
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(padding)
         ) {
             LazyColumn(contentPadding = PaddingValues(bottom = 80.dp)) {
                 // 1. 생후 배너
                 item {
-                    GrowthDaysBanner(
+                    GrowthHeroCard(
                         profile = profile,
                         daysOld = daysOld,
                         onNavigateToProfile = onNavigateToProfile,
@@ -132,9 +125,9 @@ fun GrowthScreen(
     }
 }
 
-// ── 생후 배너 ─────────────────────────────────────────────
+// ── 생후 히어로 카드 ───────────────────────────────────────
 @Composable
-private fun GrowthDaysBanner(
+private fun GrowthHeroCard(
     profile: BabyProfile?,
     daysOld: Int?,
     onNavigateToProfile: () -> Unit,
@@ -144,25 +137,23 @@ private fun GrowthDaysBanner(
             onClick = onNavigateToProfile,
             modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
         ) {
-            Text("프로필을 설정하세요", color = MaterialTheme.colorScheme.primary)
+            Text("프로필을 설정하세요", color = androidx.compose.material3.MaterialTheme.colorScheme.primary)
         }
         return
     }
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp)
+            .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
             .background(
-                Brush.horizontalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.secondary,
-                    )
+                androidx.compose.ui.graphics.Brush.linearGradient(
+                    listOf(Color(0xFFA8D4A0), Color(0xFF7BB87A))
                 )
             )
             .clickable(onClick = onNavigateToProfile)
-            .padding(horizontal = 18.dp, vertical = 14.dp),
+            .padding(20.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -171,18 +162,27 @@ private fun GrowthDaysBanner(
         ) {
             Column {
                 Text(
-                    text  = profile.name,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.85f),
+                    text = "${profile.name}이 📏",
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
                 )
                 Text(
-                    text       = "생후 ${daysOld}일",
-                    style      = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color      = Color.White,
+                    text = "생후 ${daysOld}일",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White.copy(alpha = 0.85f),
                 )
             }
-            Text(text = "👶", fontSize = 34.sp)
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(androidx.compose.foundation.shape.CircleShape)
+                    .background(Color.White.copy(alpha = 0.25f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(text = "👶", fontSize = 20.sp)
+            }
         }
     }
 }
@@ -200,95 +200,104 @@ private fun GrowthSummaryRow(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        GrowthSummaryCard("키",      latestHeight?.let { "%.1f".format(it) }, "cm", Modifier.weight(1f))
-        GrowthSummaryCard("몸무게",  latestWeight?.let { "%.1f".format(it) }, "kg", Modifier.weight(1f))
-        GrowthSummaryCard("머리둘레",latestHead?.let   { "%.1f".format(it) }, "cm", Modifier.weight(1f))
+        GrowthSummaryCard("키", latestHeight?.let { "%.1f".format(it) }, "cm", "📏", Modifier.weight(1f))
+        GrowthSummaryCard("몸무게", latestWeight?.let { "%.1f".format(it) }, "kg", "⚖️", Modifier.weight(1f))
+        GrowthSummaryCard("머리둘레", latestHead?.let { "%.1f".format(it) }, "cm", "📐", Modifier.weight(1f))
     }
 }
 
 @Composable
-private fun GrowthSummaryCard(label: String, value: String?, unit: String, modifier: Modifier) {
-    Card(
+private fun GrowthSummaryCard(label: String, value: String?, unit: String, icon: String, modifier: Modifier) {
+    androidx.compose.material3.Card(
         modifier = modifier,
-        shape    = RoundedCornerShape(10.dp),
-        colors   = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(2.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = androidx.compose.material3.CardDefaults.cardElevation(2.dp),
     ) {
         Column(
-            modifier                = Modifier.padding(10.dp),
-            horizontalAlignment     = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(label, style = MaterialTheme.typography.labelSmall,
-                color = LocalExtendedColors.current.subtleText)
-            Spacer(Modifier.height(4.dp))
+            Text(text = icon, fontSize = 20.sp)
+            Spacer(Modifier.height(6.dp))
             Text(
-                text  = value ?: "--",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = if (value != null) MaterialTheme.colorScheme.primary
-                        else LocalExtendedColors.current.subtleText,
+                text = value ?: "--",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = if (value != null) Color(0xFF7BB87A) else Color(0xFF9E9E9E),
             )
-            Text(unit, style = MaterialTheme.typography.labelSmall,
-                color = LocalExtendedColors.current.subtleText)
+            Text(
+                text = "$label ($unit)",
+                style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
+                color = Color(0xFF9E9E9E),
+                modifier = Modifier.padding(top = 2.dp)
+            )
         }
     }
 }
 
-// ── 타임라인 카드 ──────────────────────────────────────────
+// ── 기록 카드 ──────────────────────────────────────────────
 @Composable
 private fun GrowthRecordCard(record: GrowthRecord, onDelete: () -> Unit) {
     val dateFmt = remember { SimpleDateFormat("yyyy.MM.dd", Locale.KOREAN) }
     val parts = buildList {
         record.weightKg?.let { add("몸무게 ${"%.1f".format(it)} kg") }
-        record.heightCm?.let { add("키 ${"%.1f".format(it)} cm")    }
+        record.heightCm?.let { add("키 ${"%.1f".format(it)} cm") }
         record.headCm?.let   { add("머리둘레 ${"%.1f".format(it)} cm") }
     }
 
-    Row(
+    androidx.compose.material3.Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, end = 16.dp, bottom = 12.dp),
-        verticalAlignment = Alignment.Top,
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 10.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = Color.White),
+        elevation = androidx.compose.material3.CardDefaults.cardElevation(2.dp),
     ) {
-        // 타임라인 도트
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(
-                Modifier
-                    .size(10.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(MaterialTheme.colorScheme.primary)
-            )
-            Box(Modifier.width(2.dp).height(40.dp).background(
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-            ))
-        }
-        Spacer(Modifier.width(12.dp))
-        Card(
-            modifier  = Modifier.weight(1f),
-            shape     = RoundedCornerShape(10.dp),
-            colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            elevation = CardDefaults.cardElevation(1.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
+                            .background(Color(0xFFD4EED0))
+                            .padding(horizontal = 9.dp, vertical = 3.dp)
+                    ) {
+                        Text(text = "성장", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF3A7C35))
+                    }
                     Text(
-                        text  = parts.joinToString(" · "),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
+                        text = parts.joinToString(" · "),
+                        style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF1C1B1F),
                     )
-                    val dateStr = dateFmt.format(Date(record.timestamp))
-                    val sub = if (record.note != null) "$dateStr · ${record.note}" else dateStr
-                    Text(sub, style = MaterialTheme.typography.bodySmall,
-                        color = LocalExtendedColors.current.subtleText)
                 }
-                IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
-                    Icon(Icons.Outlined.Delete, contentDescription = "삭제",
-                        tint = LocalExtendedColors.current.subtleText, modifier = Modifier.size(18.dp))
-                }
+                val dateStr = dateFmt.format(Date(record.timestamp))
+                val sub = if (record.note != null) "$dateStr · ${record.note}" else dateStr
+                Text(
+                    text = sub,
+                    style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                    color = Color(0xFF9E9E9E),
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+            IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
+                Icon(
+                    Icons.Outlined.Delete,
+                    contentDescription = "삭제",
+                    tint = Color(0xFF9E9E9E),
+                    modifier = Modifier.size(18.dp)
+                )
             }
         }
     }

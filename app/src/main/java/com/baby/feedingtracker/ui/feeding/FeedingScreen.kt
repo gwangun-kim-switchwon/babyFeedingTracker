@@ -58,8 +58,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.baby.feedingtracker.data.FeedingRecord
 import com.baby.feedingtracker.data.GoogleAuthHelper
 import com.baby.feedingtracker.data.SharingState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import com.baby.feedingtracker.ui.ShareBottomSheet
-import com.baby.feedingtracker.ui.profile.BabyProfileBanner
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import androidx.compose.material.icons.Icons
@@ -71,7 +72,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.ui.text.style.TextDecoration
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -198,72 +198,32 @@ fun FeedingScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        extendedColors.gradientTop,
-                        extendedColors.gradientBottom
-                    )
-                )
-            )
+            .background(Color.White)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
-            // -- 아기 프로필 배너 --
+            // -- Hero Card --
             item {
-                BabyProfileBanner(
+                val todayMillis = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+                }.timeInMillis
+                val todayRecs = uiState.records.filter { it.timestamp >= todayMillis }
+                FeedingHeroCard(
                     profile = babyProfile,
                     daysOld = daysOld,
+                    elapsedMinutes = uiState.elapsedMinutes,
+                    lastRecord = uiState.records.firstOrNull(),
+                    todayTotalCount = todayRecs.size,
+                    todayBreastCount = todayRecs.count { it.type == "breast" },
+                    todayFormulaCount = todayRecs.count { it.type == "formula" },
+                    sharingState = sharingState,
+                    onShareClick = { showShareSheet = true },
                     onNavigateToProfile = onNavigateToProfile
                 )
-            }
-
-            // -- 상단: 경과 시간 영역 + 공유 아이콘 --
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 24.dp, bottom = 16.dp)
-                ) {
-                    ElapsedTimeSection(
-                        elapsedMinutes = uiState.elapsedMinutes,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Share icon with status dot
-                    Box(
-                        modifier = Modifier.align(Alignment.TopEnd)
-                    ) {
-                        IconButton(
-                            onClick = { showShareSheet = true }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Share,
-                                contentDescription = "공유",
-                                tint = LocalExtendedColors.current.subtleText
-                            )
-                        }
-                        // Status dot
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(top = 8.dp, end = 8.dp)
-                                .size(8.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (sharingState is SharingState.Connected) {
-                                        extendedColors.statusConnected
-                                    } else {
-                                        extendedColors.statusDisconnected
-                                    }
-                                )
-                        )
-                    }
-                }
             }
 
             // -- 중단: 기록 목록 --
@@ -286,36 +246,28 @@ fun FeedingScreen(
                     }
                 }
 
-                item { Spacer(modifier = Modifier.height(8.dp).padding(horizontal = 24.dp)) }
+                item { Spacer(modifier = Modifier.height(8.dp)) }
 
                 groupedRecords.forEach { (dateLabel, dayRecords) ->
                     item(key = "header_$dateLabel") {
-                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            DateSectionHeader(dateLabel)
-                        }
-                    }
-                    item(key = "stats_$dateLabel") {
-                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            DailyStats(dayRecords)
-                        }
+                        DateSectionHeader(
+                            label = dateLabel,
+                            modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp, bottom = 4.dp)
+                        )
                     }
                     itemsIndexed(
                         items = dayRecords,
                         key = { _, record -> record.id }
                     ) { index, record ->
-                        val isLast = index == dayRecords.lastIndex
                         val previousRecord = previousByRecordId[record.id]
 
-                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            TimelineRecordRow(
-                                record = record,
-                                intervalMinutes = previousRecord?.let {
-                                    ((record.timestamp - it.timestamp) / 60_000L)
-                                },
-                                showLine = !isLast,
-                                onClick = { selectedRecord = record }
-                            )
-                        }
+                        FeedingRecordCard(
+                            record = record,
+                            intervalMinutes = previousRecord?.let {
+                                ((record.timestamp - it.timestamp) / 60_000L)
+                            },
+                            onClick = { selectedRecord = record }
+                        )
                     }
 
                     item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -354,40 +306,6 @@ fun FeedingScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 80.dp)
         )
-    }
-}
-
-// ──────────────────────────────────────────────
-// 경과 시간 섹션
-// ──────────────────────────────────────────────
-
-@Composable
-private fun ElapsedTimeSection(
-    elapsedMinutes: Long?,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.Start
-    ) {
-        if (elapsedMinutes != null) {
-            Text(
-                text = "마지막 수유",
-                style = MaterialTheme.typography.bodyMedium,
-                color = LocalExtendedColors.current.subtleText
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        Text(
-            text = formatElapsedTimeDisplay(elapsedMinutes),
-            style = MaterialTheme.typography.displayLarge.copy(
-                fontWeight = FontWeight.Bold,
-                letterSpacing = (-1.5).sp
-            ),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
     }
 }
 
@@ -432,11 +350,9 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 // ──────────────────────────────────────────────
 
 @Composable
-private fun DateSectionHeader(label: String) {
+private fun DateSectionHeader(label: String, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 12.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -454,164 +370,6 @@ private fun DateSectionHeader(label: String) {
                 .height(0.5.dp)
                 .background(LocalExtendedColors.current.divider)
         )
-    }
-}
-
-// ──────────────────────────────────────────────
-// 일일 통계
-// ──────────────────────────────────────────────
-
-@Composable
-private fun DailyStats(records: List<FeedingRecord>) {
-    val breastCount = records.count { it.type == "breast" }
-    val totalBreastMin = records.filter { it.type == "breast" }.sumOf { (it.leftMin ?: 0) + (it.rightMin ?: 0) }
-    val formulaCount = records.count { it.type == "formula" }
-    val totalCount = records.size
-    val totalFormulaMl = records.filter { it.type == "formula" }.mapNotNull { it.amountMl }.sum()
-    val pumpedCount = records.count { it.type == "pumped" }
-    val totalPumpedMl = records.filter { it.type == "pumped" }.mapNotNull { it.amountMl }.sum()
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        StatChip(label = "총", value = "${totalCount}회")
-        if (breastCount > 0) {
-            val minText = if (totalBreastMin > 0) " · ${totalBreastMin}분" else ""
-            StatChip(label = "모유", value = "${breastCount}회$minText")
-        }
-        if (formulaCount > 0) {
-            val mlText = if (totalFormulaMl > 0) " · ${totalFormulaMl}ml" else ""
-            StatChip(label = "분유", value = "${formulaCount}회$mlText")
-        }
-        if (pumpedCount > 0) {
-            val mlText = if (totalPumpedMl > 0) " · ${totalPumpedMl}ml" else ""
-            StatChip(label = "유축", value = "${pumpedCount}회$mlText")
-        }
-    }
-}
-
-@Composable
-private fun StatChip(label: String, value: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = LocalExtendedColors.current.subtleText
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = value,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.SemiBold
-            ),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
-}
-
-// ──────────────────────────────────────────────
-// 타임라인 기록 행
-// ──────────────────────────────────────────────
-
-@Composable
-private fun TimelineRecordRow(
-    record: FeedingRecord,
-    intervalMinutes: Long?,
-    showLine: Boolean,
-    onClick: () -> Unit
-) {
-    val dotSize = 10.dp
-    val lineWidth = 1.5.dp
-    val accentColor = MaterialTheme.colorScheme.primary
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = 2.dp),
-        verticalAlignment = Alignment.Top
-    ) {
-        // 타임라인 (동그라미 + 세로선)
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(24.dp)
-        ) {
-            Spacer(modifier = Modifier.height(8.dp))
-            // 동그라미
-            Box(
-                modifier = Modifier
-                    .size(dotSize)
-                    .clip(CircleShape)
-                    .background(accentColor)
-            )
-            // 세로선
-            if (showLine) {
-                Box(
-                    modifier = Modifier
-                        .width(lineWidth)
-                        .height(36.dp)
-                        .background(accentColor.copy(alpha = 0.3f))
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        // 컨텐츠
-        Column(
-            modifier = Modifier.padding(bottom = if (showLine) 0.dp else 4.dp)
-        ) {
-            val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // 시간
-                Text(
-                    text = timeFormat.format(Date(record.timestamp)),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Medium
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-                // 수유 종류 표시
-                val typeText = formatRecordType(record)
-                if (typeText != null) {
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = typeText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = LocalExtendedColors.current.subtleText
-                    )
-                }
-
-                // 메모 아이콘
-                if (!record.note.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.Notes,
-                        contentDescription = "메모",
-                        modifier = Modifier.size(16.dp),
-                        tint = LocalExtendedColors.current.subtleText
-                    )
-                }
-            }
-
-            // 간격 표시
-            if (intervalMinutes != null && intervalMinutes > 0) {
-                Text(
-                    text = formatIntervalText(intervalMinutes),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = LocalExtendedColors.current.subtleText.copy(alpha = 0.7f)
-                )
-            }
-        }
     }
 }
 
@@ -1066,4 +824,190 @@ private fun groupRecordsByDate(records: List<FeedingRecord>): List<Pair<String, 
             }
         }
         .toList()
+}
+
+// ──────────────────────────────────────────────
+// Hero Card
+// ──────────────────────────────────────────────
+
+@Composable
+private fun FeedingHeroCard(
+    profile: com.baby.feedingtracker.data.BabyProfile?,
+    daysOld: Int?,
+    elapsedMinutes: Long?,
+    lastRecord: FeedingRecord?,
+    todayTotalCount: Int,
+    todayBreastCount: Int,
+    todayFormulaCount: Int,
+    sharingState: com.baby.feedingtracker.data.SharingState,
+    onShareClick: () -> Unit,
+    onNavigateToProfile: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                Brush.linearGradient(
+                    listOf(Color(0xFFFFB59A), Color(0xFFFF8A7A))
+                )
+            )
+            .clickable(onClick = onNavigateToProfile)
+            .padding(20.dp)
+    ) {
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    val babyName = if (profile != null && profile.name.isNotBlank())
+                        "${profile.name}이 🍼" else "아기 🍼"
+                    Text(text = babyName, fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    if (daysOld != null) {
+                        Text(text = "생후 ${daysOld}일", fontSize = 12.sp, fontWeight = FontWeight.Medium,
+                            color = Color.White.copy(alpha = 0.85f))
+                    }
+                }
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Box {
+                        IconButton(onClick = onShareClick, modifier = Modifier.size(36.dp)) {
+                            Icon(imageVector = Icons.Outlined.Share, contentDescription = "공유",
+                                tint = Color.White.copy(alpha = 0.85f), modifier = Modifier.size(20.dp))
+                        }
+                        Box(
+                            modifier = Modifier.align(Alignment.TopEnd).size(8.dp)
+                                .clip(CircleShape)
+                                .background(
+                                    if (sharingState is SharingState.Connected) Color(0xFF4CAF50)
+                                    else Color(0xFFFFCCCC)
+                                )
+                        )
+                    }
+                    Box(
+                        modifier = Modifier.size(40.dp).clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.25f)),
+                        contentAlignment = Alignment.Center
+                    ) { Text(text = "👶", fontSize = 20.sp) }
+                }
+            }
+            Spacer(Modifier.height(14.dp))
+            Text(text = "마지막 수유", fontSize = 11.sp, fontWeight = FontWeight.SemiBold,
+                color = Color.White.copy(alpha = 0.80f), letterSpacing = 0.5.sp)
+            Spacer(Modifier.height(4.dp))
+            Text(text = formatElapsedTimeDisplay(elapsedMinutes), fontSize = 36.sp,
+                fontWeight = FontWeight.Black, color = Color.White, letterSpacing = (-1).sp, lineHeight = 40.sp)
+            if (lastRecord != null) {
+                val sub = formatRecordType(lastRecord)
+                if (sub != null) {
+                    Spacer(Modifier.height(6.dp))
+                    Text(text = "🍼 $sub", fontSize = 13.sp, fontWeight = FontWeight.Medium,
+                        color = Color.White.copy(alpha = 0.80f))
+                }
+            }
+            if (todayTotalCount > 0) {
+                Spacer(Modifier.height(14.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White.copy(alpha = 0.15f))
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    HeroStatItem("${todayTotalCount}회", "오늘 총")
+                    Box(Modifier.width(1.dp).height(28.dp).background(Color.White.copy(alpha = 0.30f)))
+                    HeroStatItem("${todayBreastCount}회", "모유")
+                    Box(Modifier.width(1.dp).height(28.dp).background(Color.White.copy(alpha = 0.30f)))
+                    HeroStatItem("${todayFormulaCount}회", "분유")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HeroStatItem(value: String, label: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = value, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
+        Text(text = label, fontSize = 10.sp, fontWeight = FontWeight.Medium, color = Color.White.copy(alpha = 0.80f))
+    }
+}
+
+// ──────────────────────────────────────────────
+// Record Card (기존 TimelineRecordRow 대체)
+// ──────────────────────────────────────────────
+
+@Composable
+private fun FeedingRecordCard(
+    record: FeedingRecord,
+    intervalMinutes: Long?,
+    onClick: () -> Unit
+) {
+    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 10.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(text = timeFormat.format(Date(record.timestamp)), fontSize = 13.sp,
+                fontWeight = FontWeight.Bold, color = Color(0xFF6E6A73), modifier = Modifier.width(38.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FeedingTypePill(type = record.type)
+                    val mainText = when (record.type) {
+                        "breast" -> buildString {
+                            record.leftMin?.let { append("왼 ${it}분") }
+                            if (record.leftMin != null && record.rightMin != null) append(" · ")
+                            record.rightMin?.let { append("오 ${it}분") }
+                        }.takeIf { it.isNotEmpty() }
+                        "formula", "pumped" -> record.amountMl?.let { "${it}ml" }
+                        else -> null
+                    }
+                    if (mainText != null) {
+                        Text(text = mainText, fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF1C1B1F))
+                    }
+                    if (!record.note.isNullOrBlank()) {
+                        Icon(imageVector = Icons.AutoMirrored.Outlined.Notes, contentDescription = null,
+                            modifier = Modifier.size(14.dp), tint = Color(0xFF9E9E9E))
+                    }
+                }
+                if (!record.note.isNullOrBlank()) {
+                    Text(text = record.note!!, fontSize = 12.sp, color = Color(0xFF9E9E9E),
+                        maxLines = 1, modifier = Modifier.padding(top = 2.dp))
+                }
+            }
+            if (intervalMinutes != null && intervalMinutes > 0) {
+                Text(text = formatIntervalText(intervalMinutes), fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium, color = Color(0xFF9E9E9E), textAlign = TextAlign.End)
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeedingTypePill(type: String?) {
+    val (bgColor, textColor, label) = when (type) {
+        "breast" -> Triple(Color(0xFFFFE5D9), Color(0xFFD4613A), "모유")
+        "formula" -> Triple(Color(0xFFFFD6D0), Color(0xFFC0382B), "분유")
+        "pumped" -> Triple(Color(0xFFFFE4C4), Color(0xFFC07010), "유축")
+        else -> return
+    }
+    Box(
+        modifier = Modifier.clip(RoundedCornerShape(20.dp)).background(bgColor)
+            .padding(horizontal = 9.dp, vertical = 3.dp)
+    ) {
+        Text(text = label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = textColor)
+    }
 }

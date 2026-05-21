@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,8 @@ import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -56,12 +59,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.baby.feedingtracker.data.SleepRecord
-import com.baby.feedingtracker.ui.profile.BabyProfileBanner
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import java.text.SimpleDateFormat
@@ -165,46 +166,35 @@ fun SleepScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        extendedColors.gradientTop,
-                        extendedColors.gradientBottom
-                    )
-                )
-            )
+            .background(Color.White)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
-            // -- 아기 프로필 배너 --
+            // -- Hero Card --
             item {
-                BabyProfileBanner(
+                val todayMillis = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+                }.timeInMillis
+                val todayRecs = uiState.records.filter { it.timestamp >= todayMillis }
+                val now = System.currentTimeMillis()
+                val todayTotalMinutes = todayRecs.sumOf { r ->
+                    val end = r.endTimestamp ?: now
+                    ((end - r.timestamp) / 60_000L).coerceAtLeast(0)
+                }
+                SleepHeroCard(
                     profile = babyProfile,
                     daysOld = daysOld,
+                    elapsedMinutes = uiState.elapsedMinutes,
+                    isCurrentlySleeping = uiState.isCurrentlySleeping,
+                    todayTotalSleepMinutes = todayTotalMinutes,
+                    todayNapCount = todayRecs.count { it.type == "nap" },
+                    todayNightCount = todayRecs.count { it.type == "night" },
                     onNavigateToProfile = onNavigateToProfile
                 )
-            }
-
-            // -- 상단: 경과 시간 영역 --
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 24.dp, bottom = 16.dp)
-                ) {
-                    SleepElapsedTimeSection(
-                        elapsedMinutes = uiState.elapsedMinutes,
-                        isCurrentlySleeping = uiState.isCurrentlySleeping,
-                        todayTotalSleepMinutes = uiState.todayTotalSleepMinutes,
-                        todayNapCount = uiState.todayNapCount,
-                        todayNightCount = uiState.todayNightCount,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
             }
 
             // -- 중단: 기록 목록 --
@@ -223,28 +213,13 @@ fun SleepScreen(
 
                 groupedRecords.forEach { (dateLabel, dayRecords) ->
                     item(key = "header_$dateLabel") {
-                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            SleepDateSectionHeader(dateLabel)
-                        }
-                    }
-                    item(key = "stats_$dateLabel") {
-                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            SleepDailyStats(dayRecords)
-                        }
+                        SleepDateSectionHeader(dateLabel, modifier = Modifier.padding(horizontal = 16.dp))
                     }
                     itemsIndexed(
                         items = dayRecords,
                         key = { _, record -> record.id }
-                    ) { index, record ->
-                        val isLast = index == dayRecords.lastIndex
-
-                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                            SleepTimelineRecordRow(
-                                record = record,
-                                showLine = !isLast,
-                                onClick = { selectedRecord = record }
-                            )
-                        }
+                    ) { _, record ->
+                        SleepRecordCard(record = record, onClick = { selectedRecord = record })
                     }
 
                     item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -291,58 +266,6 @@ fun SleepScreen(
 }
 
 // ──────────────────────────────────────────────
-// 경과 시간 섹션
-// ──────────────────────────────────────────────
-
-@Composable
-private fun SleepElapsedTimeSection(
-    elapsedMinutes: Long?,
-    isCurrentlySleeping: Boolean,
-    todayTotalSleepMinutes: Long,
-    todayNapCount: Int,
-    todayNightCount: Int,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.Start
-    ) {
-        if (elapsedMinutes != null) {
-            Text(
-                text = if (isCurrentlySleeping) "수면 중" else "마지막 수면",
-                style = MaterialTheme.typography.bodyMedium,
-                color = LocalExtendedColors.current.subtleText
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        Text(
-            text = formatSleepElapsedTime(elapsedMinutes, isCurrentlySleeping),
-            style = MaterialTheme.typography.displayLarge.copy(
-                fontWeight = FontWeight.Bold,
-                letterSpacing = (-1.5).sp
-            ),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        // 오늘 통계
-        val statParts = buildList {
-            if (todayTotalSleepMinutes > 0) add("총 ${formatSleepDuration(todayTotalSleepMinutes)}")
-            if (todayNapCount > 0) add("낮잠 ${todayNapCount}회")
-            if (todayNightCount > 0) add("밤잠 ${todayNightCount}회")
-        }
-        if (statParts.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "오늘: ${statParts.joinToString(" · ")}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = LocalExtendedColors.current.subtleText
-            )
-        }
-    }
-}
-
-// ──────────────────────────────────────────────
 // 빈 상태
 // ──────────────────────────────────────────────
 
@@ -383,9 +306,9 @@ private fun SleepEmptyState(modifier: Modifier = Modifier) {
 // ──────────────────────────────────────────────
 
 @Composable
-private fun SleepDateSectionHeader(label: String) {
+private fun SleepDateSectionHeader(label: String, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 8.dp, bottom = 12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -405,166 +328,6 @@ private fun SleepDateSectionHeader(label: String) {
                 .height(0.5.dp)
                 .background(LocalExtendedColors.current.divider)
         )
-    }
-}
-
-// ──────────────────────────────────────────────
-// 일일 통계
-// ──────────────────────────────────────────────
-
-@Composable
-private fun SleepDailyStats(records: List<SleepRecord>) {
-    val now = System.currentTimeMillis()
-    val totalMinutes = records.sumOf { record ->
-        val end = record.endTimestamp ?: now
-        ((end - record.timestamp) / 60_000L).coerceAtLeast(0)
-    }
-    val napCount = records.count { it.type == "nap" }
-    val nightCount = records.count { it.type == "night" }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        SleepStatChip(label = "총", value = formatSleepDuration(totalMinutes))
-        if (napCount > 0) SleepStatChip(label = "낮잠", value = "${napCount}회")
-        if (nightCount > 0) SleepStatChip(label = "밤잠", value = "${nightCount}회")
-    }
-}
-
-@Composable
-private fun SleepStatChip(label: String, value: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = LocalExtendedColors.current.subtleText
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = value,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.SemiBold
-            ),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
-}
-
-// ──────────────────────────────────────────────
-// 타임라인 기록 행
-// ──────────────────────────────────────────────
-
-@Composable
-private fun SleepTimelineRecordRow(
-    record: SleepRecord,
-    showLine: Boolean,
-    onClick: () -> Unit
-) {
-    val dotSize = 10.dp
-    val lineWidth = 1.5.dp
-    val accentColor = MaterialTheme.colorScheme.primary
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = 2.dp),
-        verticalAlignment = Alignment.Top
-    ) {
-        // 타임라인 (동그라미 + 세로선)
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(24.dp)
-        ) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .size(dotSize)
-                    .clip(CircleShape)
-                    .background(accentColor)
-            )
-            if (showLine) {
-                Box(
-                    modifier = Modifier
-                        .width(lineWidth)
-                        .height(36.dp)
-                        .background(accentColor.copy(alpha = 0.3f))
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        // 컨텐츠
-        Column(
-            modifier = Modifier.padding(bottom = if (showLine) 0.dp else 4.dp)
-        ) {
-            val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // 시작~종료 시간 표시
-                val startTime = timeFormat.format(Date(record.timestamp))
-                val timeText = if (record.endTimestamp != null) {
-                    "$startTime ~ ${timeFormat.format(Date(record.endTimestamp))}"
-                } else {
-                    "$startTime ~"
-                }
-
-                Text(
-                    text = timeText,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Medium
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-                val typeText = formatSleepType(record.type)
-                if (typeText != null) {
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = typeText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = LocalExtendedColors.current.subtleText
-                    )
-                }
-
-                // 메모 아이콘
-                if (!record.note.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.Notes,
-                        contentDescription = "메모",
-                        modifier = Modifier.size(16.dp),
-                        tint = LocalExtendedColors.current.subtleText
-                    )
-                }
-            }
-
-            // 수면 시간 또는 "수면 중" 표시
-            val now = System.currentTimeMillis()
-            if (record.endTimestamp != null) {
-                val durationMinutes = ((record.endTimestamp - record.timestamp) / 60_000L).coerceAtLeast(0)
-                Text(
-                    text = formatSleepDuration(durationMinutes),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = LocalExtendedColors.current.subtleText.copy(alpha = 0.7f)
-                )
-            } else {
-                val durationMinutes = ((now - record.timestamp) / 60_000L).coerceAtLeast(0)
-                Text(
-                    text = "수면 중 · ${formatSleepDuration(durationMinutes)}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
     }
 }
 
@@ -788,6 +551,173 @@ private fun SleepDeleteConfirmDialog(
             }
         }
     )
+}
+
+// ──────────────────────────────────────────────
+// Sleep Hero Card (퍼플 그라디언트)
+// ──────────────────────────────────────────────
+
+@Composable
+private fun SleepHeroCard(
+    profile: com.baby.feedingtracker.data.BabyProfile?,
+    daysOld: Int?,
+    elapsedMinutes: Long?,
+    isCurrentlySleeping: Boolean,
+    todayTotalSleepMinutes: Long,
+    todayNapCount: Int,
+    todayNightCount: Int,
+    onNavigateToProfile: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(Brush.linearGradient(listOf(Color(0xFFB3A3E8), Color(0xFF7B6CB5))))
+            .clickable(onClick = onNavigateToProfile)
+            .padding(20.dp)
+    ) {
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    val babyName = if (profile != null && profile.name.isNotBlank())
+                        "${profile.name}이 🌙" else "아기 🌙"
+                    Text(text = babyName, fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    if (daysOld != null) {
+                        Text(text = "생후 ${daysOld}일", fontSize = 12.sp, fontWeight = FontWeight.Medium,
+                            color = Color.White.copy(alpha = 0.85f))
+                    }
+                }
+                Box(
+                    modifier = Modifier.size(40.dp).clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.25f)),
+                    contentAlignment = Alignment.Center
+                ) { Text(text = "😴", fontSize = 20.sp) }
+            }
+            Spacer(Modifier.height(14.dp))
+            val label = if (isCurrentlySleeping) "수면 중" else "마지막 수면"
+            Text(text = label, fontSize = 11.sp, fontWeight = FontWeight.SemiBold,
+                color = Color.White.copy(alpha = 0.80f), letterSpacing = 0.5.sp)
+            Spacer(Modifier.height(4.dp))
+            Text(text = formatSleepElapsedTime(elapsedMinutes, isCurrentlySleeping),
+                fontSize = 36.sp, fontWeight = FontWeight.Black, color = Color.White,
+                letterSpacing = (-1).sp, lineHeight = 40.sp)
+            if (isCurrentlySleeping) {
+                Spacer(Modifier.height(10.dp))
+                Box(
+                    modifier = Modifier.fillMaxWidth().height(6.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(Color.White.copy(alpha = 0.25f))
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(0.62f).fillMaxHeight()
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(Color.White.copy(alpha = 0.85f))
+                    )
+                }
+            }
+            if (todayTotalSleepMinutes > 0 || todayNapCount > 0 || todayNightCount > 0) {
+                Spacer(Modifier.height(14.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White.copy(alpha = 0.15f))
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SleepHeroStatItem(formatSleepDuration(todayTotalSleepMinutes), "오늘 총")
+                    Box(Modifier.width(1.dp).height(28.dp).background(Color.White.copy(alpha = 0.30f)))
+                    SleepHeroStatItem("${todayNapCount}회", "낮잠")
+                    Box(Modifier.width(1.dp).height(28.dp).background(Color.White.copy(alpha = 0.30f)))
+                    SleepHeroStatItem("${todayNightCount}회", "밤잠")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SleepHeroStatItem(value: String, label: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = value, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
+        Text(text = label, fontSize = 10.sp, fontWeight = FontWeight.Medium, color = Color.White.copy(alpha = 0.80f))
+    }
+}
+
+// ──────────────────────────────────────────────
+// Sleep Record Card (기존 SleepTimelineRecordRow 대체)
+// ──────────────────────────────────────────────
+
+@Composable
+private fun SleepRecordCard(record: SleepRecord, onClick: () -> Unit) {
+    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
+    val now = System.currentTimeMillis()
+
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 10.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(text = timeFormat.format(Date(record.timestamp)), fontSize = 13.sp,
+                fontWeight = FontWeight.Bold, color = Color(0xFF6E6A73), modifier = Modifier.width(38.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SleepTypePill(type = record.type)
+                    val mainText = if (record.endTimestamp != null) {
+                        formatSleepDuration(((record.endTimestamp - record.timestamp) / 60_000L).coerceAtLeast(0))
+                    } else {
+                        "수면 중"
+                    }
+                    Text(text = mainText, fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
+                        color = if (record.endTimestamp == null) Color(0xFF7B6CB5) else Color(0xFF1C1B1F))
+                    if (!record.note.isNullOrBlank()) {
+                        Icon(imageVector = Icons.AutoMirrored.Outlined.Notes, contentDescription = null,
+                            modifier = Modifier.size(14.dp), tint = Color(0xFF9E9E9E))
+                    }
+                }
+                val timeRangeText = if (record.endTimestamp != null) {
+                    "${timeFormat.format(Date(record.timestamp))} ~ ${timeFormat.format(Date(record.endTimestamp))}"
+                } else {
+                    "${timeFormat.format(Date(record.timestamp))} ~ 진행중"
+                }
+                Text(text = timeRangeText, fontSize = 12.sp, color = Color(0xFF9E9E9E),
+                    modifier = Modifier.padding(top = 2.dp))
+            }
+            if (record.endTimestamp == null) {
+                val elapsedMin = ((now - record.timestamp) / 60_000L).coerceAtLeast(0)
+                Text(text = formatSleepDuration(elapsedMin), fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium, color = Color(0xFF7B6CB5), textAlign = TextAlign.End)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SleepTypePill(type: String?) {
+    val (bgColor, textColor, label) = when (type) {
+        "nap" -> Triple(Color(0xFFEAE6FA), Color(0xFF5C4E9E), "낮잠")
+        "night" -> Triple(Color(0xFFD4CFF5), Color(0xFF3D3080), "밤잠")
+        else -> return
+    }
+    Box(
+        modifier = Modifier.clip(RoundedCornerShape(20.dp)).background(bgColor)
+            .padding(horizontal = 9.dp, vertical = 3.dp)
+    ) {
+        Text(text = label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = textColor)
+    }
 }
 
 // ──────────────────────────────────────────────

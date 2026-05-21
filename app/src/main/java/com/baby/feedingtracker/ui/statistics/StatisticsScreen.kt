@@ -3,6 +3,7 @@ package com.baby.feedingtracker.ui.statistics
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChevronLeft
@@ -32,8 +34,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,7 +43,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,7 +55,6 @@ import com.baby.feedingtracker.data.BabyProfile
 import com.baby.feedingtracker.data.DailyStats
 import com.baby.feedingtracker.data.PartnerContribution
 import com.baby.feedingtracker.data.WeeklyStats
-import com.baby.feedingtracker.ui.profile.BabyProfileBanner
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import java.text.SimpleDateFormat
@@ -81,14 +81,7 @@ fun StatisticsScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        extendedColors.gradientTop,
-                        extendedColors.gradientBottom
-                    )
-                )
-            )
+            .background(Color.White)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         if (uiState.isLoading) {
@@ -107,9 +100,9 @@ fun StatisticsScreen(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // 3-1. Baby Profile Banner
+                // 3-1. Statistics Profile Row
                 item {
-                    BabyProfileBanner(
+                    StatisticsProfileRow(
                         profile = babyProfile,
                         daysOld = daysOld,
                         onNavigateToProfile = onNavigateToProfile
@@ -118,13 +111,10 @@ fun StatisticsScreen(
 
                 // Tab switcher
                 item {
-                    TabRow(
-                        selectedTabIndex = selectedTab,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }, text = { Text("주간") })
-                        Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }, text = { Text("일일") })
-                    }
+                    StatTabSwitcher(
+                        selectedTab = selectedTab,
+                        onTabSelected = { selectedTab = it }
+                    )
                 }
 
                 if (selectedTab == 0) {
@@ -236,6 +226,89 @@ fun StatisticsScreen(
     }
 }
 
+// ──────────────────────────────────────────────
+// Statistics Profile Row (BabyProfileBanner 대체)
+// ──────────────────────────────────────────────
+
+@Composable
+private fun StatisticsProfileRow(
+    profile: BabyProfile?,
+    daysOld: Int?,
+    onNavigateToProfile: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onNavigateToProfile)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Box(
+                modifier = Modifier.size(36.dp).clip(CircleShape)
+                    .background(Color(0xFFFFF0EA)),
+                contentAlignment = Alignment.Center
+            ) { Text("👶", fontSize = 18.sp) }
+            Column {
+                if (profile != null && profile.name.isNotBlank()) {
+                    Text(text = profile.name, style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold, color = Color(0xFF1C1B1F))
+                    if (daysOld != null) {
+                        Text(text = "생후 ${daysOld}일", style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFF6E6A73))
+                    }
+                } else {
+                    Text(text = "프로필을 설정하세요", style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary)
+                }
+            }
+        }
+        Text(text = "통계", style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold, color = Color(0xFF1C1B1F))
+    }
+}
+
+// ──────────────────────────────────────────────
+// Statistics Tab Switcher
+// ──────────────────────────────────────────────
+
+@Composable
+private fun StatTabSwitcher(selectedTab: Int, onTabSelected: (Int) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color(0xFFF4F0F8))
+            .padding(3.dp)
+    ) {
+        listOf("주간", "일일").forEachIndexed { index, label ->
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(if (selectedTab == index) Color.White else Color.Transparent)
+                    .clickable { onTabSelected(index) }
+                    .then(
+                        if (selectedTab == index)
+                            Modifier.shadow(elevation = 1.dp, shape = RoundedCornerShape(10.dp))
+                        else Modifier
+                    )
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = label,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (selectedTab == index) Color(0xFF1C1B1F) else Color(0xFF9E9E9E)
+                )
+            }
+        }
+    }
+}
+
 @Composable
 private fun MilestoneCard(
     milestoneTitle: String,
@@ -291,7 +364,7 @@ private fun TodaySummaryCard(
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier.fillMaxWidth()
@@ -412,7 +485,7 @@ private fun WeeklyStatsCard(weeklyStats: WeeklyStats) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier.fillMaxWidth()
@@ -522,7 +595,7 @@ private fun FeedingHeatmapCard(feedingByHour: Map<Int, Int>) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier.fillMaxWidth()
@@ -597,7 +670,7 @@ private fun PartnerContributionCard(contribution: PartnerContribution) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier.fillMaxWidth()
@@ -674,7 +747,7 @@ private fun EmptyCard(message: String) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier.fillMaxWidth()
@@ -706,29 +779,28 @@ private fun DailyDateNavRow(
         }
         cal.timeInMillis
     }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(2.dp)
     ) {
-        IconButton(onClick = onPrevious) {
-            Icon(Icons.Outlined.ChevronLeft, contentDescription = "이전 날")
-        }
-        Text(
-            text = dateStr,
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-        )
-        IconButton(onClick = onNext, enabled = !isToday) {
-            Icon(
-                Icons.Outlined.ChevronRight,
-                contentDescription = "다음 날",
-                tint = if (isToday) LocalExtendedColors.current.subtleText
-                       else LocalContentColor.current,
-            )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            IconButton(onClick = onPrevious) {
+                Icon(Icons.Outlined.ChevronLeft, contentDescription = "이전 날")
+            }
+            Text(text = dateStr, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            IconButton(onClick = onNext, enabled = !isToday) {
+                Icon(
+                    Icons.Outlined.ChevronRight,
+                    contentDescription = "다음 날",
+                    tint = if (isToday) LocalExtendedColors.current.subtleText else LocalContentColor.current,
+                )
+            }
         }
     }
 }
@@ -736,24 +808,27 @@ private fun DailyDateNavRow(
 @Composable
 private fun DailyEntryRow(entry: DailyEntry) {
     val timeFmt = remember { java.text.SimpleDateFormat("HH:mm", java.util.Locale.KOREAN) }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(1.dp)
     ) {
-        Text(
-            text = timeFmt.format(java.util.Date(entry.timestamp)),
-            style = MaterialTheme.typography.bodySmall,
-            color = LocalExtendedColors.current.subtleText,
-            modifier = Modifier.width(48.dp),
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(text = entry.icon, fontSize = 18.sp)
-        Spacer(Modifier.width(8.dp))
-        Text(
-            text = entry.label,
-            style = MaterialTheme.typography.bodyMedium,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = timeFmt.format(java.util.Date(entry.timestamp)),
+                style = MaterialTheme.typography.bodySmall,
+                color = LocalExtendedColors.current.subtleText,
+                modifier = Modifier.width(48.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(text = entry.icon, fontSize = 18.sp)
+            Spacer(Modifier.width(8.dp))
+            Text(text = entry.label, style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium)
+        }
     }
 }
