@@ -18,8 +18,11 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChevronLeft
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,10 +30,16 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.baby.feedingtracker.data.BabyProfile
 import com.baby.feedingtracker.data.DailyStats
@@ -61,8 +71,12 @@ fun StatisticsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val babyProfile by babyProfileViewModel.profile.collectAsStateWithLifecycle()
     val daysOld by babyProfileViewModel.daysOld.collectAsStateWithLifecycle()
+    val selectedDayStart by viewModel.selectedDayStart.collectAsStateWithLifecycle()
+    val dailyEntries by viewModel.dailyEntries.collectAsStateWithLifecycle()
+    val isDailyLoading by viewModel.isDailyLoading.collectAsStateWithLifecycle()
     val extendedColors = LocalExtendedColors.current
     val context = LocalContext.current
+    var selectedTab by remember { mutableStateOf(0) }  // 0=주간, 1=일일
 
     Box(
         modifier = Modifier
@@ -102,56 +116,114 @@ fun StatisticsScreen(
                     )
                 }
 
-                // 3-2. Milestone Card
-                val latestMilestone = uiState.milestones.lastOrNull()
-                if (latestMilestone != null) {
-                    item {
-                        MilestoneCard(
-                            milestoneTitle = latestMilestone.title,
-                            milestoneDescription = latestMilestone.description,
-                            nextMilestoneTitle = uiState.nextMilestone?.title,
-                            nextMilestoneRemaining = uiState.nextMilestoneRemaining
-                        )
+                // Tab switcher
+                item {
+                    TabRow(
+                        selectedTabIndex = selectedTab,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }, text = { Text("주간") })
+                        Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }, text = { Text("일일") })
                     }
                 }
 
-                // 3-3. Today's Summary Card
-                val todayStats = uiState.todayStats
-                if (todayStats != null) {
-                    item {
-                        TodaySummaryCard(
-                            stats = todayStats,
-                            babyName = uiState.babyName,
-                            daysOld = uiState.daysOld,
-                            context = context
-                        )
+                if (selectedTab == 0) {
+                    // 3-2. Milestone Card
+                    val latestMilestone = uiState.milestones.lastOrNull()
+                    if (latestMilestone != null) {
+                        item {
+                            MilestoneCard(
+                                milestoneTitle = latestMilestone.title,
+                                milestoneDescription = latestMilestone.description,
+                                nextMilestoneTitle = uiState.nextMilestone?.title,
+                                nextMilestoneRemaining = uiState.nextMilestoneRemaining
+                            )
+                        }
+                    }
+
+                    // 3-3. Today's Summary Card
+                    val todayStats = uiState.todayStats
+                    if (todayStats != null) {
+                        item {
+                            TodaySummaryCard(
+                                stats = todayStats,
+                                babyName = uiState.babyName,
+                                daysOld = uiState.daysOld,
+                                context = context
+                            )
+                        }
+                    } else {
+                        item {
+                            EmptyCard(message = "아직 기록이 없어요")
+                        }
+                    }
+
+                    // 3-4. Weekly Stats Card
+                    val weeklyStats = uiState.weeklyStats
+                    if (weeklyStats != null) {
+                        item {
+                            WeeklyStatsCard(weeklyStats = weeklyStats)
+                        }
+                    }
+
+                    // 3-5. Hourly Feeding Heatmap
+                    if (weeklyStats != null && weeklyStats.feedingByHour.isNotEmpty()) {
+                        item {
+                            FeedingHeatmapCard(feedingByHour = weeklyStats.feedingByHour)
+                        }
+                    }
+
+                    // 3-6. Partner Contribution
+                    val contribution = uiState.partnerContribution
+                    if (contribution != null && contribution.user2Uid != null) {
+                        item {
+                            PartnerContributionCard(contribution = contribution)
+                        }
                     }
                 } else {
-                    item {
-                        EmptyCard(message = "아직 기록이 없어요")
-                    }
-                }
+                    // 일일 탭
 
-                // 3-4. Weekly Stats Card
-                val weeklyStats = uiState.weeklyStats
-                if (weeklyStats != null) {
+                    // ① 날짜 네비게이션
                     item {
-                        WeeklyStatsCard(weeklyStats = weeklyStats)
+                        DailyDateNavRow(
+                            dayStartMs = selectedDayStart,
+                            onPrevious = { viewModel.previousDay() },
+                            onNext     = { viewModel.nextDay() },
+                        )
                     }
-                }
 
-                // 3-5. Hourly Feeding Heatmap
-                if (weeklyStats != null && weeklyStats.feedingByHour.isNotEmpty()) {
-                    item {
-                        FeedingHeatmapCard(feedingByHour = weeklyStats.feedingByHour)
+                    // ② 로딩 중
+                    if (isDailyLoading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
                     }
-                }
-
-                // 3-6. Partner Contribution
-                val contribution = uiState.partnerContribution
-                if (contribution != null && contribution.user2Uid != null) {
-                    item {
-                        PartnerContributionCard(contribution = contribution)
+                    // ③ 빈 상태
+                    else if (dailyEntries.isEmpty()) {
+                        item {
+                            Text(
+                                text = "선택한 날짜에 기록이 없어요",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = LocalExtendedColors.current.subtleText,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 48.dp),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
+                    // ④ 타임라인
+                    else {
+                        items(dailyEntries, key = { it.timestamp.toString() + it.type }) { entry ->
+                            DailyEntryRow(entry)
+                        }
                     }
                 }
 
@@ -615,6 +687,73 @@ private fun EmptyCard(message: String) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(32.dp)
+        )
+    }
+}
+
+@Composable
+private fun DailyDateNavRow(
+    dayStartMs: Long,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+) {
+    val formatter = remember { java.text.SimpleDateFormat("yyyy년 M월 d일 (E)", java.util.Locale.KOREAN) }
+    val dateStr = formatter.format(java.util.Date(dayStartMs))
+    val isToday = dayStartMs == run {
+        val cal = java.util.Calendar.getInstance().apply {
+            set(java.util.Calendar.HOUR_OF_DAY, 0); set(java.util.Calendar.MINUTE, 0)
+            set(java.util.Calendar.SECOND, 0); set(java.util.Calendar.MILLISECOND, 0)
+        }
+        cal.timeInMillis
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        IconButton(onClick = onPrevious) {
+            Icon(Icons.Outlined.ChevronLeft, contentDescription = "이전 날")
+        }
+        Text(
+            text = dateStr,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+        )
+        IconButton(onClick = onNext, enabled = !isToday) {
+            Icon(
+                Icons.Outlined.ChevronRight,
+                contentDescription = "다음 날",
+                tint = if (isToday) LocalExtendedColors.current.subtleText
+                       else LocalContentColor.current,
+            )
+        }
+    }
+}
+
+@Composable
+private fun DailyEntryRow(entry: DailyEntry) {
+    val timeFmt = remember { java.text.SimpleDateFormat("HH:mm", java.util.Locale.KOREAN) }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = timeFmt.format(java.util.Date(entry.timestamp)),
+            style = MaterialTheme.typography.bodySmall,
+            color = LocalExtendedColors.current.subtleText,
+            modifier = Modifier.width(48.dp),
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(text = entry.icon, fontSize = 18.sp)
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = entry.label,
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
