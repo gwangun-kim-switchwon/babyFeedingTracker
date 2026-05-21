@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.baby.feedingtracker.di.AppContainer
-import com.baby.feedingtracker.ui.cleaning.CleaningViewModel
 import com.baby.feedingtracker.ui.diaper.DiaperViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
@@ -51,7 +50,6 @@ class MainActivity : ComponentActivity() {
 
             BabyFeedingTrackerTheme(themeMode = themeMode) {
                 val repository by app.container.repository.collectAsState()
-                val cleaningRepository by app.container.cleaningRepository.collectAsState()
                 val diaperRepository by app.container.diaperRepository.collectAsState()
                 val sleepRepository by app.container.sleepRepository.collectAsState()
                 val babyProfileRepository by app.container.babyProfileRepository.collectAsState()
@@ -60,7 +58,7 @@ class MainActivity : ComponentActivity() {
                 val initError by app.container.initError.collectAsState()
                 val coroutineScope = rememberCoroutineScope()
 
-                if (repository != null && cleaningRepository != null && diaperRepository != null && sleepRepository != null && babyProfileRepository != null && statisticsRepository != null && milestoneManager != null) {
+                if (repository != null && diaperRepository != null && sleepRepository != null && babyProfileRepository != null && statisticsRepository != null && milestoneManager != null) {
                     // repository 인스턴스가 바뀌면 (Google 로그인 후 uid 변경 등)
                     // ViewModel을 새로 생성하여 새 데이터를 로드
                     val viewModel: FeedingViewModel = viewModel(
@@ -74,11 +72,6 @@ class MainActivity : ComponentActivity() {
                                 app.container.reinitializeWithDataOwner(hostUid)
                             }
                         )
-                    )
-
-                    val cleaningViewModel: CleaningViewModel = viewModel(
-                        key = "cleaning_vm_${cleaningRepository.hashCode()}",
-                        factory = CleaningViewModel.factory(cleaningRepository!!)
                     )
 
                     val diaperViewModel: DiaperViewModel = viewModel(
@@ -133,7 +126,6 @@ class MainActivity : ComponentActivity() {
 
                     BabyFeedingNavHost(
                         feedingViewModel = viewModel,
-                        cleaningViewModel = cleaningViewModel,
                         diaperViewModel = diaperViewModel,
                         sleepViewModel = sleepViewModel,
                         statisticsViewModel = statisticsViewModel,
