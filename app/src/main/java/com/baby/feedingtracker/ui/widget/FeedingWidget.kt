@@ -54,7 +54,13 @@ class FeedingWidget : GlanceAppWidget() {
             if (hours > 0) "${hours}시간 ${minutes}분 전" else "${minutes}분 전"
         }
 
-        val typeText = lastType.takeIf { it.isNotBlank() }
+        val displayType = when (lastType) {
+            "breast"  -> "모유"
+            "formula" -> "분유"
+            "pumped"  -> "유축"
+            else      -> lastType.takeIf { it.isNotBlank() }
+        }
+        val typeText = displayType
 
         Box(
             modifier = GlanceModifier

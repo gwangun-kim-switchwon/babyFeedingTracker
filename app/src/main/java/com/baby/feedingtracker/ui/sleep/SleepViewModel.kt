@@ -194,6 +194,15 @@ class SleepViewModel(private val repository: SleepRepository) : ViewModel() {
         }
     }
 
+    fun updateEndTimestamp(recordId: String, endTimestamp: Long) {
+        viewModelScope.launch {
+            val result = repository.updateEndTimestamp(recordId, endTimestamp)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
+            }
+        }
+    }
+
     fun loadMore() {
         if (_isLoadingMore.value || !_hasMoreData.value) return
         val currentRecords = uiState.value.records

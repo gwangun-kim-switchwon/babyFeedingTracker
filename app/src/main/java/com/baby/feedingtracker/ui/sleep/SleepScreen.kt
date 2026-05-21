@@ -146,6 +146,9 @@ fun SleepScreen(
             onUpdateTimestamp = { timestamp ->
                 viewModel.updateTimestamp(record.id, timestamp)
             },
+            onUpdateEndTimestamp = { endTimestamp ->
+                viewModel.updateEndTimestamp(record.id, endTimestamp)
+            },
             onUpdateNote = { note ->
                 viewModel.updateNote(record.id, note)
             },
@@ -576,6 +579,7 @@ private fun SleepEditBottomSheet(
     isNewRecord: Boolean,
     onUpdateType: (type: String?) -> Unit,
     onUpdateTimestamp: (timestamp: Long) -> Unit,
+    onUpdateEndTimestamp: (endTimestamp: Long) -> Unit,
     onUpdateNote: (String?) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit
@@ -583,6 +587,7 @@ private fun SleepEditBottomSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedType by remember { mutableStateOf(record.type) }
     var currentTimestamp by remember { mutableStateOf(record.timestamp) }
+    var endTimestampMs by remember { mutableStateOf(record.endTimestamp) }
     var noteText by remember(record) { mutableStateOf(record.note ?: "") }
     val extendedColors = LocalExtendedColors.current
 
@@ -602,15 +607,28 @@ private fun SleepEditBottomSheet(
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
         ) {
-            // 날짜 + 시간 편집 헤더
+            // 날짜 + 시간 편집 헤더 (시작 시간)
             com.baby.feedingtracker.ui.components.RecordDateTimeEditor(
                 timestamp = currentTimestamp,
-                titleSuffix = "수면 기록",
+                titleSuffix = "수면 시작",
                 onTimestampChange = {
                     currentTimestamp = it
                     onUpdateTimestamp(it)
                 }
             )
+
+            // 종료 시간 — endTimestamp가 있을 때만 표시
+            if (endTimestampMs != null) {
+                Spacer(modifier = Modifier.height(16.dp))
+                com.baby.feedingtracker.ui.components.RecordDateTimeEditor(
+                    timestamp = endTimestampMs!!,
+                    titleSuffix = "종료",
+                    onTimestampChange = {
+                        endTimestampMs = it
+                        onUpdateEndTimestamp(it)
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

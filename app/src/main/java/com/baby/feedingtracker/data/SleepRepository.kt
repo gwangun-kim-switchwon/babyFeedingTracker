@@ -21,4 +21,8 @@ class SleepRepository(
     suspend fun updateType(id: String, type: String?): DataResult<Unit> {
         return sleepDataSource.updateType(id, type)
     }
+
+    suspend fun updateEndTimestamp(id: String, endTimestamp: Long): DataResult<Unit> {
+        return sleepDataSource.updateEndTimestamp(id, endTimestamp)
+    }
 }
