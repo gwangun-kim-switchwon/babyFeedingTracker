@@ -1,17 +1,18 @@
 package com.baby.feedingtracker.ui.statistics.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChevronLeft
@@ -20,8 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,9 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baby.feedingtracker.ui.statistics.DailyEntry
@@ -43,374 +42,141 @@ import java.util.Date
 import java.util.Locale
 
 // ──────────────────────────────────────────────
-// Shared building blocks
+// 디자이너 HTML 원안 충실 이식
+//   - VerticalBarChartCard: 세로 막대 그래프 (수유/수면 차트 공용)
+//   - DailyDateNavCard: 날짜 이전/다음 네비 카드
+//   - DailyEntryRecordCard: 시간 + pill + 메인 텍스트
 // ──────────────────────────────────────────────
 
-private val CardShape = RoundedCornerShape(20.dp)
-private val CardElevation = 1.dp
+private val ChartCardShape = RoundedCornerShape(16.dp)
+private val ChartCardElevation = 1.dp
+
+// ──────────────────────────────────────────────
+// VerticalBarChartCard
+// ──────────────────────────────────────────────
 
 @Composable
-private fun ModernStatsCard(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
+fun VerticalBarChartCard(
+    title: String,
+    dailyValues: List<Float>,
+    dayLabels: List<String>,
+    todayIndex: Int,
+    barColor: Color,
+    barColorDark: Color,
+    valueFormatter: (Float) -> String,
 ) {
+    require(dailyValues.size == dayLabels.size) { "dailyValues / dayLabels size mismatch" }
+    val maxValue = dailyValues.maxOrNull()?.coerceAtLeast(0.0001f) ?: 0.0001f
+
     Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = CardShape,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = CardElevation),
-    ) {
-        content()
-    }
-}
-
-@Composable
-private fun CategoryDot(color: Color, size: Int = 6) {
-    Box(
         modifier = Modifier
-            .size(size.dp)
-            .clip(CircleShape)
-            .background(color)
-    )
-}
-
-@Composable
-private fun SectionHeader(title: String) {
-    val coral = LocalExtendedColors.current.coralAccent
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        shape = ChartCardShape,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = ChartCardElevation),
     ) {
-        CategoryDot(color = coral, size = 8)
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-    }
-}
-
-// ──────────────────────────────────────────────
-// 1) WeeklyStatsCard
-// ──────────────────────────────────────────────
-
-@Composable
-fun WeeklyStatsCard(weeklyStats: com.baby.feedingtracker.data.WeeklyStats) {
-    val ext = LocalExtendedColors.current
-    val dailyStats = weeklyStats.dailyStats
-    val maxFeeding = dailyStats.maxOfOrNull { it.feedingCount }?.coerceAtLeast(1) ?: 1
-    val avgFeeding = if (dailyStats.isNotEmpty()) weeklyStats.totalFeedings.toFloat() / dailyStats.size else 0f
-    val avgDiapers = if (dailyStats.isNotEmpty()) weeklyStats.totalDiapers.toFloat() / dailyStats.size else 0f
-    val totalSleepHours = weeklyStats.totalSleepMinutes / 60f
-    val avgSleepHours = if (dailyStats.isNotEmpty()) totalSleepHours / dailyStats.size else 0f
-
-    ModernStatsCard {
-        Column(modifier = Modifier.padding(20.dp)) {
-            SectionHeader(title = "이번 주 통계")
-            Spacer(Modifier.height(16.dp))
-
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "수유 ${weeklyStats.totalFeedings}회 (일 평균 ${"%.1f".format(avgFeeding)}회)",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
+                text = title,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-            Spacer(Modifier.height(10.dp))
-
-            dailyStats.forEach { daily ->
-                val cal = Calendar.getInstance().apply { timeInMillis = daily.date }
-                val dayLabel = when (cal.get(Calendar.DAY_OF_WEEK)) {
-                    Calendar.MONDAY -> "월"
-                    Calendar.TUESDAY -> "화"
-                    Calendar.WEDNESDAY -> "수"
-                    Calendar.THURSDAY -> "목"
-                    Calendar.FRIDAY -> "금"
-                    Calendar.SATURDAY -> "토"
-                    Calendar.SUNDAY -> "일"
-                    else -> ""
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 3.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = dayLabel,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = ext.subtleText,
-                        modifier = Modifier.width(24.dp),
-                    )
-                    LinearProgressIndicator(
-                        progress = { if (maxFeeding > 0) daily.feedingCount.toFloat() / maxFeeding else 0f },
+            Spacer(Modifier.height(14.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(110.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                dailyValues.forEachIndexed { index, value ->
+                    val isToday = index == todayIndex
+                    BarColumn(
                         modifier = Modifier
                             .weight(1f)
-                            .height(12.dp)
-                            .clip(RoundedCornerShape(6.dp)),
-                        color = ext.categoryFeeding,
-                        trackColor = ext.categoryFeeding.copy(alpha = 0.18f),
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "${daily.feedingCount}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.width(22.dp),
-                        textAlign = TextAlign.End,
+                            .fillMaxHeight(),
+                        value = value,
+                        maxValue = maxValue,
+                        label = dayLabels[index],
+                        isToday = isToday,
+                        barColor = barColor,
+                        barColorDark = barColorDark,
+                        valueText = valueFormatter(value),
                     )
                 }
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            // Summary lines with category dots
-            SummaryLine(
-                color = ext.categoryFeeding,
-                label = "수유",
-                value = "${weeklyStats.totalFeedings}회 · 일 평균 ${"%.1f".format(avgFeeding)}회",
-            )
-            Spacer(Modifier.height(6.dp))
-            SummaryLine(
-                color = ext.categoryDiaper,
-                label = "기저귀",
-                value = "${weeklyStats.totalDiapers}회 · 일 평균 ${"%.1f".format(avgDiapers)}회",
-            )
-            Spacer(Modifier.height(6.dp))
-            SummaryLine(
-                color = ext.categorySleep,
-                label = "수면",
-                value = "${"%.1f".format(totalSleepHours)}시간 · 일 평균 ${"%.1f".format(avgSleepHours)}시간",
-            )
-
-            weeklyStats.averageFeedingInterval?.let { interval ->
-                val hours = interval / 60
-                val mins = interval % 60
-                val intervalText = if (hours > 0) "${hours}시간 ${mins}분" else "${mins}분"
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    text = "평균 수유 간격 $intervalText",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = ext.subtleText,
-                )
             }
         }
     }
 }
 
 @Composable
-private fun SummaryLine(color: Color, label: String, value: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+private fun BarColumn(
+    modifier: Modifier = Modifier,
+    value: Float,
+    maxValue: Float,
+    label: String,
+    isToday: Boolean,
+    barColor: Color,
+    barColorDark: Color,
+    valueText: String,
+) {
+    val ext = LocalExtendedColors.current
+    val ratio = (value / maxValue).coerceIn(0f, 1f)
+    // 막대 영역 높이는 약 80dp 사용 (라벨/값 위아래 여유)
+    val barAreaHeight = 80.dp
+
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom,
     ) {
-        CategoryDot(color = color, size = 6)
         Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.width(56.dp),
+            text = valueText,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = ext.subtleText,
         )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodySmall,
-            color = LocalExtendedColors.current.subtleText,
-        )
-    }
-}
+        Spacer(Modifier.height(4.dp))
 
-// ──────────────────────────────────────────────
-// 2) HourlyHeatmapCard
-// ──────────────────────────────────────────────
-
-@Composable
-fun HourlyHeatmapCard(feedingByHour: Map<Int, Int>) {
-    val ext = LocalExtendedColors.current
-    val timeSlots = listOf(0, 3, 6, 9, 12, 15, 18, 21)
-    val slotCounts = timeSlots.map { startHour ->
-        val count = (startHour until startHour + 3).sumOf { feedingByHour[it] ?: 0 }
-        startHour to count
-    }
-    val maxCount = slotCounts.maxOfOrNull { it.second }?.coerceAtLeast(1) ?: 1
-    val baseColor = ext.categoryFeeding
-
-    ModernStatsCard {
-        Column(modifier = Modifier.padding(20.dp)) {
-            SectionHeader(title = "시간대별 수유 패턴")
-            Spacer(Modifier.height(16.dp))
-
-            slotCounts.forEach { (startHour, count) ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 3.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = "%02d시".format(startHour),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = ext.subtleText,
-                        modifier = Modifier.width(36.dp),
-                    )
-                    Spacer(Modifier.width(8.dp))
-
-                    val filledBlocks = if (maxCount > 0) {
-                        ((count.toFloat() / maxCount) * 7).toInt().coerceIn(0, 7)
-                    } else 0
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        repeat(7) { blockIndex ->
-                            val alpha = if (blockIndex < filledBlocks) {
-                                // categoryFeeding alpha gradient: 0.12 → 1.0
-                                val ratio = (blockIndex + 1).toFloat() / filledBlocks.coerceAtLeast(1)
-                                (0.12f + 0.88f * ratio).coerceIn(0.12f, 1f)
-                            } else {
-                                0.12f
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .clip(RoundedCornerShape(3.dp))
-                                    .background(baseColor.copy(alpha = alpha))
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "$count",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.width(22.dp),
-                        textAlign = TextAlign.End,
-                    )
-                }
+        // 막대: bottom-aligned
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(barAreaHeight),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
+            val targetHeight = (barAreaHeight.value * ratio).coerceAtLeast(4f).dp
+            val barShape = RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp)
+            val barBrush = if (isToday) {
+                Brush.verticalGradient(listOf(barColorDark, barColorDark))
+            } else {
+                Brush.verticalGradient(listOf(barColor, barColorDark))
             }
-        }
-    }
-}
-
-// ──────────────────────────────────────────────
-// 3) PartnerContributionCard
-// ──────────────────────────────────────────────
-
-@Composable
-fun PartnerContributionCard(contribution: com.baby.feedingtracker.data.PartnerContribution) {
-    val ext = LocalExtendedColors.current
-    val total = (contribution.user1Count + contribution.user2Count).coerceAtLeast(1)
-    val user1Progress = contribution.user1Count.toFloat() / total
-    val user2Progress = contribution.user2Count.toFloat() / total
-
-    ModernStatsCard {
-        Column(modifier = Modifier.padding(20.dp)) {
-            SectionHeader(title = "이번 주 활동 분담")
-            Spacer(Modifier.height(16.dp))
-
-            // 나
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                CategoryDot(color = ext.categoryFeeding, size = 8)
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    text = "나",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f),
-                )
-                Text(
-                    text = "${"%.0f".format(contribution.user1Percentage)}%",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-            Spacer(Modifier.height(6.dp))
-            LinearProgressIndicator(
-                progress = { user1Progress },
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(14.dp)
-                    .clip(RoundedCornerShape(7.dp)),
-                color = ext.categoryFeeding,
-                trackColor = ext.categoryFeeding.copy(alpha = 0.18f),
-            )
-
-            Spacer(Modifier.height(14.dp))
-
-            // 배우자
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                CategoryDot(color = ext.categorySleep, size = 8)
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    text = "배우자",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f),
-                )
-                Text(
-                    text = "${"%.0f".format(contribution.user2Percentage)}%",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-            Spacer(Modifier.height(6.dp))
-            LinearProgressIndicator(
-                progress = { user2Progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(14.dp)
-                    .clip(RoundedCornerShape(7.dp)),
-                color = ext.categorySleep,
-                trackColor = ext.categorySleep.copy(alpha = 0.18f),
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            // Per-category breakdown
-            val categoryMeta = mapOf(
-                "feeding" to ("수유" to ext.categoryFeeding),
-                "diaper" to ("기저귀" to ext.categoryDiaper),
-                "sleep" to ("수면" to ext.categorySleep),
-                "cleaning" to ("세척" to ext.categoryBath),
-            )
-            contribution.byCategory.forEach { (category, pair) ->
-                val catTotal = (pair.first + pair.second).coerceAtLeast(1)
-                val u1Pct = pair.first * 100 / catTotal
-                val u2Pct = pair.second * 100 / catTotal
-                val meta = categoryMeta[category]
-                val label = meta?.first ?: category
-                val dotColor = meta?.second ?: ext.subtleText
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 3.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CategoryDot(color = dotColor, size = 6)
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.width(56.dp),
+                    .height(targetHeight)
+                    .clip(barShape)
+                    .background(barBrush)
+                    .then(
+                        if (isToday) Modifier.border(2.dp, barColorDark, barShape) else Modifier
                     )
-                    Text(
-                        text = "나 ${u1Pct}% · 배우자 ${u2Pct}%",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = ext.subtleText,
-                    )
-                }
-            }
+            )
         }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = if (isToday) "오늘" else label,
+            fontSize = 10.sp,
+            fontWeight = if (isToday) FontWeight.ExtraBold else FontWeight.SemiBold,
+            color = if (isToday) barColorDark else ext.subtleText,
+        )
     }
 }
 
 // ──────────────────────────────────────────────
-// 4) DailyDateNavCard
+// DailyDateNavCard
 // ──────────────────────────────────────────────
 
 @Composable
@@ -430,13 +196,15 @@ fun DailyDateNavCard(
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     }
-    val isToday = dayStartMs >= todayStart
+    val isNextEnabled = dayStartMs < todayStart
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = CardShape,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = CardElevation),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = ChartCardElevation),
     ) {
         Row(
             modifier = Modifier
@@ -449,20 +217,21 @@ fun DailyDateNavCard(
                 Icon(
                     Icons.Outlined.ChevronLeft,
                     contentDescription = "이전 날",
-                    tint = LocalContentColor.current,
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
             Text(
                 text = dateStr,
-                style = MaterialTheme.typography.titleSmall,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-            IconButton(onClick = onNext, enabled = !isToday) {
+            IconButton(onClick = onNext, enabled = isNextEnabled) {
                 Icon(
                     Icons.Outlined.ChevronRight,
                     contentDescription = "다음 날",
-                    tint = if (isToday) ext.subtleText else LocalContentColor.current,
+                    tint = if (isNextEnabled) MaterialTheme.colorScheme.onSurface
+                    else ext.subtleText.copy(alpha = 0.4f),
                 )
             }
         }
@@ -470,51 +239,114 @@ fun DailyDateNavCard(
 }
 
 // ──────────────────────────────────────────────
-// 5) DailyEntryItem
+// "시간대별 기록" 섹션 헤더
 // ──────────────────────────────────────────────
 
 @Composable
-fun DailyEntryItem(entry: com.baby.feedingtracker.ui.statistics.DailyEntry) {
+fun DailySectionHeader(title: String) {
+    Text(
+        text = title,
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Bold,
+        color = LocalExtendedColors.current.subtleText,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+    )
+}
+
+// ──────────────────────────────────────────────
+// DailyEntryRecordCard — 시간 + pill + 메인 텍스트
+// ──────────────────────────────────────────────
+
+@Composable
+fun DailyEntryRecordCard(entry: DailyEntry) {
     val ext = LocalExtendedColors.current
     val timeFmt = remember { SimpleDateFormat("HH:mm", Locale.KOREAN) }
-    val dotColor: Color = when (entry.type) {
-        DailyEntryType.FEEDING -> ext.categoryFeeding
-        DailyEntryType.DIAPER -> ext.categoryDiaper
-        DailyEntryType.SLEEP -> ext.categorySleep
+    val (pillColor: Color, pillLabel: String) = when (entry.type) {
+        DailyEntryType.FEEDING -> ext.categoryFeeding to feedingPillLabel(entry.label)
+        DailyEntryType.DIAPER -> ext.categoryDiaper to diaperPillLabel(entry.label)
+        DailyEntryType.SLEEP -> ext.categorySleep to "수면"
     }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp),
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp),
+            .padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = ChartCardElevation),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = timeFmt.format(Date(entry.timestamp)),
-                style = MaterialTheme.typography.bodySmall,
-                color = ext.subtleText,
-                fontWeight = FontWeight.Medium,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.width(48.dp),
             )
             Spacer(Modifier.width(10.dp))
-            CategoryDot(color = dotColor, size = 8)
+            Pill(text = pillLabel, color = pillColor)
             Spacer(Modifier.width(10.dp))
-            Text(text = entry.icon, fontSize = 18.sp)
-            Spacer(Modifier.width(8.dp))
             Text(
-                text = entry.label,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
+                text = mainText(entry),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
+        }
+    }
+}
+
+@Composable
+private fun Pill(text: String, color: Color) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(color.copy(alpha = 0.18f))
+            .padding(horizontal = 10.dp, vertical = 4.dp)
+    ) {
+        Text(
+            text = text,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            color = color,
+        )
+    }
+}
+
+private fun feedingPillLabel(label: String): String = when {
+    label.startsWith("모유") -> "모유"
+    label.startsWith("분유") -> "분유"
+    label.startsWith("유축") -> "유축"
+    else -> "수유"
+}
+
+private fun diaperPillLabel(label: String): String = when {
+    label.contains("소변") -> "소변"
+    label.contains("대변") -> "대변"
+    else -> "기저귀"
+}
+
+private fun mainText(entry: DailyEntry): String {
+    // Pill로 카테고리/타입을 표시하므로 main text에는 디테일만 남긴다.
+    return when (entry.type) {
+        DailyEntryType.FEEDING -> {
+            // "분유 120ml" → "120ml", "모유" → "모유"
+            val parts = entry.label.split(" ", limit = 2)
+            if (parts.size == 2) parts[1] else entry.label
+        }
+        DailyEntryType.DIAPER -> {
+            // "소변", "대변" → "기록됨" 같은 간단 표시
+            entry.label
+        }
+        DailyEntryType.SLEEP -> {
+            // "낮잠 · 1시간 20분" → "1시간 20분", or "낮잠"
+            val parts = entry.label.split(" · ", limit = 2)
+            if (parts.size == 2) parts[1] else entry.label
         }
     }
 }

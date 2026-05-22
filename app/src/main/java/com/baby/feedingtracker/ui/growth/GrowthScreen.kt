@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -22,18 +23,20 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.baby.feedingtracker.data.BabyProfile
 import com.baby.feedingtracker.data.GrowthRecord
-import com.baby.feedingtracker.ui.components.LiquidGlassFab
 import com.baby.feedingtracker.ui.components.RecordDateTimeEditor
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 @Composable
 fun GrowthScreen(
@@ -53,51 +56,77 @@ fun GrowthScreen(
     }
 
     val extendedColors = LocalExtendedColors.current
+
+    // 직전 측정 대비 변화량 (records[0] vs records[1])
+    val records = uiState.records
+    val latestRecord = records.firstOrNull()
+    val previousRecord = records.getOrNull(1)
+    val heightDelta = computeDelta(latestRecord?.heightCm, previousRecord?.heightCm)
+    val weightDelta = computeDelta(latestRecord?.weightKg, previousRecord?.weightKg)
+    val headDelta = computeDelta(latestRecord?.headCm, previousRecord?.headCm)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 80.dp),
         ) {
-            // 1. 생후 배너
+            // 1. Hero 카드
             item {
                 GrowthHeroCard(
                     profile = profile,
                     daysOld = daysOld,
+                    latestRecord = latestRecord,
                     onNavigateToProfile = onNavigateToProfile,
                 )
             }
 
-            // 2. 최신값 요약 카드
+            // 2. 요약 카드 Row
             item {
                 GrowthSummaryRow(
                     latestHeight = uiState.latestHeight,
                     latestWeight = uiState.latestWeight,
                     latestHead   = uiState.latestHead,
+                    heightDelta  = heightDelta,
+                    weightDelta  = weightDelta,
+                    headDelta    = headDelta,
                 )
             }
 
-            // 3. 기록 타임라인
+            // 3. 섹션 헤더
+            item {
+                Text(
+                    text = "성장 기록",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.3.sp,
+                    color = extendedColors.subtleText,
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp),
+                )
+            }
+
+            // 4. 기록 타임라인
             if (uiState.records.isEmpty()) {
                 item {
                     Text(
                         text = "아직 성장 기록이 없어요\n+ 버튼을 눌러 첫 기록을 추가하세요",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = LocalExtendedColors.current.subtleText,
+                        color = extendedColors.subtleText,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 40.dp),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        textAlign = TextAlign.Center,
                     )
                 }
             } else {
                 items(uiState.records, key = { it.id }) { record ->
                     GrowthRecordCard(
                         record   = record,
+                        profile  = profile,
                         onDelete = { viewModel.deleteRecord(record) },
                     )
                 }
@@ -121,10 +150,10 @@ fun GrowthScreen(
                 .padding(bottom = 24.dp, end = 24.dp),
             containerColor = extendedColors.categoryGrowth,
             contentColor = Color.White,
-            shape = androidx.compose.foundation.shape.CircleShape,
+            shape = CircleShape,
         ) {
             Icon(
-                imageVector = androidx.compose.material.icons.Icons.Rounded.Add,
+                imageVector = Icons.Rounded.Add,
                 contentDescription = "성장 기록 추가",
             )
         }
@@ -145,11 +174,19 @@ fun GrowthScreen(
     }
 }
 
+private fun computeDelta(latest: Float?, previous: Float?): Float? {
+    if (latest == null || previous == null) return null
+    val diff = latest - previous
+    if (abs(diff) < 0.05f) return null
+    return diff
+}
+
 // ── 생후 히어로 카드 ───────────────────────────────────────
 @Composable
 private fun GrowthHeroCard(
     profile: BabyProfile?,
     daysOld: Int?,
+    latestRecord: GrowthRecord?,
     onNavigateToProfile: () -> Unit,
 ) {
     if (profile == null || profile.name.isBlank() || daysOld == null) {
@@ -157,54 +194,162 @@ private fun GrowthHeroCard(
             onClick = onNavigateToProfile,
             modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
         ) {
-            Text("프로필을 설정하세요", color = androidx.compose.material3.MaterialTheme.colorScheme.primary)
+            Text("프로필을 설정하세요", color = MaterialTheme.colorScheme.primary)
         }
         return
     }
+
+    val dateFmt = remember { SimpleDateFormat("yyyy년 M월 d일", Locale.KOREAN) }
+    val now = remember { System.currentTimeMillis() }
+    val recordDateText = latestRecord?.let { dateFmt.format(Date(it.timestamp)) } ?: "측정 기록 없음"
+    val recordSubText = latestRecord?.let {
+        val days = TimeUnit.MILLISECONDS.toDays(now - it.timestamp).toInt()
+        when {
+            days <= 0 -> "오늘 측정"
+            days == 1 -> "어제 측정"
+            else -> "${days}일 전 측정"
+        }
+    } ?: "기록을 추가해주세요"
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(top = 12.dp)
-            .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(20.dp))
             .background(
-                androidx.compose.ui.graphics.Brush.linearGradient(
+                Brush.linearGradient(
                     listOf(Color(0xFFA8D4A0), Color(0xFF7BB87A))
                 )
             )
             .clickable(onClick = onNavigateToProfile)
-            .padding(20.dp),
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 22.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column {
-                Text(
-                    text = "${profile.name} 📏",
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                )
-                Text(
-                    text = "생후 ${daysOld}일",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White.copy(alpha = 0.85f),
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(androidx.compose.foundation.shape.CircleShape)
-                    .background(Color.White.copy(alpha = 0.25f)),
-                contentAlignment = Alignment.Center,
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // hero-top-row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(text = "👶", fontSize = 20.sp)
+                Column {
+                    Text(
+                        text = "${profile.name} 📏",
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                    )
+                    Text(
+                        text = "생후 ${daysOld}일",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White.copy(alpha = 0.85f),
+                        modifier = Modifier.padding(top = 2.dp),
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.25f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = "🌱", fontSize = 20.sp)
+                }
+            }
+
+            Spacer(Modifier.height(14.dp))
+
+            // hero-label
+            Text(
+                text = "최근 측정",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 0.5.sp,
+                color = Color.White.copy(alpha = 0.80f),
+            )
+            Spacer(Modifier.height(4.dp))
+
+            // hero-time
+            Text(
+                text = recordDateText,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Black,
+                lineHeight = 30.8.sp,
+                color = Color.White,
+            )
+            Spacer(Modifier.height(6.dp))
+
+            // hero-sub
+            Text(
+                text = recordSubText,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.White.copy(alpha = 0.80f),
+            )
+
+            // hero-sub-row
+            Spacer(Modifier.height(14.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.White.copy(alpha = 0.15f))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                HeroSubItem(
+                    value = latestRecord?.heightCm?.let { "%.1fcm".format(it) } ?: "--",
+                    label = "키",
+                    modifier = Modifier.weight(1f),
+                )
+                HeroDivider()
+                HeroSubItem(
+                    value = latestRecord?.weightKg?.let { "%.1fkg".format(it) } ?: "--",
+                    label = "몸무게",
+                    modifier = Modifier.weight(1f),
+                )
+                HeroDivider()
+                HeroSubItem(
+                    value = latestRecord?.headCm?.let { "%.1fcm".format(it) } ?: "--",
+                    label = "머리둘레",
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
     }
+}
+
+@Composable
+private fun HeroSubItem(value: String, label: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = value,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = Color.White,
+        )
+        Text(
+            text = label,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.White.copy(alpha = 0.80f),
+            modifier = Modifier.padding(top = 1.dp),
+        )
+    }
+}
+
+@Composable
+private fun HeroDivider() {
+    Box(
+        modifier = Modifier
+            .width(1.dp)
+            .height(28.dp)
+            .background(Color.White.copy(alpha = 0.30f))
+    )
 }
 
 // ── 요약 카드 3개 ──────────────────────────────────────────
@@ -213,111 +358,213 @@ private fun GrowthSummaryRow(
     latestHeight: Float?,
     latestWeight: Float?,
     latestHead: Float?,
+    heightDelta: Float?,
+    weightDelta: Float?,
+    headDelta: Float?,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        GrowthSummaryCard("키", latestHeight?.let { "%.1f".format(it) }, "cm", "📏", Modifier.weight(1f))
-        GrowthSummaryCard("몸무게", latestWeight?.let { "%.1f".format(it) }, "kg", "⚖️", Modifier.weight(1f))
-        GrowthSummaryCard("머리둘레", latestHead?.let { "%.1f".format(it) }, "cm", "📐", Modifier.weight(1f))
+        GrowthSummaryCard(
+            icon = "📏",
+            value = latestHeight?.let { "%.1f".format(it) },
+            unit = "cm",
+            label = "키",
+            delta = heightDelta,
+            deltaUnit = "cm",
+            modifier = Modifier.weight(1f),
+        )
+        GrowthSummaryCard(
+            icon = "⚖️",
+            value = latestWeight?.let { "%.1f".format(it) },
+            unit = "kg",
+            label = "몸무게",
+            delta = weightDelta,
+            deltaUnit = "kg",
+            modifier = Modifier.weight(1f),
+        )
+        GrowthSummaryCard(
+            icon = "🎯",
+            value = latestHead?.let { "%.1f".format(it) },
+            unit = "cm",
+            label = "머리둘레",
+            delta = headDelta,
+            deltaUnit = "cm",
+            modifier = Modifier.weight(1f),
+        )
     }
 }
 
 @Composable
-private fun GrowthSummaryCard(label: String, value: String?, unit: String, icon: String, modifier: Modifier) {
-    androidx.compose.material3.Card(
+private fun GrowthSummaryCard(
+    icon: String,
+    value: String?,
+    unit: String,
+    label: String,
+    delta: Float?,
+    deltaUnit: String,
+    modifier: Modifier = Modifier,
+) {
+    val extendedColors = LocalExtendedColors.current
+    Card(
         modifier = modifier,
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-        colors = androidx.compose.material3.CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        elevation = androidx.compose.material3.CardDefaults.cardElevation(2.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(2.dp),
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp, end = 10.dp, top = 14.dp, bottom = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = icon, fontSize = 20.sp)
             Spacer(Modifier.height(6.dp))
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    text = value ?: "--",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                if (value != null) {
+                    Text(
+                        text = unit,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = extendedColors.subtleText,
+                        modifier = Modifier.padding(start = 1.dp, bottom = 1.dp),
+                    )
+                }
+            }
             Text(
-                text = value ?: "--",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = if (value != null) Color(0xFF7BB87A) else Color(0xFF9E9E9E),
+                text = label,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = extendedColors.subtleText,
+                modifier = Modifier.padding(top = 3.dp),
             )
-            Text(
-                text = "$label ($unit)",
-                style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
-                color = Color(0xFF9E9E9E),
-                modifier = Modifier.padding(top = 2.dp)
-            )
+            if (delta != null) {
+                val sign = if (delta >= 0) "+" else ""
+                val arrow = if (delta >= 0) " ↑" else " ↓"
+                Text(
+                    text = "$sign${"%.1f".format(delta)}$deltaUnit$arrow",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = extendedColors.categoryGrowth,
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+            }
         }
     }
 }
 
 // ── 기록 카드 ──────────────────────────────────────────────
 @Composable
-private fun GrowthRecordCard(record: GrowthRecord, onDelete: () -> Unit) {
-    val dateFmt = remember { SimpleDateFormat("yyyy.MM.dd", Locale.KOREAN) }
-    val parts = buildList {
-        record.weightKg?.let { add("몸무게 ${"%.1f".format(it)} kg") }
-        record.heightCm?.let { add("키 ${"%.1f".format(it)} cm") }
-        record.headCm?.let   { add("머리둘레 ${"%.1f".format(it)} cm") }
+private fun GrowthRecordCard(
+    record: GrowthRecord,
+    profile: BabyProfile?,
+    onDelete: () -> Unit,
+) {
+    val extendedColors = LocalExtendedColors.current
+    val recordDateFmt = remember { SimpleDateFormat("M월 d일", Locale.KOREAN) }
+    val recordDateText = recordDateFmt.format(Date(record.timestamp))
+
+    val daysOldAtRecord = profile?.takeIf { it.birthDate > 0L }?.let {
+        val diffMs = record.timestamp - it.birthDate
+        TimeUnit.MILLISECONDS.toDays(diffMs).toInt()
     }
 
-    androidx.compose.material3.Card(
+    val parts = buildList {
+        record.heightCm?.let { add("%.1fcm".format(it)) }
+        record.weightKg?.let { add("%.1fkg".format(it)) }
+        record.headCm?.let   { add("%.1fcm".format(it)) }
+    }
+
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(bottom = 10.dp),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-        colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = Color.White),
-        elevation = androidx.compose.material3.CardDefaults.cardElevation(2.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(2.dp),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // 좌측: record-time
+            Text(
+                text = recordDateText,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = extendedColors.subtleText,
+                modifier = Modifier.widthIn(min = 50.dp),
+            )
+
+            // 가운데: record-body
             Column(modifier = Modifier.weight(1f)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(Color(0xFFD4EED0))
+                        .padding(horizontal = 9.dp, vertical = 3.dp)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
-                            .background(Color(0xFFD4EED0))
-                            .padding(horizontal = 9.dp, vertical = 3.dp)
-                    ) {
-                        Text(text = "성장", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF3A7C35))
-                    }
                     Text(
-                        text = parts.joinToString(" · "),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF1C1B1F),
+                        text = "측정",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF3A7C35),
                     )
                 }
-                val dateStr = dateFmt.format(Date(record.timestamp))
-                val sub = if (record.note != null) "$dateStr · ${record.note}" else dateStr
-                Text(
-                    text = sub,
-                    style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF9E9E9E),
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+                if (parts.isNotEmpty()) {
+                    Text(
+                        text = parts.joinToString(" · "),
+                        fontSize = 12.sp,
+                        color = extendedColors.subtleText,
+                        modifier = Modifier.padding(top = 5.dp),
+                    )
+                }
+                if (!record.note.isNullOrBlank()) {
+                    Text(
+                        text = record.note,
+                        fontSize = 11.sp,
+                        color = extendedColors.subtleText,
+                        modifier = Modifier.padding(top = 2.dp),
+                    )
+                }
             }
-            IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
-                Icon(
-                    Icons.Outlined.Delete,
-                    contentDescription = "삭제",
-                    tint = Color(0xFF9E9E9E),
-                    modifier = Modifier.size(18.dp)
-                )
+
+            // 우측: 생후 N일 + 삭제 버튼
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                if (daysOldAtRecord != null && daysOldAtRecord >= 0) {
+                    Text(
+                        text = "생후 ${daysOldAtRecord}일",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = extendedColors.subtleText,
+                        textAlign = TextAlign.End,
+                    )
+                }
+                IconButton(onClick = onDelete, modifier = Modifier.size(28.dp)) {
+                    Icon(
+                        Icons.Outlined.Delete,
+                        contentDescription = "삭제",
+                        tint = extendedColors.subtleText,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
         }
     }
