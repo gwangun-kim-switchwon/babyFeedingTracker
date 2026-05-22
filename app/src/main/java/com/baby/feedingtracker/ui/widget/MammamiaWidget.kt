@@ -17,7 +17,6 @@ import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
@@ -98,9 +97,14 @@ class MammamiaWidget : GlanceAppWidget() {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
         )
-        // 위젯 + 버튼 → 즉시 빈 수유 기록 추가 (앱 열지 않음)
-        // 사용자가 종류/양 등은 나중에 앱에서 record 탭해 수정
-        val addAction = actionRunCallback<AddFeedingCallback>()
+        // 위젯 + 버튼 → 앱 열림 + 수유 탭에 BottomSheet 자동 표시
+        // (사용자가 종류/양을 직접 선택하는 UX가 가장 명확하다는 오너 피드백)
+        val addAction = actionStartActivity(
+            Intent(context, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                putExtra("open_feeding_add", true)
+            }
+        )
 
         Box(
             modifier = GlanceModifier
@@ -108,7 +112,8 @@ class MammamiaWidget : GlanceAppWidget() {
                 .cornerRadius(20.dp)
                 .background(ColorProvider(BG_COLOR))
                 .clickable(openAction)
-                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            contentAlignment = Alignment.Center
         ) {
             when {
                 size.width >= LARGE_SIZE.width && size.height >= LARGE_SIZE.height ->
@@ -130,7 +135,7 @@ class MammamiaWidget : GlanceAppWidget() {
         addAction: androidx.glance.action.Action
     ) {
         Row(
-            modifier = GlanceModifier.fillMaxSize(),
+            modifier = GlanceModifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = GlanceModifier.defaultWeight()) {
@@ -158,7 +163,7 @@ class MammamiaWidget : GlanceAppWidget() {
         addAction: androidx.glance.action.Action
     ) {
         Row(
-            modifier = GlanceModifier.fillMaxSize(),
+            modifier = GlanceModifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = GlanceModifier.defaultWeight()) {
@@ -187,7 +192,10 @@ class MammamiaWidget : GlanceAppWidget() {
         data: WidgetDataSource.WidgetData,
         addAction: androidx.glance.action.Action
     ) {
-        Column(modifier = GlanceModifier.fillMaxSize()) {
+        Column(
+            modifier = GlanceModifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             // Top row: 요약 + 버튼
             Row(
                 modifier = GlanceModifier.fillMaxWidth(),

@@ -1,5 +1,6 @@
 package com.baby.feedingtracker
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -20,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +44,11 @@ import com.baby.feedingtracker.ui.widget.WidgetDataSource
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    // 위젯 + 버튼 / 알림 액션에서 들어오는 "수유 즉시 추가" 트리거.
+    // intent extra "open_feeding_add"=true 가 들어오면 증가.
+    private val addFeedingTrigger = mutableIntStateOf(0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -51,6 +58,9 @@ class MainActivity : ComponentActivity() {
 
         // 알림 채널 보장 (Android 8+)
         NotificationChannels.ensureCreated(this)
+
+        // 위젯에서 launch된 초기 intent 처리
+        consumeAddFeedingExtra(intent)
 
         setContent {
             val themeMode by app.container.themePreference.themeMode
@@ -138,6 +148,14 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
+                    // 위젯/알림에서 "open_feeding_add" 트리거가 오면 즉시 수유 기록 추가.
+                    // FeedingViewModel.addRecord() → lastAddedRecord 변화 → FeedingScreen이
+                    // 자동으로 BottomSheet 오픈 (기존 로직 그대로 활용).
+                    val trigger by addFeedingTrigger
+                    LaunchedEffect(trigger) {
+                        if (trigger > 0) viewModel.addRecord()
+                    }
+
                     // Refresh login state after Google Sign-In callback
                     val googleSignInLauncherWithRefresh = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.StartActivityForResult()
@@ -176,6 +194,7 @@ class MainActivity : ComponentActivity() {
                         googleSignInLauncher = googleSignInLauncherWithRefresh
                     )
                 } else {
+                    @Suppress("unused") val _t by addFeedingTrigger  // 키 유지용
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -205,6 +224,19 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        consumeAddFeedingExtra(intent)
+    }
+
+    private fun consumeAddFeedingExtra(intent: Intent?) {
+        if (intent?.getBooleanExtra("open_feeding_add", false) == true) {
+            addFeedingTrigger.value += 1
+            intent.removeExtra("open_feeding_add")
         }
     }
 }
