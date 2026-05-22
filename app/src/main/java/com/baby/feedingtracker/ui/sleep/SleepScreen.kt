@@ -166,7 +166,7 @@ fun SleepScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         LazyColumn(
@@ -667,12 +667,13 @@ private fun SleepHeroStatItem(value: String, label: String) {
 private fun SleepRecordCard(record: SleepRecord, onClick: () -> Unit) {
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
     val now = System.currentTimeMillis()
+    val extendedColors = LocalExtendedColors.current
 
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 10.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -681,7 +682,7 @@ private fun SleepRecordCard(record: SleepRecord, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(text = timeFormat.format(Date(record.timestamp)), fontSize = 13.sp,
-                fontWeight = FontWeight.Bold, color = Color(0xFF6E6A73), modifier = Modifier.width(38.dp))
+                fontWeight = FontWeight.Bold, color = extendedColors.subtleText, modifier = Modifier.width(38.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     SleepTypePill(type = record.type)
@@ -691,10 +692,10 @@ private fun SleepRecordCard(record: SleepRecord, onClick: () -> Unit) {
                         "수면 중"
                     }
                     Text(text = mainText, fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
-                        color = if (record.endTimestamp == null) Color(0xFF7B6CB5) else Color(0xFF1C1B1F))
+                        color = if (record.endTimestamp == null) extendedColors.categorySleep else MaterialTheme.colorScheme.onSurface)
                     if (!record.note.isNullOrBlank()) {
                         Icon(imageVector = Icons.AutoMirrored.Outlined.Notes, contentDescription = null,
-                            modifier = Modifier.size(14.dp), tint = Color(0xFF9E9E9E))
+                            modifier = Modifier.size(14.dp), tint = extendedColors.subtleText)
                     }
                 }
                 val timeRangeText = if (record.endTimestamp != null) {
@@ -702,13 +703,13 @@ private fun SleepRecordCard(record: SleepRecord, onClick: () -> Unit) {
                 } else {
                     "${timeFormat.format(Date(record.timestamp))} ~ 진행중"
                 }
-                Text(text = timeRangeText, fontSize = 12.sp, color = Color(0xFF9E9E9E),
+                Text(text = timeRangeText, fontSize = 12.sp, color = extendedColors.subtleText,
                     modifier = Modifier.padding(top = 2.dp))
             }
             if (record.endTimestamp == null) {
                 val elapsedMin = ((now - record.timestamp) / 60_000L).coerceAtLeast(0)
                 Text(text = formatSleepDuration(elapsedMin), fontSize = 11.sp,
-                    fontWeight = FontWeight.Medium, color = Color(0xFF7B6CB5), textAlign = TextAlign.End)
+                    fontWeight = FontWeight.Medium, color = extendedColors.categorySleep, textAlign = TextAlign.End)
             }
         }
     }
@@ -716,9 +717,12 @@ private fun SleepRecordCard(record: SleepRecord, onClick: () -> Unit) {
 
 @Composable
 private fun SleepTypePill(type: String?) {
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
     val (bgColor, textColor, label) = when (type) {
-        "nap" -> Triple(Color(0xFFEAE6FA), Color(0xFF5C4E9E), "낮잠")
-        "night" -> Triple(Color(0xFFD4CFF5), Color(0xFF3D3080), "밤잠")
+        "nap" -> if (isDark) Triple(Color(0xFF5C4E9E).copy(alpha = 0.30f), Color(0xFFC7BBEF), "낮잠")
+            else Triple(Color(0xFFEAE6FA), Color(0xFF5C4E9E), "낮잠")
+        "night" -> if (isDark) Triple(Color(0xFF3D3080).copy(alpha = 0.35f), Color(0xFFB3A3E8), "밤잠")
+            else Triple(Color(0xFFD4CFF5), Color(0xFF3D3080), "밤잠")
         else -> return
     }
     Box(

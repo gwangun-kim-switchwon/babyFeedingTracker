@@ -512,17 +512,20 @@ private fun GrowthRecordCard(
 
             // 가운데: record-body
             Column(modifier = Modifier.weight(1f)) {
+                val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+                val pillBg = if (isDark) Color(0xFF3A7C35).copy(alpha = 0.28f) else Color(0xFFD4EED0)
+                val pillText = if (isDark) Color(0xFFC5DCBA) else Color(0xFF3A7C35)
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
-                        .background(Color(0xFFD4EED0))
+                        .background(pillBg)
                         .padding(horizontal = 9.dp, vertical = 3.dp)
                 ) {
                     Text(
                         text = "측정",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF3A7C35),
+                        color = pillText,
                     )
                 }
                 if (parts.isNotEmpty()) {

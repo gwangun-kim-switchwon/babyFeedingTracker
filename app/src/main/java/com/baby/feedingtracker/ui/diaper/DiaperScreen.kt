@@ -161,7 +161,7 @@ fun DiaperScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         LazyColumn(
@@ -722,11 +722,12 @@ private fun DiaperRecordCard(
     onClick: () -> Unit
 ) {
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
+    val extendedColors = LocalExtendedColors.current
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 10.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -735,23 +736,23 @@ private fun DiaperRecordCard(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(text = timeFormat.format(Date(record.timestamp)), fontSize = 13.sp,
-                fontWeight = FontWeight.Bold, color = Color(0xFF6E6A73), modifier = Modifier.width(38.dp))
+                fontWeight = FontWeight.Bold, color = extendedColors.subtleText, modifier = Modifier.width(38.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     DiaperTypePill(type = record.type)
                     if (!record.note.isNullOrBlank()) {
                         Icon(imageVector = Icons.AutoMirrored.Outlined.Notes, contentDescription = null,
-                            modifier = Modifier.size(14.dp), tint = Color(0xFF9E9E9E))
+                            modifier = Modifier.size(14.dp), tint = extendedColors.subtleText)
                     }
                 }
                 if (!record.note.isNullOrBlank()) {
-                    Text(text = record.note!!, fontSize = 12.sp, color = Color(0xFF9E9E9E),
+                    Text(text = record.note!!, fontSize = 12.sp, color = extendedColors.subtleText,
                         maxLines = 1, modifier = Modifier.padding(top = 2.dp))
                 }
             }
             if (intervalMinutes != null && intervalMinutes > 0) {
                 Text(text = formatDiaperIntervalText(intervalMinutes), fontSize = 11.sp,
-                    fontWeight = FontWeight.Medium, color = Color(0xFF9E9E9E), textAlign = TextAlign.End)
+                    fontWeight = FontWeight.Medium, color = extendedColors.subtleText, textAlign = TextAlign.End)
             }
         }
     }
@@ -759,10 +760,14 @@ private fun DiaperRecordCard(
 
 @Composable
 private fun DiaperTypePill(type: String?) {
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
     val (bgColor, textColor, label) = when (type) {
-        "urine" -> Triple(Color(0xFFD6ECFF), Color(0xFF2066B0), "소변")
-        "stool" -> Triple(Color(0xFFF0E4D4), Color(0xFF8B5E3C), "대변")
-        "diaper" -> Triple(Color(0xFFE8E8E8), Color(0xFF555555), "기저귀")
+        "urine" -> if (isDark) Triple(Color(0xFF2066B0).copy(alpha = 0.30f), Color(0xFF9DD3FF), "소변")
+            else Triple(Color(0xFFD6ECFF), Color(0xFF2066B0), "소변")
+        "stool" -> if (isDark) Triple(Color(0xFF8B5E3C).copy(alpha = 0.30f), Color(0xFFE0CCB5), "대변")
+            else Triple(Color(0xFFF0E4D4), Color(0xFF8B5E3C), "대변")
+        "diaper" -> if (isDark) Triple(Color(0xFF555555).copy(alpha = 0.30f), Color(0xFFCCCCCC), "기저귀")
+            else Triple(Color(0xFFE8E8E8), Color(0xFF555555), "기저귀")
         else -> return
     }
     Box(

@@ -198,7 +198,7 @@ fun FeedingScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         LazyColumn(
@@ -958,11 +958,12 @@ private fun FeedingRecordCard(
     onClick: () -> Unit
 ) {
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.KOREA) }
+    val extendedColors = LocalExtendedColors.current
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 10.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -971,7 +972,7 @@ private fun FeedingRecordCard(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(text = timeFormat.format(Date(record.timestamp)), fontSize = 13.sp,
-                fontWeight = FontWeight.Bold, color = Color(0xFF6E6A73), modifier = Modifier.width(38.dp))
+                fontWeight = FontWeight.Bold, color = extendedColors.subtleText, modifier = Modifier.width(38.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FeedingTypePill(type = record.type)
@@ -986,21 +987,21 @@ private fun FeedingRecordCard(
                     }
                     if (mainText != null) {
                         Text(text = mainText, fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF1C1B1F))
+                            color = MaterialTheme.colorScheme.onSurface)
                     }
                     if (!record.note.isNullOrBlank()) {
                         Icon(imageVector = Icons.AutoMirrored.Outlined.Notes, contentDescription = null,
-                            modifier = Modifier.size(14.dp), tint = Color(0xFF9E9E9E))
+                            modifier = Modifier.size(14.dp), tint = extendedColors.subtleText)
                     }
                 }
                 if (!record.note.isNullOrBlank()) {
-                    Text(text = record.note!!, fontSize = 12.sp, color = Color(0xFF9E9E9E),
+                    Text(text = record.note!!, fontSize = 12.sp, color = extendedColors.subtleText,
                         maxLines = 1, modifier = Modifier.padding(top = 2.dp))
                 }
             }
             if (intervalMinutes != null && intervalMinutes > 0) {
                 Text(text = formatIntervalText(intervalMinutes), fontSize = 11.sp,
-                    fontWeight = FontWeight.Medium, color = Color(0xFF9E9E9E), textAlign = TextAlign.End)
+                    fontWeight = FontWeight.Medium, color = extendedColors.subtleText, textAlign = TextAlign.End)
             }
         }
     }
@@ -1008,10 +1009,14 @@ private fun FeedingRecordCard(
 
 @Composable
 private fun FeedingTypePill(type: String?) {
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
     val (bgColor, textColor, label) = when (type) {
-        "breast" -> Triple(Color(0xFFFFE5D9), Color(0xFFD4613A), "모유")
-        "formula" -> Triple(Color(0xFFFFD6D0), Color(0xFFC0382B), "분유")
-        "pumped" -> Triple(Color(0xFFFFE4C4), Color(0xFFC07010), "유축")
+        "breast" -> if (isDark) Triple(Color(0xFFD4613A).copy(alpha = 0.22f), Color(0xFFFFC9B0), "모유")
+            else Triple(Color(0xFFFFE5D9), Color(0xFFD4613A), "모유")
+        "formula" -> if (isDark) Triple(Color(0xFFC0382B).copy(alpha = 0.22f), Color(0xFFFFB3A5), "분유")
+            else Triple(Color(0xFFFFD6D0), Color(0xFFC0382B), "분유")
+        "pumped" -> if (isDark) Triple(Color(0xFFC07010).copy(alpha = 0.22f), Color(0xFFF4B59A), "유축")
+            else Triple(Color(0xFFFFE4C4), Color(0xFFC07010), "유축")
         else -> return
     }
     Box(
