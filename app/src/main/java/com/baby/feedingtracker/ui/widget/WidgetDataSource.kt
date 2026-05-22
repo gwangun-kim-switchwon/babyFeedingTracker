@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.first
@@ -49,6 +50,39 @@ object WidgetDataSource {
         val timestamp: Long,
         val label: String
     )
+
+    /**
+     * 위젯 + 버튼 → 즉시 빈 수유 기록 추가.
+     * 종류/양/시간은 null로 두고 timestamp만 now로 — 사용자가 앱 열어 record 탭해 보완.
+     * cachedUid가 없거나 Firestore 실패시 silent.
+     * @return 추가 성공 시 true
+     */
+    suspend fun addBlankFeedingRecord(context: Context): Boolean {
+        val prefs = context.widgetPreferencesDataStore.data.first()
+        val uid = prefs[KEY_CACHED_UID] ?: return false
+        val recordedBy = try {
+            FirebaseAuth.getInstance().currentUser?.uid ?: uid
+        } catch (_: Throwable) { uid }
+        val now = System.currentTimeMillis()
+        return try {
+            FirebaseFirestore.getInstance()
+                .collection("users").document(uid)
+                .collection("feeding_records")
+                .add(mapOf(
+                    "timestamp" to now,
+                    "type" to null,
+                    "amountMl" to null,
+                    "leftMin" to null,
+                    "rightMin" to null,
+                    "note" to null,
+                    "recordedBy" to recordedBy,
+                ))
+                .await()
+            true
+        } catch (_: Throwable) {
+            false
+        }
+    }
 
     /**
      * 위젯이 독립적으로 Firestore를 조회할 때 사용할 uid를 DataStore에 캐시한다.

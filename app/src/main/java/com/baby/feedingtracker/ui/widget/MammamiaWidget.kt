@@ -17,6 +17,7 @@ import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
 import androidx.glance.action.clickable
+import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
@@ -97,12 +98,9 @@ class MammamiaWidget : GlanceAppWidget() {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
         )
-        val addAction = actionStartActivity(
-            Intent(context, MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                putExtra("open_feeding_add", true)
-            }
-        )
+        // 위젯 + 버튼 → 즉시 빈 수유 기록 추가 (앱 열지 않음)
+        // 사용자가 종류/양 등은 나중에 앱에서 record 탭해 수정
+        val addAction = actionRunCallback<AddFeedingCallback>()
 
         Box(
             modifier = GlanceModifier
@@ -224,36 +222,34 @@ class MammamiaWidget : GlanceAppWidget() {
 
             Spacer(GlanceModifier.height(6.dp))
 
-            // 최근 기록 미니 리스트
-            val recent = data.recentEntries.take(3)
-            if (recent.isEmpty()) {
+            // 가장 최근 기록 1줄만 (오너 피드백 — 여러 줄은 산만)
+            val latest = data.recentEntries.firstOrNull()
+            if (latest == null) {
                 Text(
                     text = "최근 기록이 없어요",
                     style = subStyle(),
                     maxLines = 1
                 )
             } else {
-                recent.forEach { entry ->
-                    Row(
-                        modifier = GlanceModifier
-                            .fillMaxWidth()
-                            .padding(vertical = 1.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = "·", style = subStyle())
-                        Spacer(GlanceModifier.width(4.dp))
-                        Text(
-                            text = formatTime(entry.timestamp),
-                            style = subStyle(),
-                            maxLines = 1
-                        )
-                        Spacer(GlanceModifier.width(8.dp))
-                        Text(
-                            text = entry.label,
-                            style = subStyle(),
-                            maxLines = 1
-                        )
-                    }
+                Row(
+                    modifier = GlanceModifier
+                        .fillMaxWidth()
+                        .padding(vertical = 1.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "·", style = subStyle())
+                    Spacer(GlanceModifier.width(4.dp))
+                    Text(
+                        text = formatTime(latest.timestamp),
+                        style = subStyle(),
+                        maxLines = 1
+                    )
+                    Spacer(GlanceModifier.width(8.dp))
+                    Text(
+                        text = latest.label,
+                        style = subStyle(),
+                        maxLines = 1
+                    )
                 }
             }
         }

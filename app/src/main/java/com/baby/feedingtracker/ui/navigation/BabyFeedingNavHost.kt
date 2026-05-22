@@ -75,7 +75,10 @@ fun BabyFeedingNavHost(
                     googleSignInLauncher = googleSignInLauncher,
                     onNavigateToProfile = {
                         navController.navigate("baby_profile")
-                    }
+                    },
+                    onNavigateToReminderSettings = {
+                        navController.navigate("reminder_settings")
+                    },
                 )
             }
             composable(BottomNavItem.Diaper.route) {

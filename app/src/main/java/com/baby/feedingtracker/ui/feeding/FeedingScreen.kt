@@ -65,6 +65,7 @@ import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Notes
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FloatingActionButton
@@ -84,7 +85,8 @@ fun FeedingScreen(
     babyProfileViewModel: BabyProfileViewModel,
     googleAuthHelper: GoogleAuthHelper,
     googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
-    onNavigateToProfile: () -> Unit = {}
+    onNavigateToProfile: () -> Unit = {},
+    onNavigateToReminderSettings: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lastAddedRecord by viewModel.lastAddedRecord.collectAsStateWithLifecycle()
@@ -222,6 +224,7 @@ fun FeedingScreen(
                     todayFormulaCount = todayRecs.count { it.type == "formula" },
                     sharingState = sharingState,
                     onShareClick = { showShareSheet = true },
+                    onReminderClick = onNavigateToReminderSettings,
                     onNavigateToProfile = onNavigateToProfile
                 )
             }
@@ -851,6 +854,7 @@ private fun FeedingHeroCard(
     todayFormulaCount: Int,
     sharingState: com.baby.feedingtracker.data.SharingState,
     onShareClick: () -> Unit,
+    onReminderClick: () -> Unit,
     onNavigateToProfile: () -> Unit
 ) {
     Box(
@@ -883,6 +887,10 @@ private fun FeedingHeroCard(
                     }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    IconButton(onClick = onReminderClick, modifier = Modifier.size(36.dp)) {
+                        Icon(imageVector = Icons.Outlined.Notifications, contentDescription = "수유 알림 설정",
+                            tint = Color.White.copy(alpha = 0.85f), modifier = Modifier.size(20.dp))
+                    }
                     Box {
                         IconButton(onClick = onShareClick, modifier = Modifier.size(36.dp)) {
                             Icon(imageVector = Icons.Outlined.Share, contentDescription = "공유",
