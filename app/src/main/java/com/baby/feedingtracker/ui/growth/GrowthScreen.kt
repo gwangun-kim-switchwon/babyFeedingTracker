@@ -335,6 +335,7 @@ private fun GrowthBottomSheet(onDismiss: () -> Unit, onSave: (GrowthRecord) -> U
 
     val hasAny = heightInput.isNotBlank() || weightInput.isNotBlank() || headInput.isNotBlank()
 
+    val extendedColors = LocalExtendedColors.current
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
@@ -343,7 +344,11 @@ private fun GrowthBottomSheet(onDismiss: () -> Unit, onSave: (GrowthRecord) -> U
                 .padding(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text("성장 기록 추가", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            com.baby.feedingtracker.ui.components.CategorySheetHeader(
+                emoji = "📏",
+                title = "성장 기록",
+                categoryColor = extendedColors.categoryGrowth,
+            )
 
             MeasurementField("키 (cm)",       heightInput, "예) 56.2") { heightInput = it }
             MeasurementField("몸무게 (kg)",   weightInput, "예) 4.8")  { weightInput = it }
@@ -376,6 +381,10 @@ private fun GrowthBottomSheet(onDismiss: () -> Unit, onSave: (GrowthRecord) -> U
                 },
                 enabled  = hasAny,
                 modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = extendedColors.categoryGrowth,
+                    contentColor = Color.White,
+                ),
             ) {
                 Text("저장")
             }

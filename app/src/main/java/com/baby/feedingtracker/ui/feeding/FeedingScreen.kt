@@ -414,6 +414,14 @@ private fun RecordEditBottomSheet(
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
         ) {
+            com.baby.feedingtracker.ui.components.CategorySheetHeader(
+                emoji = "🍼",
+                title = "수유 기록",
+                categoryColor = extendedColors.categoryFeeding,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // 날짜 + 시간 편집 헤더
             com.baby.feedingtracker.ui.components.RecordDateTimeEditor(
                 timestamp = currentTimestamp,
@@ -594,7 +602,7 @@ private fun RecordEditBottomSheet(
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = extendedColors.divider,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                    focusedBorderColor = extendedColors.categoryFeeding
                 )
             )
 
@@ -626,13 +634,14 @@ private fun ToggleButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val extendedColors = LocalExtendedColors.current
     if (selected) {
         Button(
             onClick = onClick,
             modifier = modifier.height(48.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = extendedColors.categoryFeeding,
                 contentColor = Color.White
             ),
             elevation = ButtonDefaults.buttonElevation(0.dp)
@@ -670,6 +679,7 @@ private fun AmountButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val extendedColors = LocalExtendedColors.current
     val paddingValues = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
 
     if (selected) {
@@ -678,7 +688,7 @@ private fun AmountButton(
             modifier = modifier.height(40.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = extendedColors.categoryFeeding,
                 contentColor = Color.White
             ),
             contentPadding = paddingValues,

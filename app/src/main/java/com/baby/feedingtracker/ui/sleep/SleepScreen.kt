@@ -370,6 +370,14 @@ private fun SleepEditBottomSheet(
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp)
         ) {
+            com.baby.feedingtracker.ui.components.CategorySheetHeader(
+                emoji = "🌙",
+                title = "수면 기록",
+                categoryColor = extendedColors.categorySleep,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // 날짜 + 시간 편집 헤더 (시작 시간)
             com.baby.feedingtracker.ui.components.RecordDateTimeEditor(
                 timestamp = currentTimestamp,
@@ -441,7 +449,7 @@ private fun SleepEditBottomSheet(
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = extendedColors.divider,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                    focusedBorderColor = extendedColors.categorySleep
                 )
             )
 
@@ -472,13 +480,14 @@ private fun SleepToggleButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val extendedColors = LocalExtendedColors.current
     if (selected) {
         Button(
             onClick = onClick,
             modifier = modifier.height(48.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = extendedColors.categorySleep,
                 contentColor = Color.White
             ),
             elevation = ButtonDefaults.buttonElevation(0.dp)
