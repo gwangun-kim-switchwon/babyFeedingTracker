@@ -56,7 +56,8 @@ import java.util.Locale
 @Composable
 fun BabyProfileScreen(
     viewModel: BabyProfileViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onOpenReminderSettings: () -> Unit = {},
 ) {
     val profile by viewModel.profile.collectAsStateWithLifecycle()
     val extendedColors = LocalExtendedColors.current
@@ -245,6 +246,47 @@ fun BabyProfileScreen(
                     style = MaterialTheme.typography.labelLarge
                 )
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 알림 설정 진입 카드
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .border(1.dp, extendedColors.divider, RoundedCornerShape(16.dp))
+                    .clickable(onClick = onOpenReminderSettings)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "🔔", style = MaterialTheme.typography.titleLarge)
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "수유 알림 설정",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            text = "간격 · 야간 방해금지 설정",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = extendedColors.subtleText,
+                        )
+                    }
+                    Text(
+                        text = "›",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = extendedColors.subtleText,
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

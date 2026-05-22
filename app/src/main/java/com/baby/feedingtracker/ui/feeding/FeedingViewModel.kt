@@ -138,6 +138,12 @@ class FeedingViewModel(
                                 }
                             } catch (_: Exception) { /* widget not installed */ }
                         }
+                        // v2.1: 수유 리마인더 재예약 + 신규 반응형 위젯 갱신
+                        try {
+                            val app = ctx.applicationContext as? com.baby.feedingtracker.BabyFeedingApp
+                            app?.container?.reminderScheduler?.reschedule()
+                            com.baby.feedingtracker.ui.widget.WidgetUpdateWorker.scheduleOneTime(ctx)
+                        } catch (_: Exception) {}
                     }
                 }
                 is DataResult.Error -> {

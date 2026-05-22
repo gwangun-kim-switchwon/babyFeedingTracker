@@ -19,3 +19,6 @@ app/release/
 # OS
 .DS_Store
 .worktrees/
+
+# Store assets working dir (node_modules etc.)
+store-assets/.work/

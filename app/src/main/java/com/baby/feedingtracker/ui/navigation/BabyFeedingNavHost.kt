@@ -27,6 +27,8 @@ import com.baby.feedingtracker.ui.feeding.FeedingScreen
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
 import com.baby.feedingtracker.ui.profile.BabyProfileScreen
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
+import com.baby.feedingtracker.ui.settings.ReminderSettingsScreen
+import com.baby.feedingtracker.ui.settings.ReminderSettingsViewModel
 import com.baby.feedingtracker.ui.sleep.SleepScreen
 import com.baby.feedingtracker.ui.sleep.SleepViewModel
 import com.baby.feedingtracker.ui.growth.GrowthScreen
@@ -43,6 +45,7 @@ fun BabyFeedingNavHost(
     statisticsViewModel: StatisticsViewModel,
     growthViewModel: GrowthViewModel,
     babyProfileViewModel: BabyProfileViewModel,
+    reminderSettingsViewModel: ReminderSettingsViewModel,
     googleAuthHelper: GoogleAuthHelper,
     googleSignInLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
@@ -53,8 +56,8 @@ fun BabyFeedingNavHost(
         bottomBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
-            // 프로필 화면에서는 BottomNavBar 숨김
-            if (currentRoute != "baby_profile") {
+            // 프로필/설정 화면에서는 BottomNavBar 숨김
+            if (currentRoute != "baby_profile" && currentRoute != "reminder_settings") {
                 BottomNavBar(navController)
             }
         }
@@ -112,7 +115,14 @@ fun BabyFeedingNavHost(
             composable("baby_profile") {
                 BabyProfileScreen(
                     viewModel = babyProfileViewModel,
-                    onNavigateBack = { navController.popBackStack() }
+                    onNavigateBack = { navController.popBackStack() },
+                    onOpenReminderSettings = { navController.navigate("reminder_settings") },
+                )
+            }
+            composable("reminder_settings") {
+                ReminderSettingsScreen(
+                    viewModel = reminderSettingsViewModel,
+                    onBack = { navController.popBackStack() },
                 )
             }
         }

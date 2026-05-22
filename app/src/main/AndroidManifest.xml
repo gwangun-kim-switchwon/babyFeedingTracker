@@ -3,6 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".BabyFeedingApp"
@@ -30,6 +31,7 @@
             </intent-filter>
         </activity>
 
+        <!-- 기존 위젯 (v2.0) — 사용자 데이터 보호 위해 유지, v2.2에서 폐기 검토 -->
         <receiver
             android:name=".ui.widget.FeedingWidgetReceiver"
             android:exported="true">
@@ -39,6 +41,29 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/feeding_widget_info" />
+        </receiver>
+
+        <!-- v2.1 신규 반응형 독립 위젯 -->
+        <receiver
+            android:name=".ui.widget.MammamiaWidgetReceiver"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/mammamia_widget_info" />
+        </receiver>
+
+        <!-- v2.1 수유 리마인더 알림 액션 수신기 -->
+        <receiver
+            android:name=".notification.FeedingReminderActionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.baby.feedingtracker.action.LOG_FEEDING" />
+                <action android:name="com.baby.feedingtracker.action.SNOOZE_30" />
+            </intent-filter>
         </receiver>
     </application>
 

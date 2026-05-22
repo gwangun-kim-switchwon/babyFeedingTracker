@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -26,15 +27,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.baby.feedingtracker.di.AppContainer
+import com.baby.feedingtracker.notification.NotificationChannels
 import com.baby.feedingtracker.ui.diaper.DiaperViewModel
 import com.baby.feedingtracker.ui.feeding.FeedingViewModel
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
+import com.baby.feedingtracker.ui.settings.ReminderSettingsViewModel
 import com.baby.feedingtracker.ui.sleep.SleepViewModel
 import com.baby.feedingtracker.ui.growth.GrowthViewModel
 import com.baby.feedingtracker.ui.statistics.StatisticsViewModel
 import com.baby.feedingtracker.ui.navigation.BabyFeedingNavHost
 import com.baby.feedingtracker.ui.theme.BabyFeedingTrackerTheme
 import com.baby.feedingtracker.ui.theme.ThemeMode
+import com.baby.feedingtracker.ui.widget.WidgetDataSource
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -44,6 +48,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val app = application as BabyFeedingApp
+
+        // 알림 채널 보장 (Android 8+)
+        NotificationChannels.ensureCreated(this)
 
         setContent {
             val themeMode by app.container.themePreference.themeMode
@@ -106,6 +113,31 @@ class MainActivity : ComponentActivity() {
                         factory = GrowthViewModel.factory(growthRepository!!)
                     )
 
+                    val reminderSettingsViewModel: ReminderSettingsViewModel = viewModel(
+                        key = "reminder_settings_vm",
+                        factory = ReminderSettingsViewModel.factory(
+                            reminderPreference = app.container.reminderPreference,
+                            scheduler = app.container.reminderScheduler,
+                        )
+                    )
+
+                    // 로그인 uid를 위젯용 DataStore에 캐시 (위젯이 독립 fetch 가능하도록)
+                    LaunchedEffect(repository) {
+                        app.container.auth.currentUser?.uid?.let { uid ->
+                            WidgetDataSource.cacheUid(applicationContext, uid)
+                        }
+                    }
+
+                    // Android 13+ POST_NOTIFICATIONS 권한 (앱 첫 진입 시 한 번 요청, 거부해도 앱 동작)
+                    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.RequestPermission()
+                    ) { /* 결과 무시 — 사용자가 거부해도 앱은 정상 동작, 알림만 안 옴 */ }
+                    LaunchedEffect(Unit) {
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    }
+
                     // Refresh login state after Google Sign-In callback
                     val googleSignInLauncherWithRefresh = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.StartActivityForResult()
@@ -139,6 +171,7 @@ class MainActivity : ComponentActivity() {
                         statisticsViewModel = statisticsViewModel,
                         growthViewModel = growthViewModel,
                         babyProfileViewModel = babyProfileViewModel,
+                        reminderSettingsViewModel = reminderSettingsViewModel,
                         googleAuthHelper = app.container.googleAuthHelper,
                         googleSignInLauncher = googleSignInLauncherWithRefresh
                     )

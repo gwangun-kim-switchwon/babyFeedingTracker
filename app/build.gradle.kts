@@ -14,8 +14,8 @@ android {
         applicationId = "com.baby.feedingtracker"
         minSdk = 26
         targetSdk = 36
-        versionCode = 10
-        versionName = "2.0.1"
+        versionCode = 11
+        versionName = "2.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -115,6 +115,9 @@ dependencies {
     // Glance
     implementation("androidx.glance:glance-appwidget:1.1.0")
     implementation("androidx.glance:glance-material3:1.1.0")
+
+    // WorkManager (위젯 백그라운드 갱신 + 수유 리마인더 공용)
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 
     // Core
     implementation("androidx.core:core-ktx:1.12.0")

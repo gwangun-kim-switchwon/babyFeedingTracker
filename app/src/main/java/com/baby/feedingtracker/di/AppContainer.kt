@@ -1,7 +1,9 @@
 package com.baby.feedingtracker.di
 
 import android.content.Context
+import com.baby.feedingtracker.data.ReminderPreference
 import com.baby.feedingtracker.data.ThemePreference
+import com.baby.feedingtracker.notification.FeedingReminderScheduler
 import com.baby.feedingtracker.data.BabyProfileDataSource
 import com.baby.feedingtracker.data.BabyProfileRepository
 import com.baby.feedingtracker.data.CleaningDataSource
@@ -36,6 +38,10 @@ class AppContainer(context: Context) {
     private val firestore = Firebase.firestore
 
     val themePreference: ThemePreference by lazy { ThemePreference(context) }
+    val reminderPreference: ReminderPreference by lazy { ReminderPreference(context) }
+    val reminderScheduler: FeedingReminderScheduler by lazy {
+        FeedingReminderScheduler(context, reminderPreference)
+    }
     val userRepository = UserRepository(firestore, auth)
     val googleAuthHelper = GoogleAuthHelper(auth, context)
 
