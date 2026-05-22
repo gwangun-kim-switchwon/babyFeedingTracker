@@ -16,6 +16,7 @@ class DiaperDataSource(
             id = id,
             timestamp = getLong("timestamp") ?: 0L,
             type = getString("type"),
+            detail = getString("detail"),
             note = getString("note"),
             recordedBy = getString("recordedBy")
         )
@@ -25,6 +26,7 @@ class DiaperDataSource(
         val data = hashMapOf<String, Any?>(
             "timestamp" to record.timestamp,
             "type" to record.type,
+            "detail" to record.detail,
             "note" to record.note,
             "recordedBy" to currentUserUid,
             "createdAt" to com.google.firebase.Timestamp.now()
@@ -34,5 +36,9 @@ class DiaperDataSource(
 
     suspend fun updateType(recordId: String, type: String?): DataResult<Unit> {
         return updateFields(recordId, mapOf("type" to type))
+    }
+
+    suspend fun updateDetail(recordId: String, detail: String?): DataResult<Unit> {
+        return updateFields(recordId, mapOf("detail" to detail))
     }
 }

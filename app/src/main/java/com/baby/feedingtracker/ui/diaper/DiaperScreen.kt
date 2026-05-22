@@ -1,6 +1,7 @@
 package com.baby.feedingtracker.ui.diaper
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -141,6 +142,9 @@ fun DiaperScreen(
             isNewRecord = isNewRecord,
             onUpdateType = { type ->
                 viewModel.updateType(record.id, type)
+            },
+            onUpdateDetail = { detail ->
+                viewModel.updateDetail(record.id, detail)
             },
             onUpdateTimestamp = { timestamp ->
                 viewModel.updateTimestamp(record.id, timestamp)
@@ -336,12 +340,13 @@ private fun DiaperDateSectionHeader(label: String) {
 // 바텀시트: 기저귀 유형 선택
 // ──────────────────────────────────────────────
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 private fun DiaperEditBottomSheet(
     record: DiaperRecord,
     isNewRecord: Boolean,
     onUpdateType: (type: String?) -> Unit,
+    onUpdateDetail: (detail: String?) -> Unit,
     onUpdateTimestamp: (timestamp: Long) -> Unit,
     onUpdateNote: (String?) -> Unit,
     onDelete: () -> Unit,
@@ -349,6 +354,7 @@ private fun DiaperEditBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedType by remember { mutableStateOf(record.type) }
+    var selectedDetail by remember { mutableStateOf(record.detail) }
     var currentTimestamp by remember { mutableStateOf(record.timestamp) }
     var noteText by remember(record) { mutableStateOf(record.note ?: "") }
     val extendedColors = LocalExtendedColors.current
@@ -400,8 +406,12 @@ private fun DiaperEditBottomSheet(
                     onClick = {
                         val newType = if (selectedType == "diaper") null else "diaper"
                         selectedType = newType
+                        // type 변경 시 기존 detail 의미 없음 → 비우기
+                        if (selectedDetail != null) {
+                            selectedDetail = null
+                            onUpdateDetail(null)
+                        }
                         onUpdateType(newType)
-                        if (isNewRecord && newType != null) onDismiss()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -411,8 +421,11 @@ private fun DiaperEditBottomSheet(
                     onClick = {
                         val newType = if (selectedType == "urine") null else "urine"
                         selectedType = newType
+                        if (selectedDetail != null) {
+                            selectedDetail = null
+                            onUpdateDetail(null)
+                        }
                         onUpdateType(newType)
-                        if (isNewRecord && newType != null) onDismiss()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -422,11 +435,48 @@ private fun DiaperEditBottomSheet(
                     onClick = {
                         val newType = if (selectedType == "stool") null else "stool"
                         selectedType = newType
+                        if (selectedDetail != null) {
+                            selectedDetail = null
+                            onUpdateDetail(null)
+                        }
                         onUpdateType(newType)
-                        if (isNewRecord && newType != null) onDismiss()
                     },
                     modifier = Modifier.weight(1f)
                 )
+            }
+
+            // 상세(detail) chip 영역 — urine / stool 일 때만 표시
+            val detailOptions: List<String>? = when (selectedType) {
+                "urine" -> listOf("보통", "많음", "적음")
+                "stool" -> listOf("노란색·묽음", "노란색·보통", "녹색", "갈색")
+                else -> null
+            }
+            if (detailOptions != null) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "상세",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = extendedColors.subtleText
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                androidx.compose.foundation.layout.FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    detailOptions.forEach { opt ->
+                        DiaperDetailChip(
+                            text = opt,
+                            selected = selectedDetail == opt,
+                            categoryColor = extendedColors.categoryDiaper,
+                            onClick = {
+                                val newDetail = if (selectedDetail == opt) null else opt
+                                selectedDetail = newDetail
+                                onUpdateDetail(newDetail)
+                            }
+                        )
+                    }
+                }
             }
 
             // 메모 입력 UI
@@ -508,6 +558,46 @@ private fun DiaperToggleButton(
                 style = MaterialTheme.typography.labelLarge
             )
         }
+    }
+}
+
+// ──────────────────────────────────────────────
+// Detail Chip (소변/대변 상세 선택)
+// ──────────────────────────────────────────────
+
+@Composable
+private fun DiaperDetailChip(
+    text: String,
+    selected: Boolean,
+    categoryColor: Color,
+    onClick: () -> Unit,
+) {
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val bg = if (selected) {
+        categoryColor.copy(alpha = if (isDark) 0.32f else 0.18f)
+    } else {
+        if (isDark) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.04f)
+    }
+    val fg = if (selected) categoryColor else LocalExtendedColors.current.subtleText
+    val borderColor = if (selected) categoryColor.copy(alpha = 0.6f) else LocalExtendedColors.current.divider
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(bg)
+            .border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(50)
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = text,
+            fontSize = 12.sp,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+            color = fg
+        )
     }
 }
 
@@ -740,6 +830,14 @@ private fun DiaperRecordCard(
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     DiaperTypePill(type = record.type)
+                    if (!record.detail.isNullOrBlank()) {
+                        Text(
+                            text = record.detail,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                     if (!record.note.isNullOrBlank()) {
                         Icon(imageVector = Icons.AutoMirrored.Outlined.Notes, contentDescription = null,
                             modifier = Modifier.size(14.dp), tint = extendedColors.subtleText)

@@ -1,5 +1,8 @@
 package com.baby.feedingtracker.ui.statistics.components
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -24,12 +27,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -104,6 +112,7 @@ fun VerticalBarChartCard(
                         barColor = barColor,
                         barColorDark = barColorDark,
                         valueText = valueFormatter(value),
+                        animationDelayMs = index * 60,
                     )
                 }
             }
@@ -121,11 +130,27 @@ private fun BarColumn(
     barColor: Color,
     barColorDark: Color,
     valueText: String,
+    animationDelayMs: Int = 0,
 ) {
     val ext = LocalExtendedColors.current
     val ratio = (value / maxValue).coerceIn(0f, 1f)
     // 막대 영역 높이는 약 80dp 사용 (라벨/값 위아래 여유)
     val barAreaHeight = 80.dp
+
+    // 진입 애니메이션: 0 → ratio
+    var animTrigger by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        animTrigger = true
+    }
+    val animatedRatio by animateFloatAsState(
+        targetValue = if (animTrigger) ratio else 0f,
+        animationSpec = tween(
+            durationMillis = 500,
+            delayMillis = animationDelayMs,
+            easing = FastOutSlowInEasing,
+        ),
+        label = "bar-grow",
+    )
 
     Column(
         modifier = modifier,
@@ -147,7 +172,7 @@ private fun BarColumn(
                 .height(barAreaHeight),
             contentAlignment = Alignment.BottomCenter,
         ) {
-            val targetHeight = (barAreaHeight.value * ratio).coerceAtLeast(4f).dp
+            val targetHeight = (barAreaHeight.value * animatedRatio).coerceAtLeast(if (animTrigger) 4f else 0f).dp
             val barShape = RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp)
             val barBrush = if (isToday) {
                 Brush.verticalGradient(listOf(barColorDark, barColorDark))
@@ -258,7 +283,7 @@ fun DailySectionHeader(title: String) {
 // ──────────────────────────────────────────────
 
 @Composable
-fun DailyEntryRecordCard(entry: DailyEntry) {
+fun DailyEntryRecordCard(entry: DailyEntry, indexInList: Int = 0) {
     val ext = LocalExtendedColors.current
     val timeFmt = remember { SimpleDateFormat("HH:mm", Locale.KOREAN) }
     val (pillColor: Color, pillLabel: String) = when (entry.type) {
@@ -267,10 +292,31 @@ fun DailyEntryRecordCard(entry: DailyEntry) {
         DailyEntryType.SLEEP -> ext.categorySleep to "수면"
     }
 
+    // 진입 애니메이션: fade-in + slide-up
+    var animTrigger by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        animTrigger = true
+    }
+    val delayMs = (indexInList.coerceAtMost(10)) * 50
+    val animatedAlpha by animateFloatAsState(
+        targetValue = if (animTrigger) 1f else 0f,
+        animationSpec = tween(durationMillis = 300, delayMillis = delayMs, easing = FastOutSlowInEasing),
+        label = "entry-alpha",
+    )
+    val animatedOffsetY by animateFloatAsState(
+        targetValue = if (animTrigger) 0f else 12f,
+        animationSpec = tween(durationMillis = 300, delayMillis = delayMs, easing = FastOutSlowInEasing),
+        label = "entry-offset",
+    )
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .graphicsLayer {
+                alpha = animatedAlpha
+                translationY = animatedOffsetY
+            },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = ChartCardElevation),

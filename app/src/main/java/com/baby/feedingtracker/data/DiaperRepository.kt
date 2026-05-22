@@ -16,4 +16,8 @@ class DiaperRepository(
     suspend fun updateType(id: String, type: String?): DataResult<Unit> {
         return diaperDataSource.updateType(id, type)
     }
+
+    suspend fun updateDetail(id: String, detail: String?): DataResult<Unit> {
+        return diaperDataSource.updateDetail(id, detail)
+    }
 }

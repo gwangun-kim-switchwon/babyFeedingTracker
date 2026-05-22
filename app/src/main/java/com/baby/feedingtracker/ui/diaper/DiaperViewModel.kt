@@ -139,6 +139,15 @@ class DiaperViewModel(private val repository: DiaperRepository) : ViewModel() {
         }
     }
 
+    fun updateDetail(recordId: String, detail: String?) {
+        viewModelScope.launch {
+            val result = repository.updateDetail(recordId, detail)
+            if (result is DataResult.Error) {
+                _errorMessage.value = result.message
+            }
+        }
+    }
+
     fun updateTimestamp(recordId: String, timestamp: Long) {
         viewModelScope.launch {
             val result = repository.updateTimestamp(recordId, timestamp)
