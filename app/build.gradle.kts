@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -14,8 +15,8 @@ android {
         applicationId = "com.baby.feedingtracker"
         minSdk = 26
         targetSdk = 36
-        versionCode = 13
-        versionName = "2.1.2"
+        versionCode = 14
+        versionName = "2.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -105,6 +106,8 @@ dependencies {
     // 가져오지만 18.4.0 미만은 critical vulnerability. 명시적으로 최신 override.
     implementation("com.google.android.recaptcha:recaptcha:18.4.0")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:21.0.0")

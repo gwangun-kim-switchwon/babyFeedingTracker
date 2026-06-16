@@ -161,6 +161,32 @@ class UserRepository(
         }
     }
 
+    // ── Unlink partner ──────────────────────────
+
+    suspend fun unlinkPartner(): Result<Unit> {
+        val currentUid = auth.currentUser?.uid
+            ?: return Result.failure(Exception("로그인이 필요합니다"))
+        return try {
+            val myProfile = profileDocRef(currentUid).get().await()
+            val partnerUid = myProfile.getString("linkedTo")
+            val batch = firestore.batch()
+            batch.update(profileDocRef(currentUid), mapOf(
+                "linkedTo" to null,
+                "dataOwnerUid" to currentUid
+            ))
+            if (!partnerUid.isNullOrBlank()) {
+                batch.update(profileDocRef(partnerUid), mapOf(
+                    "linkedTo" to null,
+                    "dataOwnerUid" to partnerUid
+                ))
+            }
+            batch.commit().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     // ── Sharing state ───────────────────────────
 
     fun sharingState(uid: String): Flow<SharingState> {

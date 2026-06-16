@@ -354,6 +354,19 @@ class FeedingViewModel(
         _sharingError.value = null
     }
 
+    fun unlinkPartner() {
+        viewModelScope.launch {
+            val result = userRepository.unlinkPartner()
+            result.onSuccess {
+                val myUid = auth.currentUser?.uid ?: return@onSuccess
+                onDataOwnerChanged(myUid)
+            }
+            result.onFailure { e ->
+                _sharingError.value = e.message
+            }
+        }
+    }
+
     companion object {
         fun factory(
             repository: FeedingRepository,

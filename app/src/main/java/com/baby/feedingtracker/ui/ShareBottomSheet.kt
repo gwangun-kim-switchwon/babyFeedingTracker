@@ -65,6 +65,7 @@ fun ShareBottomSheet(
     onGenerateCode: () -> Unit,
     onRedeemCode: (String) -> Unit,
     onClearError: () -> Unit,
+    onUnlinkPartner: () -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -86,7 +87,10 @@ fun ShareBottomSheet(
         ) {
             when (sharingState) {
                 is SharingState.Connected -> {
-                    ConnectedContent(partnerEmail = sharingState.partnerEmail)
+                    ConnectedContent(
+                        partnerEmail = sharingState.partnerEmail,
+                        onUnlinkPartner = onUnlinkPartner
+                    )
                 }
                 is SharingState.NotConnected -> {
                     if (!isGoogleLoggedIn) {
@@ -424,7 +428,55 @@ private fun CodeGeneratedContent(code: String) {
 // ──────────────────────────────────────────────
 
 @Composable
-private fun ConnectedContent(partnerEmail: String?) {
+private fun ConnectedContent(
+    partnerEmail: String?,
+    onUnlinkPartner: () -> Unit
+) {
+    var showUnlinkDialog by remember { mutableStateOf(false) }
+
+    if (showUnlinkDialog) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { showUnlinkDialog = false },
+            containerColor = MaterialTheme.colorScheme.background,
+            title = {
+                Text(
+                    text = "연결 해제",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            },
+            text = {
+                Text(
+                    text = "배우자와의 연결을 해제하면\n각자의 기록만 볼 수 있게 됩니다.\n정말 해제하시겠어요?",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = LocalExtendedColors.current.subtleText,
+                    lineHeight = 24.sp
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showUnlinkDialog = false
+                        onUnlinkPartner()
+                    }
+                ) {
+                    Text(
+                        text = "해제",
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showUnlinkDialog = false }) {
+                    Text(
+                        text = "취소",
+                        color = LocalExtendedColors.current.subtleText
+                    )
+                }
+            }
+        )
+    }
+
     Text(
         text = "공유 상태",
         style = MaterialTheme.typography.headlineSmall.copy(
@@ -464,6 +516,28 @@ private fun ConnectedContent(partnerEmail: String?) {
             text = "$partnerEmail 과 공유 중",
             style = MaterialTheme.typography.bodyMedium,
             color = LocalExtendedColors.current.subtleText
+        )
+    }
+
+    Spacer(modifier = Modifier.height(32.dp))
+
+    OutlinedButton(
+        onClick = { showUnlinkDialog = true },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = MaterialTheme.colorScheme.error
+        ),
+        border = androidx.compose.foundation.BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+        )
+    ) {
+        Text(
+            text = "배우자 연결 해제",
+            style = MaterialTheme.typography.labelLarge
         )
     }
 }

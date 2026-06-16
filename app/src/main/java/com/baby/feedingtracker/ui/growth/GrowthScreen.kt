@@ -13,8 +13,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +52,7 @@ fun GrowthScreen(
     val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
     val snackbarHost = remember { SnackbarHostState() }
     var showSheet    by remember { mutableStateOf(false) }
+    var selectedChartType by remember { mutableStateOf(GrowthChartType.WEIGHT) }
 
     LaunchedEffect(errorMessage) {
         errorMessage?.let { snackbarHost.showSnackbar(it); viewModel.clearError() }
@@ -97,7 +100,21 @@ fun GrowthScreen(
                 )
             }
 
-            // 3. 섹션 헤더
+            // 3. WHO 성장 곡선 차트 섹션
+            val birthDateMs = profile?.birthDate?.takeIf { it > 0L }
+            if (birthDateMs != null && uiState.records.isNotEmpty()) {
+                item {
+                    WhoChartSection(
+                        records           = uiState.records,
+                        birthDateMs       = birthDateMs,
+                        gender            = profile?.gender,
+                        selectedChartType = selectedChartType,
+                        onChartTypeChange = { selectedChartType = it },
+                    )
+                }
+            }
+
+            // 4. 섹션 헤더
             item {
                 Text(
                     text = "성장 기록",
@@ -109,7 +126,7 @@ fun GrowthScreen(
                 )
             }
 
-            // 4. 기록 타임라인
+            // 5. 기록 타임라인
             if (uiState.records.isEmpty()) {
                 item {
                     Text(
@@ -586,7 +603,8 @@ private fun GrowthBottomSheet(onDismiss: () -> Unit, onSave: (GrowthRecord) -> U
     val hasAny = heightInput.isNotBlank() || weightInput.isNotBlank() || headInput.isNotBlank()
 
     val extendedColors = LocalExtendedColors.current
-    ModalBottomSheet(onDismissRequest = onDismiss) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -653,4 +671,284 @@ private fun MeasurementField(label: String, value: String, placeholder: String, 
         singleLine     = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
     )
+}
+
+// ── WHO 차트 섹션 카드 ─────────────────────────────────────
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WhoChartSection(
+    records: List<GrowthRecord>,
+    birthDateMs: Long,
+    gender: String?,
+    selectedChartType: GrowthChartType,
+    onChartTypeChange: (GrowthChartType) -> Unit,
+) {
+    val extendedColors = LocalExtendedColors.current
+    var showHelp by remember { mutableStateOf(false) }
+
+    if (showHelp) {
+        WhoHelpBottomSheet(onDismiss = { showHelp = false })
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(2.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 14.dp, bottom = 12.dp),
+        ) {
+            // 섹션 타이틀
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = "WHO 성장 곡선",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.3.sp,
+                        color = extendedColors.subtleText,
+                    )
+                    IconButton(
+                        onClick = { showHelp = true },
+                        modifier = Modifier.size(20.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.HelpOutline,
+                            contentDescription = "차트 설명 보기",
+                            tint = extendedColors.subtleText.copy(alpha = 0.6f),
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                }
+                // 성별 표시
+                val genderLabel = when (gender) {
+                    "male"   -> "남아 기준"
+                    "female" -> "여아 기준"
+                    else     -> "남아 기준"
+                }
+                Text(
+                    text = genderLabel,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = extendedColors.categoryGrowth,
+                )
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            // 탭 (몸무게 / 키 / 머리둘레)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                GrowthChartType.entries.forEach { type ->
+                    val isSelected = type == selectedChartType
+                    val chipBg = if (isSelected) extendedColors.categoryGrowth else Color.Transparent
+                    val chipText = if (isSelected) Color.White else extendedColors.subtleText
+
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(chipBg)
+                            .clickable { onChartTypeChange(type) }
+                            .then(
+                                if (!isSelected) Modifier.padding(1.dp) else Modifier
+                            )
+                            .padding(horizontal = 14.dp, vertical = 6.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = type.label,
+                            fontSize = 12.sp,
+                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                            color = chipText,
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // 범례
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                LegendItem(color = Color(0xFF5E9E56), dashed = false, label = "P50 중앙값")
+                LegendItem(color = Color(0xFFA8D4A0), dashed = true,  label = "P3/P97")
+                LegendItem(color = Color(0xFF5E9E56), dashed = false, label = "실측값", dot = true)
+            }
+
+            Spacer(Modifier.height(4.dp))
+
+            // 차트
+            WhoGrowthChart(
+                records       = records,
+                birthDateMs   = birthDateMs,
+                gender        = gender,
+                chartType     = selectedChartType,
+                modifier      = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+            )
+        }
+    }
+}
+
+// ── WHO 백분위수 설명 바텀시트 ──────────────────────────────
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WhoHelpBottomSheet(onDismiss: () -> Unit) {
+    val extendedColors = LocalExtendedColors.current
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 40.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            Text(
+                text = "WHO 성장 곡선이란?",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = "세계보건기구(WHO)가 전 세계 아이들의 성장 데이터를 분석해 만든 표준 성장 기준이에요. 아이의 성장이 또래와 비교해 어느 수준인지 확인할 수 있어요.",
+                fontSize = 14.sp,
+                lineHeight = 22.sp,
+                color = extendedColors.subtleText,
+            )
+
+            // 백분위수 설명 카드들
+            HelpCard(
+                badge = "P50",
+                badgeColor = extendedColors.categoryGrowth,
+                title = "중앙값 (평균선)",
+                desc = "같은 월령 아이 100명 중 50번째에 해당하는 수치예요. 가장 일반적인 성장 기준선입니다.",
+            )
+            HelpCard(
+                badge = "P3",
+                badgeColor = extendedColors.categoryGrowth.copy(alpha = 0.55f),
+                title = "하위 3% 선",
+                desc = "100명 중 3번째에 해당하는 수치예요. 이 선 아래라면 소아과 상담을 권장해요.",
+            )
+            HelpCard(
+                badge = "P97",
+                badgeColor = extendedColors.categoryGrowth.copy(alpha = 0.55f),
+                title = "상위 3% 선",
+                desc = "100명 중 97번째에 해당하는 수치예요. 이 선 위라면 또래보다 크게 성장 중이에요.",
+            )
+
+            Text(
+                text = "💡 P3~P97 사이에 있으면 정상 범위예요. 곡선의 방향(기울기)이 일정하게 유지되는 것이 중요해요.",
+                fontSize = 13.sp,
+                lineHeight = 20.sp,
+                color = extendedColors.subtleText,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(extendedColors.categoryGrowth.copy(alpha = 0.10f))
+                    .padding(12.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun HelpCard(badge: String, badgeColor: Color, title: String, desc: String) {
+    val extendedColors = LocalExtendedColors.current
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.Top,
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(badgeColor.copy(alpha = 0.15f))
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = badge,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = badgeColor,
+            )
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = title,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = desc,
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                color = extendedColors.subtleText,
+            )
+        }
+    }
+}
+
+@Composable
+private fun LegendItem(
+    color: Color,
+    dashed: Boolean,
+    label: String,
+    dot: Boolean = false,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        if (dot) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(color)
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .width(16.dp)
+                    .height(2.dp)
+                    .background(
+                        if (dashed) color.copy(alpha = 0.5f) else color
+                    )
+            )
+        }
+        Text(
+            text = label,
+            fontSize = 9.sp,
+            color = color.copy(alpha = 0.8f),
+            fontWeight = FontWeight.Medium,
+        )
+    }
 }

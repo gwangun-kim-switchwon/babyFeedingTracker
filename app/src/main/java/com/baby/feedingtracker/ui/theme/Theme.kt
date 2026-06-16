@@ -464,11 +464,13 @@ fun BabyFeedingTrackerTheme(
     val extendedColors = if (isDark) DarkExtendedColors else LightExtendedColors
 
     CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = AppTypography,
-            shapes = MammamiaShapes,
-            content = content
-        )
+        NightModeProvider {
+            MaterialTheme(
+                colorScheme = colorScheme,
+                typography = AppTypography,
+                shapes = MammamiaShapes,
+                content = content
+            )
+        }
     }
 }

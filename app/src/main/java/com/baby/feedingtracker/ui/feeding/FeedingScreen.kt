@@ -32,6 +32,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -63,6 +66,7 @@ import androidx.compose.material3.CardDefaults
 import com.baby.feedingtracker.ui.ShareBottomSheet
 import com.baby.feedingtracker.ui.profile.BabyProfileViewModel
 import com.baby.feedingtracker.ui.theme.LocalExtendedColors
+import com.baby.feedingtracker.ui.theme.LocalNightMode
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Notes
 import androidx.compose.material.icons.outlined.Notifications
@@ -190,6 +194,10 @@ fun FeedingScreen(
                 viewModel.redeemInviteCode(code)
             },
             onClearError = { viewModel.clearSharingError() },
+            onUnlinkPartner = {
+                viewModel.unlinkPartner()
+                showShareSheet = false
+            },
             onDismiss = {
                 showShareSheet = false
                 viewModel.clearInviteCode()
@@ -394,12 +402,18 @@ private fun RecordEditBottomSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedType by remember { mutableStateOf(record.type) }
     var selectedAmount by remember { mutableStateOf(record.amountMl) }
+    var formulaAmountText by remember { mutableStateOf(record.amountMl?.toString() ?: "") }
     var selectedLeftMin by remember { mutableStateOf(record.leftMin) }
     var selectedRightMin by remember { mutableStateOf(record.rightMin) }
     val amounts = listOf(30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160)
     var currentTimestamp by remember { mutableStateOf(record.timestamp) }
     var noteText by remember(record) { mutableStateOf(record.note ?: "") }
     val extendedColors = LocalExtendedColors.current
+    val nightMode = LocalNightMode.current
+    // 야간 모드: 기존 메모가 있으면 펼침, 없으면 접힘. 주간 모드: 항상 펼침
+    var showNote by remember(nightMode.isActive) {
+        mutableStateOf(if (nightMode.isActive) record.note?.isNotBlank() == true else true)
+    }
 
     ModalBottomSheet(
         onDismissRequest = {
@@ -423,19 +437,36 @@ private fun RecordEditBottomSheet(
                 categoryColor = extendedColors.categoryFeeding,
             )
 
+            // 야간 간편 모드 인디케이터
+            if (nightMode.isActive) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "🌙 야간 간편 모드",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = extendedColors.subtleText.copy(alpha = 0.7f)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 날짜 + 시간 편집 헤더
-            com.baby.feedingtracker.ui.components.RecordDateTimeEditor(
-                timestamp = currentTimestamp,
-                titleSuffix = "수유 기록",
-                onTimestampChange = {
-                    currentTimestamp = it
-                    onUpdateTimestamp(it)
+            // 날짜 + 시간 편집 헤더 — 야간 모드에서는 숨김 (현재시각 자동 사용)
+            AnimatedVisibility(visible = !nightMode.isActive) {
+                Column {
+                    com.baby.feedingtracker.ui.components.RecordDateTimeEditor(
+                        timestamp = currentTimestamp,
+                        titleSuffix = "수유 기록",
+                        onTimestampChange = {
+                            currentTimestamp = it
+                            onUpdateTimestamp(it)
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
-            )
+            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            if (nightMode.isActive) {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
             // 모유 / 분유 / 유축 토글
             Row(
@@ -451,7 +482,8 @@ private fun RecordEditBottomSheet(
                         selectedAmount = null
                         onUpdateType(newType, null, selectedLeftMin, selectedRightMin)
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    heightMultiplier = nightMode.buttonHeightMultiplier
                 )
                 ToggleButton(
                     text = "분유",
@@ -459,10 +491,14 @@ private fun RecordEditBottomSheet(
                     onClick = {
                         val newType = if (selectedType == "formula") null else "formula"
                         selectedType = newType
-                        if (newType != "formula") selectedAmount = null
+                        if (newType != "formula") {
+                            selectedAmount = null
+                            formulaAmountText = ""
+                        }
                         onUpdateType(newType, if (newType == "formula") selectedAmount else null, null, null)
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    heightMultiplier = nightMode.buttonHeightMultiplier
                 )
                 ToggleButton(
                     text = "유축",
@@ -473,12 +509,37 @@ private fun RecordEditBottomSheet(
                         if (newType != "pumped") selectedAmount = null
                         onUpdateType(newType, if (newType == "pumped") selectedAmount else null, null, null)
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    heightMultiplier = nightMode.buttonHeightMultiplier
                 )
             }
 
-            // 분유/유축 용량 선택 (분유 또는 유축 선택 시 표시)
-            AnimatedVisibility(visible = selectedType == "formula" || selectedType == "pumped") {
+            // 분유: 텍스트 직접 입력
+            AnimatedVisibility(visible = selectedType == "formula") {
+                Column {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
+                        value = formulaAmountText,
+                        onValueChange = { input ->
+                            if (input.length <= 4 && input.all { it.isDigit() }) {
+                                formulaAmountText = input
+                                val parsed = input.toIntOrNull()
+                                selectedAmount = parsed
+                                onUpdateType("formula", parsed, null, null)
+                            }
+                        },
+                        label = { Text("용량") },
+                        placeholder = { Text("예) 120") },
+                        suffix = { Text("ml") },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+
+            // 유축: 기존 버튼 선택 방식 유지
+            AnimatedVisibility(visible = selectedType == "pumped") {
                 Column {
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
@@ -487,7 +548,6 @@ private fun RecordEditBottomSheet(
                         color = LocalExtendedColors.current.subtleText
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    // 첫 줄: 30~90
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -499,7 +559,7 @@ private fun RecordEditBottomSheet(
                                 onClick = {
                                     val newAmount = if (selectedAmount == amount) null else amount
                                     selectedAmount = newAmount
-                                    onUpdateType(selectedType, newAmount, null, null)
+                                    onUpdateType("pumped", newAmount, null, null)
                                     if (isNewRecord && newAmount != null) onDismiss()
                                 },
                                 modifier = Modifier.weight(1f)
@@ -507,7 +567,6 @@ private fun RecordEditBottomSheet(
                         }
                     }
                     Spacer(modifier = Modifier.height(6.dp))
-                    // 둘째 줄: 100~160
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -519,7 +578,7 @@ private fun RecordEditBottomSheet(
                                 onClick = {
                                     val newAmount = if (selectedAmount == amount) null else amount
                                     selectedAmount = newAmount
-                                    onUpdateType(selectedType, newAmount, null, null)
+                                    onUpdateType("pumped", newAmount, null, null)
                                     if (isNewRecord && newAmount != null) onDismiss()
                                 },
                                 modifier = Modifier.weight(1f)
@@ -590,24 +649,38 @@ private fun RecordEditBottomSheet(
 
             // 메모 입력 UI
             Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = "메모",
-                style = MaterialTheme.typography.labelMedium,
-                color = extendedColors.subtleText
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = noteText,
-                onValueChange = { noteText = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("메모를 입력하세요") },
-                maxLines = 3,
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = extendedColors.divider,
-                    focusedBorderColor = extendedColors.categoryFeeding
+            if (nightMode.isActive && !showNote) {
+                // 야간 모드 + 접힘 상태: "+ 메모 추가" 버튼 표시
+                TextButton(
+                    onClick = { showNote = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "+ 메모 추가",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = extendedColors.subtleText
+                    )
+                }
+            } else {
+                Text(
+                    text = "메모",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = extendedColors.subtleText
                 )
-            )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = noteText,
+                    onValueChange = { noteText = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("메모를 입력하세요") },
+                    maxLines = 3,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = extendedColors.divider,
+                        focusedBorderColor = extendedColors.categoryFeeding
+                    )
+                )
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -635,13 +708,15 @@ private fun ToggleButton(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    heightMultiplier: Float = 1.0f
 ) {
     val extendedColors = LocalExtendedColors.current
+    val buttonHeight = (48 * heightMultiplier).dp
     if (selected) {
         Button(
             onClick = onClick,
-            modifier = modifier.height(48.dp),
+            modifier = modifier.height(buttonHeight),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = extendedColors.categoryFeeding,
@@ -657,7 +732,7 @@ private fun ToggleButton(
     } else {
         OutlinedButton(
             onClick = onClick,
-            modifier = modifier.height(48.dp),
+            modifier = modifier.height(buttonHeight),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.onBackground
