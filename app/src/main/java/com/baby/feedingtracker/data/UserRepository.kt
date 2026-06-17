@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.util.Date
@@ -48,7 +49,7 @@ class UserRepository(
             } else {
                 null
             }
-        }
+        }.catch { emit(null) }
     }
 
     suspend fun createProfile(uid: String, email: String?) {
